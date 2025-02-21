@@ -2,6 +2,7 @@ import './App.css'
 import HomePage from './pages/home-page/home-page';
 import LoginPage from './pages/login-page/login-page'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import PrivateRoute from './utils/private-route';
 
 function App() {
 
@@ -9,10 +10,11 @@ function App() {
     <>
         <Router>
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            {/* Rutas protegidas */}
+            <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
+            
+            {/* Rutas públicas */}
             <Route path="/login" element={<LoginPage />} />
-            {/* <Route path="/about" element={<About />} /> */}
-            {/* <Route path="*" element={<NotFound />} /> */}
           </Routes>
         </Router>
     </>
