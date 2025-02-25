@@ -19,10 +19,10 @@ export default function Login() {
 
     return (
             <div className="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">
-                <h1 className="text-4xl font-bold mb-4">Welcome to Firebreath</h1>
-                <h1 className="text-2xl font-semibold mb-4">Login</h1>
+                <h1 className="text-4xl font-bold">Welcome to Firebreath</h1>
+                <h1 className="text-2xl font-semibold pb-4">Login</h1>
                 <form onSubmit={handleLogin} className="pb-4">
-                    <div className="mb-4">
+                    <div className="pb-4">
                         <label htmlFor="email" className="block text-gray-600">Email</label>
                         <input
                             type="text"
@@ -34,7 +34,7 @@ export default function Login() {
                             autoComplete="off"
                         />
                     </div>
-                    <div className="mb-4">
+                    <div className="pb-4">
                         <label htmlFor="password" className="block text-gray-600">Password</label>
                         <input
                             type="password"
@@ -46,7 +46,7 @@ export default function Login() {
                             autoComplete="off"
                         />
                     </div>
-                    <div className="mb-6 text-blue-500">
+                    <div className="pb-6 text-blue-500">
                         <a href="#" className="hover:underline">Forgot Password?</a>
                     </div>
                     <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full">

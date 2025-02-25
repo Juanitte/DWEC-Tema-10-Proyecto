@@ -1,6 +1,6 @@
-const AUTH_URL = "https://localhost:7063/gateway/users/authenticate";
-const USERS_URL = "https://localhost:7063/gateway/Users/users/";
-const POSTS_URL = "https://localhost:7063/gateway/Posts/posts/";
+const AUTH_URL = "https://localhost:7058/gateway/users/authenticate";
+const USERS_URL = "https://localhost:7058/gateway/Users/users/";
+const POSTS_URL = "https://localhost:7058/gateway/Posts/posts/";
 
 export async function login(email, password) {
     return fetch(AUTH_URL, {
