@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../../services/api-service";
+import CryptoJS from "crypto-js";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -10,8 +12,11 @@ export default function Login() {
         event.preventDefault();
 
         if (email && password) {
-            localStorage.setItem("user", email);
-            navigate("/");
+            login(email, CryptoJS.SHA256(password).toString().concat('@', 'A', 'a')).then((response) => {
+                if (response.userId) {
+                    navigate("/");
+                }
+            })
         } else {
             alert("Por favor, completa todos los campos");
         }

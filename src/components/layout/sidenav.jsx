@@ -5,10 +5,11 @@ export default function Sidenav() {
 
     const handleLogout = () => {
         localStorage.removeItem("user");
+        localStorage.removeItem("token");
         navigate("/login");
     };
 
-    const userName = localStorage.getItem("user");
+    let user = JSON.parse(localStorage.getItem("user"));
 
     return (
         <aside className="w-64 h-screen" aria-label="Sidebar">
@@ -39,7 +40,7 @@ export default function Sidenav() {
                             className="w-full flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
                             <i className="fa-solid fa-user pr-4"></i>
-                            <span className="whitespace-nowrap text-2xl rowdies-font">{userName.toUpperCase()}</span>
+                            <span className="whitespace-nowrap text-2xl rowdies-font">{user.userName.toUpperCase()}</span>
                         </button>
                     </li>
                     <li>

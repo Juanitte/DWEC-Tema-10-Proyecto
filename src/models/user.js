@@ -1,15 +1,15 @@
 export class User {
     id;
-    username;
+    userName;
     fullName;
     tag;
     country;
     email;
     password;
 
-    constructor(id=0, username="User", fullname="FullName", tag="@default", country="UNDEFINED", email="example@example.com", password="") {
+    constructor(id=0, userName="User", fullname="FullName", tag="@default", country="UNDEFINED", email="example@example.com", password="") {
         this.id = id;
-        this.username = username;
+        this.userName = userName;
         this.fullName = fullname;
         this.tag = tag;
         this.country = country;

@@ -4,6 +4,7 @@ import { EMAIL_REGEX, PASSWORD_REGEX, TAG_REGEX, USERNAME_REGEX } from "../../ut
 import { Country } from "../../utils/enums";
 import { CreateUserDto } from "../../models/createUserDto";
 import { createUser } from "../../services/api-service";
+import CryptoJS from "crypto-js";
 
 export default function Signup() {
     const [email, setEmail] = useState("");
@@ -18,6 +19,7 @@ export default function Signup() {
     const [tagTooltip, setTagTooltip] = useState(false);
     const [country, setCountry] = useState(Country.UNDEFINED);
     const navigate = useNavigate();
+    let count = 1;
 
     const validateForm = () => {
         return EMAIL_REGEX.test(email) && PASSWORD_REGEX.test(password) && password === confirmPassword && USERNAME_REGEX.test(username) && USERNAME_REGEX.test(fullname) && TAG_REGEX.test(tag) && country !== Country.UNDEFINED;
@@ -26,7 +28,7 @@ export default function Signup() {
     const handleSignup = (event) => {
         event.preventDefault();
 
-        let user = new CreateUserDto(username, fullname, tag, country, email, password);
+        let user = new CreateUserDto(tag, "", "", username, fullname, +country, email, CryptoJS.SHA256(password).toString().concat('@', 'A', 'a'), "", 1, new Date(), false, "USER");
 
         createUser(user).then((response) => {
             if (response.status === 200) {
@@ -135,11 +137,11 @@ export default function Signup() {
                             {
                                 Object.values(Country).map((country) => (
                                     country !== Country.UNDEFINED ?
-                                    <option key={country} value={country}>
+                                    <option key={country} value={count++}>
                                         {country}
                                     </option>
                                     :
-                                    <option key={country} value={country} disabled>
+                                    <option key={country} value={count++} disabled>
                                         ---
                                     </option>
                                 ))
