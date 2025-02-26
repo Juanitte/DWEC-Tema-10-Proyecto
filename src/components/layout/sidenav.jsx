@@ -18,7 +18,7 @@ export default function Sidenav() {
                 <ul className="space-y-4 pt-10">
                     <li>
                         <button
-                            onClick={handleLogout}
+                            onClick={() => navigate("/")}
                             className="w-full flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
                             <i className="fa-solid fa-house pr-4"></i>
@@ -27,7 +27,7 @@ export default function Sidenav() {
                     </li>
                     <li>
                         <button
-                            onClick={handleLogout}
+                            onClick={() => navigate("/explore")}
                             className="w-full flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
                             <i className="fa-solid fa-magnifying-glass pr-4"></i>
@@ -36,7 +36,7 @@ export default function Sidenav() {
                     </li>
                     <li>
                         <button
-                            onClick={handleLogout}
+                            onClick={() => navigate("/profile")}
                             className="w-full flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
                             <i className="fa-solid fa-user pr-4"></i>

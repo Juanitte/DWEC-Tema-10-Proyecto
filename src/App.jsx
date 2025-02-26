@@ -6,6 +6,8 @@ import PrivateRoute from './utils/private-route';
 import SiteLayout from './components/layout/site-layout';
 import SignupPage from './pages/signup-page/signup-page';
 import BaseLayout from './components/layout/base-layout';
+import ExplorePage from './pages/explore-page/explore-page';
+import ProfilePage from './pages/profile-page/profile-page';
 
 function App() {
 
@@ -15,6 +17,8 @@ function App() {
           <Routes>
             {/* Rutas protegidas */}
             <Route path="/" element={<PrivateRoute><SiteLayout><HomePage /></SiteLayout></PrivateRoute>} />
+            <Route path="/explore" element={<PrivateRoute><SiteLayout><ExplorePage /></SiteLayout></PrivateRoute>} />
+            <Route path="/profile" element={<PrivateRoute><SiteLayout><ProfilePage /></SiteLayout></PrivateRoute>} />
 
             {/* Rutas públicas */}
             <Route path="/login" element={<BaseLayout><LoginPage /></BaseLayout>} />

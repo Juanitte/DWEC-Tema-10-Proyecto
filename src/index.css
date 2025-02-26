@@ -11,3 +11,16 @@ body {
 .rowdies-font {
     font-family: 'Rowdies', sans-serif;
 }
+
+@keyframes zoom-in-out {
+  0%, 100% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(0.5);
+  }
+}
+
+.animate-zoom {
+  animation: zoom-in-out 25s infinite ease-in-out;
+}
