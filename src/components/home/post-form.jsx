@@ -1,12 +1,31 @@
 import { useState } from "react";
+import { CreatePostDto } from "../../models/createPostDto";
+import { createPost } from "../../services/api-service";
+import { handleInvalidToken } from "../../services/api-service";
 
 export default function PostForm() {
     const [images, setImages] = useState([]);
     const [postText, setPostText] = useState('');
-    const [post, setPost] = useState({});
+    const user = JSON.parse(localStorage.getItem('user'));
 
     const removeImage = (index) => {
         setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    };
+
+    const handlePost = (event) => {
+        event.preventDefault();
+
+        let post = new CreatePostDto(user.userName, user.tag, user.avatar, postText, images, user.id);
+        console.log(post);
+        createPost(post).then((response) => {
+            response.json();
+            if(response.status === 200) {
+                setPostText('');
+            }
+            else if (response.status === 401) {
+                handleInvalidToken();
+            }
+        });;
     };
 
     return (
@@ -61,7 +80,7 @@ export default function PostForm() {
                     </div>
 
                     <div className="buttons flex justify-end">
-                        <div className="btn border rounded border-[#285184] p-1 px-4 font-semibold cursor-pointer text-gray-100 ml-2 bg-[#285184]">Post</div>
+                        <div onClick={handlePost} className="btn border rounded border-[#285184] p-1 px-4 font-semibold cursor-pointer text-gray-100 ml-2 bg-[#285184]">Post</div>
                     </div>
                 </div>
             </div>

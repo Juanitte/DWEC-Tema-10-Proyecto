@@ -15,7 +15,7 @@ export class CreateUserDto {
     isBanned;
     role;
 
-    constructor(tag="@default", bio="", avatar="", userName="User", fullName="FullName", country=196, email="example@example.com", password="", phoneNumber="", language=1, created=Date.now(), isBanned=false, role="USER") {
+    constructor(tag, bio, avatar, userName, fullName, country, email, password, phoneNumber, language=1, created=Date.now(), isBanned=false, role="USER") {
         this.userName = userName;
         this.fullName = fullName;
         this.tag = tag;

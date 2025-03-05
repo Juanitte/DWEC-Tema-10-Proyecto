@@ -28,7 +28,7 @@ export default function Signup() {
     const handleSignup = (event) => {
         event.preventDefault();
 
-        let user = new CreateUserDto(tag, "", "", username, fullname, +country, email, CryptoJS.SHA256(password).toString().concat('@', 'A', 'a'), "", 1, new Date(), false, "USER");
+        let user = new CreateUserDto(tag, "", "/user.webp", username, fullname, +country, email, CryptoJS.SHA256(password).toString().concat('@', 'A', 'a'), "", 1);
 
         createUser(user).then((response) => {
             if (response.status === 200) {
