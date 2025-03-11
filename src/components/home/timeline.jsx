@@ -8,13 +8,13 @@ export default function Timeline() {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                let response;
+                let result;
                 await getPosts()
                     .then((response) => response.json())
-                    .then((data) => (response = data));
+                    .then((data) => (result = data));
 
-                if (response && Array.isArray(response)) {
-                    setPosts(response);
+                if (result && Array.isArray(result)) {
+                    setPosts(result);
                 }
             } catch (error) {
                 console.error("Error fetching posts:", error);
