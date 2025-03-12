@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { getCommentCount } from "../../services/api-service";
 import { formatPostTime } from "../../utils/utils";
+import { useNavigate } from "react-router-dom";
+import ImageComponent from "../shared/image-component";
 
 export default function Post( post ) {
+
+    const navigate = useNavigate();
 
     const [commentCount, setCommentCount] = useState(0);
     
@@ -27,10 +31,14 @@ export default function Post( post ) {
     
         }, []);
 
+        const goToPostPage = () => {
+            navigate(`/post/${post.post.id}`);
+        }
+
     return (
         <>
-            <div className='flex items-start justify-center'>
-                <div className="border-b p-5 w-11/12 bg-[#2b3b4f]">
+            <div onClick={goToPostPage} className='flex items-start justify-center'>
+                <div className="p-5 w-11/12 bg-[#374c66] rounded-xl">
                     <div className="flex w-full items-center justify-between pb-3">
                         <div className="flex items-center space-x-3">
                             <img src={post.post.authorAvatar} className="h-12 w-12 rounded-full bg-slate-400" />
@@ -43,6 +51,15 @@ export default function Post( post ) {
 
                     <div className="mt-4 mb-6">
                         <div className="text-md text-gray-100 pb-4 pl-16">{post.post.content}</div>
+                        <div className="flex flex-column gap-1 justify-center w-full">
+                        {
+                            post.post.attachments.length > 0 ? 
+                            post.post.attachments.map((image, index) => {
+                                return <ImageComponent key={index} image={image} />
+                            })
+                            : <></>
+                        }
+                        </div>
                     </div>
                     <div className="pt-2">
                         <div className="flex items-center justify-between text-gray-100 pl-16">

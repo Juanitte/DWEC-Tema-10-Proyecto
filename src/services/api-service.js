@@ -41,8 +41,8 @@ export async function createPost(postDto) {
     formData.append("content", postDto.content);
     formData.append("userId", postDto.userId);
 
-    postDto.attachments.forEach((file, index) => {
-        formData.append(`attachments[${index}]`, file);
+    postDto.attachments.forEach((file) => {
+        formData.append("attachments", file, file.name);
     });
 
     return fetch(`${POSTS_URL}create`, {
@@ -56,6 +56,16 @@ export async function createPost(postDto) {
 
 export async function getPosts() {
     return fetch(`${POSTS_URL}getall`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function getPostById(id) {
+    return fetch(`${POSTS_URL}getbyid/${id}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

@@ -4,16 +4,18 @@ export class Post {
     authorTag;
     authorAvatar;
     content;
+    attachments;
     created;
     lastEdited;
     userId;
     postId;
 
-    constructor(id, author, authorTag, content, created, lastEdited, userId, postId=0) {
+    constructor(id, author, authorTag, content, attachments=[], created, lastEdited, userId, postId=0) {
         this.id = id;
         this.author = author;
         this.authorTag = authorTag;
         this.content = content;
+        this.attachments = attachments;
         this.created = created;
         this.lastEdited = lastEdited;
         this.userId = userId;

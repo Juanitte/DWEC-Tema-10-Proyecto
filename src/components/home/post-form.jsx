@@ -5,6 +5,7 @@ import { handleInvalidToken } from "../../services/api-service";
 
 export default function PostForm() {
     const [images, setImages] = useState([]);
+    const [files, setFiles] = useState([]);
     const [postText, setPostText] = useState('');
     const user = JSON.parse(localStorage.getItem('user'));
 
@@ -15,7 +16,7 @@ export default function PostForm() {
     const handlePost = (event) => {
         event.preventDefault();
 
-        let post = new CreatePostDto(user.userName, user.tag, user.avatar, postText, images, user.id);
+        let post = new CreatePostDto(user.userName, user.tag, user.avatar, postText, files, user.id);
         console.log(post);
         createPost(post).then((response) => {
             response.json();
@@ -26,11 +27,13 @@ export default function PostForm() {
                 handleInvalidToken();
             }
         });;
+        setImages([]);
+        setFiles([]);
     };
 
     return (
         <>
-            <div className="bg-[#2b3b4f] shadow p-4 py-8">
+            <div className="bg-[#2b3b4f] shadow p-4 pb-8 pt-2">
                 <div className="editor w-full mx-auto flex flex-col text-gray-800 border-b border-gray-300 p-4">
                     <textarea value={postText} onChange={(e) => setPostText(e.target.value)} className="description rounded bg-[#9eb6d3] sec p-3 h-13 border border-gray-300 outline-none" spellCheck="false" placeholder="Write your post here"></textarea>
                     <div className="p-1"></div>
@@ -51,6 +54,7 @@ export default function PostForm() {
                                         size: file.size > 1024 ? (file.size > 1048576 ? Math.round(file.size / 1048576) + 'mb' : Math.round(file.size / 1024) + 'kb') : file.size + 'b'
                                     }));
                                     setImages(files);
+                                    setFiles(Array.from(event.target.files));
                                 }}
                             />
                         </label>
