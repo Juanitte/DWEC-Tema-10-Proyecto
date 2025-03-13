@@ -20,10 +20,16 @@ export default function ImageComponent({ image }) {
     const blobUrl = URL.createObjectURL(blob);
 
     return (
-        <a href={blobUrl} target="_blank" rel="noopener noreferrer" className="bg-slate-800 border border-slate-500 rounded-xl flex flex-col justify-content-center items-center max-w-[90%]">
+        <a
+            href={blobUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-slate-800 border border-slate-500 rounded-xl flex flex-col justify-content-center items-center max-w-[90%]"
+            onClick={(event) => event.stopPropagation()}
+        >
             <img
                 src={base64Image}
-                className="rounded-xl object-cover max-w-[90%]"
+                className="rounded-xl object-cover"
                 alt="Post attachment"
             />
         </a>

@@ -1,5 +1,9 @@
 export function formatPostTime(time) {
-    const postDate = new Date(time);
+    const postDate = new Date(time.split('.')[0] + 'Z');
+    if (isNaN(postDate.getTime())) {
+        console.error("Invalid date format:", time);
+        return "Invalid date";
+    }
     const now = new Date();
     const diffInSeconds = Math.floor((now - postDate) / 1000);
 

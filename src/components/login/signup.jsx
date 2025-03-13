@@ -15,7 +15,7 @@ export default function Signup() {
     const [usernameTooltip, setUsernameTooltip] = useState(false);
     const [fullname, setFullname] = useState("");
     const [fullnameTooltip, setFullnameTooltip] = useState(false);
-    const [tag, setTag] = useState("");
+    const [tag, setTag] = useState("@");
     const [tagTooltip, setTagTooltip] = useState(false);
     const [country, setCountry] = useState(Country.UNDEFINED);
     const navigate = useNavigate();
@@ -34,7 +34,7 @@ export default function Signup() {
             if (response.status === 200) {
                 navigate("/login");
             } else {
-                alert(response.data.message);
+                console.log(response);
             }
         });
     };
@@ -43,7 +43,7 @@ export default function Signup() {
             <div className="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">
                 <h1 className="text-4xl font-bold mb-4">Welcome to Firebreath</h1>
                 <h1 className="text-2xl font-semibold pb-4">Signup</h1>
-                <form onSubmit={handleSignup} className="pb-4 overflow-y-auto">
+                <form onSubmit={(event) => handleSignup(event)} className="pb-4 overflow-y-auto">
                     <div className="pb-4">
                         <label htmlFor="email" className="block text-gray-600">Email</label>
                         <input
@@ -119,7 +119,7 @@ export default function Signup() {
                             value={tag}
                             onFocus={() => setTagTooltip(true)}
                             onBlur={() => setTagTooltip(false)}
-                            onChange={(e) => setTag(e.target.value)}
+                            onChange={(e) => e.target.value.length == 0 ? setTag("@") : setTag(e.target.value)}
                             className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
                             autoComplete="off"
                         />

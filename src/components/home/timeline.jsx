@@ -3,7 +3,7 @@ import { getPosts } from "../../services/api-service";
 import Post from "./post";
 import Loading from "../shared/loading";
 
-export default function Timeline() {
+export default function Timeline({ userId, searchString, isForLikedPosts }) {
     const [posts, setPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -11,7 +11,7 @@ export default function Timeline() {
         const fetchPosts = async () => {
             try {
                 let result;
-                await getPosts()
+                await getPosts(userId, searchString, isForLikedPosts)
                     .then((response) => response.json())
                     .then((data) => {
                         result = data;
@@ -27,21 +27,27 @@ export default function Timeline() {
         };
 
         fetchPosts();
-        
-        const interval = setInterval(fetchPosts, 3000);
+
+        const interval = setInterval(fetchPosts, 5000);
 
         return () => clearInterval(interval);
     }, []);
 
     return (
-        <div className="bg-[#2b3b4f] h-full p-4 text-gray-100 overflow-y-auto flex flex-col gap-2">
-            {isLoading ? (
-                <Loading />
-            ) : posts.length > 0 ? (
-                posts.map((post) => <Post key={post.id} post={post} />)
-            ) : (
-                <p>No posts available</p>
-            )}
-        </div>
+        <>
+            <ul className="list-none">
+                {
+                    isLoading ? (
+                        <Loading />
+                    )
+                    : posts.length > 0 ? (
+                        posts.map((post) => <Post key={post.id} post={post} isComment={false} isMainPost={false} />)
+                    )
+                    : (
+                        <p>No posts available</p>
+                    )
+                }
+            </ul>
+        </>
     );
 }

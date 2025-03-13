@@ -7,7 +7,7 @@ export class CreatePostDto {
     userId;
     postId;
 
-    constructor(author, authorTag, authorAvatar, content, attachments, userId, postId=0) {
+    constructor(author, authorTag, authorAvatar, content, attachments, userId, postId) {
         this.author = author;
         this.authorTag = authorTag;
         this.authorAvatar = authorAvatar;

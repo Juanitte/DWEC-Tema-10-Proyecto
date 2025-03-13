@@ -11,11 +11,10 @@ export class CreateUserDto {
     password;
     phoneNumber;
     language;
-    created;
     isBanned;
     role;
 
-    constructor(tag, bio, avatar, userName, fullName, country, email, password, phoneNumber, language=1, created=Date.now(), isBanned=false, role="USER") {
+    constructor(tag, bio, avatar, userName, fullName, country, email, password, phoneNumber, language=1,  isBanned=false, role="USER") {
         this.userName = userName;
         this.fullName = fullName;
         this.tag = tag;
@@ -26,7 +25,6 @@ export class CreateUserDto {
         this.avatar = avatar;
         this.phoneNumber = phoneNumber;
         this.language = language
-        this.created = created;
         this.isBanned = isBanned;
         this.role = role;
     }
