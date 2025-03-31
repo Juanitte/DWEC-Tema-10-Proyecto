@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getPostById } from '../../services/api-service';
+import { getPostById } from '../../services/posts-service';
 import PostDetails from '../../components/post/post-details';
 import ContentHeader from '../../components/shared/content-header';
 import PostForm from '../../components/home/post-form';

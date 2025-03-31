@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { dislikePost, getCommentCount, getLikeCount, getShareCount, likePost, postIsLiked } from "../../services/api-service";
+import { dislikePost, getCommentCount, getLikeCount, getShareCount, likePost, postIsLiked } from "../../services/posts-service";
 import { formatPostTime } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import ImageComponent from "../shared/image-component";

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPosts } from "../../services/api-service";
+import { getPosts } from "../../services/posts-service";
 import Post from "./post";
 import Loading from "../shared/loading";
 

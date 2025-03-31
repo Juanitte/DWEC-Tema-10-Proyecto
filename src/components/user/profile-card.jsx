@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Loading from "../shared/loading";
-import { follow, getFollowers, getFollowing, handleInvalidToken, unfollow } from "../../services/api-service";
+import { follow, getFollowers, getFollowing, handleInvalidToken, unfollow } from "../../services/users-service";
 import UsersModal from "./users-modal";
 
 export default function ProfileCard({ user }) {

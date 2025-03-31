@@ -2,7 +2,6 @@ import PostForm from "../../components/home/post-form";
 import Timeline from "../../components/home/timeline";
 import ContentHeader from "../../components/shared/content-header";
 import RightMenu from "../../components/shared/right-menu";
-import Suggestions from "../../components/shared/right-menu";
 
 export default function HomePage() {
     return (

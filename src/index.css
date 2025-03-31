@@ -5,16 +5,16 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #263b4e;
+  background-color: #294e26;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #15202b;
+  background-color: #162b15;
 }
 
 ::-webkit-scrollbar-corner {
-  background-color: #263b4e;
+  background-color: #294e26;
 }
 
 * {
@@ -23,6 +23,7 @@
 
 body {
   min-height: 100vh;
+  overflow-y: hidden;
 }
 
 .rowdies-font {
@@ -43,12 +44,12 @@ body {
   
   .bg-dim-700 {
   --bg-opacity: 1;
-  background-color: #192734;
+  background-color: #1b3419;
   }
   
   html, body {
   margin: 0;
-  background-color: #15202b;
+  background-color: #1b3419;
   }
   
   svg.paint-icon {

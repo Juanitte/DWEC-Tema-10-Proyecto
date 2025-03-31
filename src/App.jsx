@@ -9,8 +9,23 @@ import BaseLayout from './components/layout/base-layout';
 import ExplorePage from './pages/explore-page/explore-page';
 import PostPage from './pages/post-page/post-page';
 import UserPage from './pages/user-page/user-page';
+import { useEffect } from 'react';
 
 function App() {
+
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      if (event.key === "user" || event.key === "token") {
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   return (
     <>

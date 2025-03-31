@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getComments } from "../../services/api-service";
+import { getComments } from "../../services/posts-service";
 import Post from "../home/post";
 import PostForm from "../home/post-form";
 import CommentFeed from "./comment-feed";

@@ -4,7 +4,7 @@ import Sidenav from "./sidenav";
 export default function SiteLayout({ children }) {
     return (
         <>
-            <div className="p-relative h-screen" style={{ backgroundColor: '#15202b' }}>
+            <div className="p-relative h-screen" style={{ backgroundColor: '#162b15' }}>
                 <div className="flex justify-center">
 
                     <header className="text-white h-12 py-4 h-auto">

@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getUserById } from '../../services/api-service';
+import { getUserById } from '../../services/users-service';
 import ContentHeader from '../../components/shared/content-header';
 import PostForm from '../../components/home/post-form';
 import RightMenu from '../../components/shared/right-menu';

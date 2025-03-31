@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { CreatePostDto } from "../../models/createPostDto";
-import { createPost, handleInvalidToken } from "../../services/api-service";
+import { createPost } from "../../services/posts-service";
+import { handleInvalidToken } from "../../services/users-service";
+
 
 export default function PostForm({ commentedPostId }) {
     const [images, setImages] = useState([]);
