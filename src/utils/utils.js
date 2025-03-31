@@ -40,3 +40,9 @@ export function formatPostTime(time) {
     if(diffInYears === 1) return `${diffInYears} year ago`;
     return `${diffInYears} years ago`;
 }
+
+export const handleStorageChange = (event) => {
+    if (event.key === "user" || event.key === "token") {
+      window.location.reload();
+    }
+  };

@@ -1,6 +1,16 @@
-import { Navigate } from "react-router-dom";
-import { User } from "../models/user";
-import { AUTH_URL, USERS_URL } from "../utils/literals";
+import {
+    Navigate
+} from "react-router-dom";
+import {
+    User
+} from "../models/user";
+import {
+    AUTH_URL,
+    USERS_URL
+} from "../utils/literals";
+import {
+    handleStorageChange
+} from "../utils/utils";
 
 export async function login(email, password) {
     return fetch(AUTH_URL, {
@@ -16,51 +26,58 @@ export async function login(email, password) {
         .then((response) => response.json())
         .then((data) => {
             if (data.token) {
+                //window.removeEventListener("storage", handleStorageChange);
+
                 localStorage.setItem("token", data.token);
+                let user = new User(data.userId, data.userName, data.fullName, data.tag, data.country, data.created, data.email, data.avatar);
+                localStorage.setItem("user", JSON.stringify(user));
+
+                //window.addEventListener("storage", handleStorageChange);
+
+                return data;
             }
-            let user = new User(data.userId, data.userName, data.fullName, data.tag, data.country, data.created, data.email, data.avatar);
-            localStorage.setItem("user", JSON.stringify(user));
-            return data;
         });
 }
 
 export async function verifySession(token) {
     try {
         const response = await fetch(`${AUTH_URL}/verify`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                token
+            }),
         });
-    
+
         if (!response.ok) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
 
-          return false;
+            return false;
         }
-    
+
         const data = await response.json();
-    
+        console.log(data);
         if (!data.UserId) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
 
-          return false;
+            return false;
         }
-    
+
         localStorage.setItem("user", JSON.stringify(data));
-    
+
         return data;
 
-      } catch (error) {
+    } catch (error) {
         console.error("Error al verificar el token:", error);
         localStorage.removeItem("user");
         localStorage.removeItem("token");
 
         return false;
-      }
+    }
 }
 
 export async function createUser(userDto) {

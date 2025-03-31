@@ -10,15 +10,11 @@ import ExplorePage from './pages/explore-page/explore-page';
 import PostPage from './pages/post-page/post-page';
 import UserPage from './pages/user-page/user-page';
 import { useEffect } from 'react';
+import { handleStorageChange } from './utils/utils';
 
 function App() {
-
+/*
   useEffect(() => {
-    const handleStorageChange = (event) => {
-      if (event.key === "user" || event.key === "token") {
-        window.location.reload();
-      }
-    };
 
     window.addEventListener("storage", handleStorageChange);
 
@@ -26,7 +22,7 @@ function App() {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
-
+*/
   return (
     <>
         <Router>
