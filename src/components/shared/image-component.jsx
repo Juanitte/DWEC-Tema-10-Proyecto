@@ -31,6 +31,7 @@ export default function ImageComponent({ image }) {
                 src={base64Image}
                 className="rounded-xl object-cover"
                 alt="Post attachment"
+                loading="lazy"
             />
         </a>
     );

@@ -11,3 +11,6 @@ export const TAG_REGEX = /^@.{3,20}$/;
 
 //  COLORS
 export const BACKGROUND_COLOR = "#2b466d";
+
+//  FILE LENGHT
+export const MAX_FILE_SIZE = 104857600;

@@ -6,10 +6,12 @@ import { handleInvalidToken } from "../../services/users-service";
 
 export default function PostForm({ commentedPostId }) {
     const [images, setImages] = useState([]);
+    const [videos, setVideos] = useState([]);
     const [files, setFiles] = useState([]);
     const [postText, setPostText] = useState('');
     const user = JSON.parse(localStorage.getItem('user'));
     const fileInputRef = useRef(null);
+    const videoInputRef = useRef(null);
     const textAreaRef = useRef(null);
 
     useEffect(() => {
@@ -27,6 +29,14 @@ export default function PostForm({ commentedPostId }) {
         }
     };
 
+    const removeVideo = (index) => {
+        setVideos((prevVideos) => prevVideos.filter((_, i) => i !== index));
+        setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+        if (videoInputRef.current) {
+            videoInputRef.current.value = "";
+        }
+    };
+
     const handlePost = (event) => {
         event.preventDefault();
 
@@ -41,9 +51,13 @@ export default function PostForm({ commentedPostId }) {
             if (response.status === 200) {
                 setPostText('');
                 setImages([]);
+                setVideos([]);
                 setFiles([]);
                 if (fileInputRef.current) {
                     fileInputRef.current.value = "";
+                }
+                if (videoInputRef.current) {
+                    videoInputRef.current.value = "";
                 }
             }
             else if (response.status === 401) {
@@ -115,17 +129,52 @@ export default function PostForm({ commentedPostId }) {
                         </div>
 
                         <div className="flex-1 text-center py-2 m-2">
-                            <a href="#"
-                                className="mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300">
+                            <a
+                                className="hover:cursor-pointer mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300"
+                                onClick={() => videoInputRef.current.click()}
+                            >
                                 <svg className="text-center h-7 w-6" fill="none" strokeLinecap="round"
                                     strokeLinejoin="round" strokeWidth="2" stroke="silver"
                                     viewBox="0 0 24 24">
                                     <path
-                                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z">
-                                    </path>
-                                    <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </a>
+                            <input
+                                ref={videoInputRef}
+                                hidden
+                                type="file"
+                                accept="video/mp4, video/webm, video/ogg"
+                                multiple
+                                onChange={(event) => {
+                                    const selectedVideos = Array.from(event.target.files);
+                                    const newVideoObjects = selectedVideos.map(file => {
+                                        const extension = file.name.split('.').pop()?.toLowerCase();
+                                        const mimeMap = {
+                                            mp4: 'video/mp4',
+                                            webm: 'video/webm',
+                                            ogg: 'video/ogg'
+                                        };
+                                        const type = mimeMap[extension] || 'video/mp4';
+                                
+                                        return {
+                                            url: URL.createObjectURL(file),
+                                            name: file.name,
+                                            size: file.size > 1024
+                                                ? (file.size > 1048576
+                                                    ? Math.round(file.size / 1048576) + 'mb'
+                                                    : Math.round(file.size / 1024) + 'kb')
+                                                : file.size + 'b',
+                                            file,
+                                            type
+                                        };
+                                    });
+                                
+                                    setVideos(newVideoObjects);
+                                    setFiles(prev => [...prev, ...selectedVideos]);
+                                }}
+                            />
                         </div>
                         {
                             commentedPostId === 0 ?
@@ -188,6 +237,18 @@ export default function PostForm({ commentedPostId }) {
                         </button>
 
                         <div className="text-xs text-center p-2 text-gray-300">{image.size}</div>
+                    </div>
+                ))}
+                {videos.map((video, index) => (
+                    <div key={index} className="relative w-32 rounded">
+                        <video src={video.url} controls className="w-32 h-32 object-cover rounded"></video>
+                        <button
+                            onClick={() => removeVideo(index)}
+                            className="w-6 h-6 absolute top-0 right-0 m-2 text-white text-sm bg-red-500 hover:text-red-700 hover:bg-gray-100 rounded-full flex items-center justify-center leading-none"
+                        >
+                            X
+                        </button>
+                        <div className="text-xs text-center p-2 text-gray-300">{video.size}</div>
                     </div>
                 ))}
             </div>

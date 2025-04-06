@@ -4,6 +4,7 @@ import ContentHeader from "../../components/shared/content-header";
 import RightMenu from "../../components/shared/right-menu";
 
 export default function HomePage() {
+    const user = JSON.parse(localStorage.getItem("user"));
     return (
         <>
             <main role="main">
@@ -19,7 +20,7 @@ export default function HomePage() {
                             <hr className="border-green-800 border-4" />
                         </aside>
 
-                        <Timeline userId={0} searchString="" />
+                        <Timeline user={user} searchString="" isProfilePage={false} isForLikedPosts={false} />
                     </section>
 
                     <RightMenu />

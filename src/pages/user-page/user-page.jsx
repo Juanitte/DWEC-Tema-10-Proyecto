@@ -10,6 +10,7 @@ import ProfileCard from '../../components/user/profile-card';
 export default function UserPage() {
     const { userId } = useParams();
     const [user, setUser] = useState(null);
+    const loggedUser = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -38,12 +39,18 @@ export default function UserPage() {
 
                             <hr className="border-green-800" />
 
-                            <PostForm commentedPostId={0} />
+                            {
+                                user && user.id === loggedUser.id &&
+                                <>
+                                    <PostForm commentedPostId={0} />
+                                    <hr className="border-green-800 border-4" />
+                                </>
+                            }
 
-                            <hr className="border-green-800 border-4" />
+
                         </aside>
 
-                        <Timeline userId={userId} searchString="" isForLikedPosts={false} />
+                        <Timeline user={user} searchString="" isForLikedPosts={false} isProfilePage={true} />
                     </section>
 
                     <RightMenu />

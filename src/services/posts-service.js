@@ -43,8 +43,8 @@ export async function getPostById(postId) {
     });
 }
 
-export async function getPostsByUser(userId) {
-    return fetch(`${POSTS_URL}getbyuser/${userId}`, {
+export async function getPostsByUser(userId, page) {
+    return fetch(`${POSTS_URL}getbyuser/${userId}/${page}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
