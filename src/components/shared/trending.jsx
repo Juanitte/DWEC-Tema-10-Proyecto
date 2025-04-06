@@ -8,7 +8,7 @@ export default function Trending() {
                     </div>
                     <div className="flex-1 px-4 py-2 m-2">
                         <a href=""
-                            className="text-2xl rounded-full text-white hover:bg-gray-800 hover:text-blue-300 float-right">
+                            className="text-2xl rounded-full text-white hover:bg-green-800 float-right">
                             <svg className="m-2 h-6 w-6" fill="none" strokeLinecap="round"
                                 strokeLinejoin="round" strokeWidth="2" stroke="currentColor"
                                 viewBox="0 0 24 24">
@@ -22,24 +22,24 @@ export default function Trending() {
                 </div>
 
 
-                <hr className="border-gray-800" />
+                <hr className="border-green-800" />
 
                 {/*first trending tweet*/}
                 <div className="flex">
-                    <div className="flex-1 hover: cursor-pointer">
+                    <div className="flex-1 hover: cursor-pointer hover:bg-green-900">
                         <p className="px-4 pl-2 pt-3 w-48 text-xs text-gray-400">1 . Trending</p>
                         <h2 className="px-4 pl-2 w-48 font-bold text-white">#React</h2>
                         <p className="px-4 pl-2 pb-3 w-48 text-xs text-gray-400">5,466 Posts</p>
 
                     </div>
                 </div>
-                <hr className="border-gray-800" />
+                <hr className="border-green-800" />
 
                 {/*show more*/}
 
                 <div className="flex">
                     <div className="flex-1 p-4 hover: cursor-pointer">
-                        <h2 className="px-4 pl-2 w-48 font-bold text-gray-300">Show more</h2>
+                        <h2 className="px-4 pl-2 w-48 font-bold text-gray-200">Show more</h2>
                     </div>
                 </div>
 

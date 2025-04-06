@@ -56,13 +56,13 @@ export default function PostForm({ commentedPostId }) {
         <>
             <div className="flex p-2">
                 <div className="m-2 w-10 py-1">
-                    <img className="inline-block h-10 w-10 rounded-full bg-blue-400"
+                    <img className="inline-block h-10 w-10 rounded-full bg-gray-300"
                         src={localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).avatar : "https://pbs.twimg.com/profile_images/1254779846615420930/7I4kP65u_400x400.jpg"}
                         alt="" />
                 </div>
                 <div className="flex-1 px-2 pt-2 mt-2">
                     <textarea
-                        className=" bg-transparent text-gray-400 font-medium text-lg w-full"
+                        className=" bg-transparent text-white font-medium text-lg w-full"
                         rows="2"
                         cols="50"
                         placeholder={commentedPostId === 0 ? "What's happening?" : "Comment..."}
@@ -83,7 +83,7 @@ export default function PostForm({ commentedPostId }) {
 
                         <div className="flex-1 text-center py-2 m-2">
                             <a
-                                className="hover:cursor-pointer mt-1 group flex justify-center items-center text-blue-400 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-gray-800 hover:text-blue-300"
+                                className="hover:cursor-pointer mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300"
                                 onClick={() => fileInputRef.current.click()}
                             >
                                 <svg className="text-center h-7 w-6" fill="none" strokeLinecap="round"
@@ -116,7 +116,7 @@ export default function PostForm({ commentedPostId }) {
 
                         <div className="flex-1 text-center py-2 m-2">
                             <a href="#"
-                                className="mt-1 group flex justify-center items-center text-blue-400 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-gray-800 hover:text-blue-300">
+                                className="mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300">
                                 <svg className="text-center h-7 w-6" fill="none" strokeLinecap="round"
                                     strokeLinejoin="round" strokeWidth="2" stroke="silver"
                                     viewBox="0 0 24 24">
@@ -131,7 +131,7 @@ export default function PostForm({ commentedPostId }) {
                             commentedPostId === 0 ?
                                 <div className="flex-1 text-center py-2 m-2">
                                     <a href="#"
-                                        className="mt-1 group flex justify-center items-center text-blue-400 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-gray-800 hover:text-blue-300">
+                                        className="mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300">
                                         <svg className="text-center h-7 w-6" fill="none" strokeLinecap="round"
                                             strokeLinejoin="round" strokeWidth="2" stroke="silver"
                                             viewBox="0 0 24 24">
@@ -146,7 +146,7 @@ export default function PostForm({ commentedPostId }) {
                         }
                         <div className="flex-1 text-center py-2 m-2">
                             <a href="#"
-                                className="mt-1 group flex justify-center items-center text-blue-400 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-gray-800 hover:text-blue-300">
+                                className="mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300">
                                 <svg className="text-center h-7 w-6" fill="none" strokeLinecap="round"
                                     strokeLinejoin="round" strokeWidth="2" stroke="silver"
                                     viewBox="0 0 24 24">
@@ -163,7 +163,7 @@ export default function PostForm({ commentedPostId }) {
                 <div className="flex-1">
                     <button
                         onClick={handlePost}
-                        className="hover:cursor-pointer bg-blue-400 hover:bg-blue-500 mt-5 text-white font-bold py-2 px-8 rounded-full mr-8 float-right">
+                        className="hover:cursor-pointer bg-green-700 hover:bg-green-600 mt-5 text-white font-bold py-2 px-8 rounded-full mr-8 float-right">
                         {
                             commentedPostId == 0 ? 'Post' : 'Reply'
                         }

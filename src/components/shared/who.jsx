@@ -9,11 +9,11 @@ export default function Who() {
                 </div>
 
 
-                <hr className="border-gray-800" />
+                <hr className="border-green-800" />
 
                 {/*first person who to follow*/}
 
-                <div className="flex flex-shrink-0">
+                <div className="flex flex-shrink-0 pb-2">
                     <div className="flex-1 ">
                         <div className="flex items-center w-48">
                             <div className="pl-4 pt-2">
@@ -33,17 +33,17 @@ export default function Who() {
                         </div>
 
                     </div>
-                    <div className="flex-1 px-4 py-2 p-2">
+                    <div className="flex-1 px-4 py-2 pt-4">
                         <a href="" className=" float-right">
                             <button
-                                className="hover: cursor-pointer bg-transparent hover:bg-white text-white font-semibold hover:text-gray-800 py-2 px-4 border border-white hover:border-transparent rounded-full">
+                                className="hover: cursor-pointer bg-transparent hover:bg-white text-white font-semibold hover:text-green-800 py-2 px-4 border border-white hover:border-transparent rounded-full">
                                 Follow
                             </button>
                         </a>
 
                     </div>
                 </div>
-                <hr className="border-gray-800" />
+                <hr className="border-green-800" />
 
                 {/*show more*/}
 

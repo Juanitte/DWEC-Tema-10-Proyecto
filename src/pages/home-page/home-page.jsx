@@ -8,15 +8,15 @@ export default function HomePage() {
         <>
             <main role="main">
                 <div className="flex" style={{width: '990px'}}>
-                    <section className="w-3/5 border border-y-0 border-gray-800" style={{maxwidth:'600px'}}>
+                    <section className="w-3/5 border border-y-0 border-green-800" style={{maxwidth:'600px'}}>
                         <aside>
                             <ContentHeader route="" title="Home" hasBackButton={false} />
 
-                            <hr className="border-gray-800" />
+                            <hr className="border-green-800" />
                             
                             <PostForm commentedPostId={0} />
 
-                            <hr className="border-gray-800 border-4" />
+                            <hr className="border-green-800 border-4" />
                         </aside>
 
                         <Timeline userId={0} searchString="" />

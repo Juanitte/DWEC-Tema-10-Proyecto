@@ -1,9 +1,6 @@
-import { verifySession } from "../services/users-service";
-
 export const isAuthenticated = async () => {
   const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
 
-  if (!token) return false;
-
-  return verifySession(token);
+  return token != null && user != null;
 };

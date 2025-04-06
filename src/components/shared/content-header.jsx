@@ -14,7 +14,7 @@ export default function ContentHeader({ route, title, hasBackButton }) {
                 {
                     hasBackButton ?
                         <a href=""
-                            className=" text-2xl font-medium rounded-full text-white hover:bg-gray-800 hover:text-blue-300 float-left"
+                            className=" text-2xl font-medium rounded-full text-white hover:bg-green-800 float-left"
                             onClick={goToTargetPage}>
                             <svg className="m-2 h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                                 <g>
@@ -29,7 +29,7 @@ export default function ContentHeader({ route, title, hasBackButton }) {
             </div>
             <div className="flex-1 px-4 py-2 mx-2">
                 <a href=""
-                    className=" text-2xl font-medium rounded-full text-white hover:bg-gray-800 hover:text-blue-300 float-right">
+                    className=" text-2xl font-medium rounded-full text-white hover:bg-green-800 float-right">
                     <svg className="m-2 h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                         <g>
                             <path

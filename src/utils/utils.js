@@ -42,7 +42,10 @@ export function formatPostTime(time) {
 }
 
 export const handleStorageChange = (event) => {
+
     if (event.key === "user" || event.key === "token") {
-      window.location.reload();
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        window.location.href = "/login";
     }
   };

@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import { handleStorageChange } from './utils/utils';
 
 function App() {
-/*
+
   useEffect(() => {
 
     window.addEventListener("storage", handleStorageChange);
@@ -22,7 +22,7 @@ function App() {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
-*/
+
   return (
     <>
         <Router>

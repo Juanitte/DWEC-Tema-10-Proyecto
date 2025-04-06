@@ -28,19 +28,19 @@ export default function UserPage() {
         <>
             <main role="main">
                 <div className="flex" style={{ width: '990px' }}>
-                    <section className="w-3/5 border border-y-0 border-gray-800" style={{ maxwidth: '600px' }}>
+                    <section className="w-3/5 border border-y-0 border-green-800" style={{ maxwidth: '600px' }}>
                         <aside>
                             {user && <ContentHeader route="" title={user.userName} hasBackButton={true} />}
 
-                            <hr className="border-gray-800" />
+                            <hr className="border-green-800" />
 
                             <ProfileCard user={user} />
 
-                            <hr className="border-gray-800" />
+                            <hr className="border-green-800" />
 
                             <PostForm commentedPostId={0} />
 
-                            <hr className="border-gray-800 border-4" />
+                            <hr className="border-green-800 border-4" />
                         </aside>
 
                         <Timeline userId={userId} searchString="" isForLikedPosts={false} />

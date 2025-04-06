@@ -24,7 +24,7 @@ export default function ImageComponent({ image }) {
             href={blobUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-slate-800 border border-slate-500 rounded-xl flex flex-col justify-content-center items-center max-w-[90%]"
+            className="bg-green-800 border border-gray-300 rounded-xl flex flex-col justify-content-center items-center max-w-[90%]"
             onClick={(event) => event.stopPropagation()}
         >
             <img

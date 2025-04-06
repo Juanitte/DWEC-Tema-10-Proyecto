@@ -14,7 +14,7 @@ export default function UsersModal({ isOpen, onClose, isForFollowers, users }) {
             >
                 {/* Contenedor del modal */}
                 <div
-                    className="bg-gray-900 border border-gray-700 rounded-2xl p-6 w-96 relative"
+                    className="bg-green-900 border border-green-700 rounded-2xl p-6 w-96 relative"
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* Botón de cierre */}
@@ -25,7 +25,7 @@ export default function UsersModal({ isOpen, onClose, isForFollowers, users }) {
                         &times;
                     </button>
 
-                    <div className="flex flex-col items-center space-y-4 font-semibold text-gray-500">
+                    <div className="flex flex-col items-center space-y-4 font-semibold text-gray-400">
                         <h1 className="text-white text-2xl pb-4">
                             {isForFollowers ? "Followers" : "Following"}
                         </h1>
@@ -33,14 +33,14 @@ export default function UsersModal({ isOpen, onClose, isForFollowers, users }) {
                         {
                             users.map((user) => (
                                 <>
-                                    <hr className="border-gray-800" />
+                                    <hr className="border-green-800" />
 
 
                                     <div className="flex flex-shrink-0">
                                         <div className="flex-1 ">
                                             <div className="flex items-center w-48">
                                                 <div onClick={() => {navigate(`/user/${user.id}`)}} className="pl-4 pt-2">
-                                                    <img className="bg-blue-400 inline-block h-10 w-auto rounded-full ml-4 mt-2 hover:cursor-pointer"
+                                                    <img className="bg-gray-300 inline-block h-10 w-auto rounded-full ml-4 mt-2 hover:cursor-pointer"
                                                         src={user.avatar}
                                                         alt="" />
                                                 </div>
@@ -59,14 +59,14 @@ export default function UsersModal({ isOpen, onClose, isForFollowers, users }) {
                                         <div className="flex-1 px-4 py-3">
                                             <a href="" className=" float-right">
                                                 <button
-                                                    className="hover: cursor-pointer bg-transparent hover:bg-white text-white font-semibold hover:text-gray-800 py-2 px-4 border border-white hover:border-transparent rounded-full">
+                                                    className="hover: cursor-pointer bg-transparent hover:bg-white text-white font-semibold hover:text-green-800 py-2 px-4 border border-white hover:border-transparent rounded-full">
                                                     Follow
                                                 </button>
                                             </a>
 
                                         </div>
                                     </div>
-                                    <hr className="border-gray-800" />
+                                    <hr className="border-green-800" />
                                 </>
                             ))
                         }
