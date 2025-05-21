@@ -1,7 +1,9 @@
 //  API
-export const AUTH_URL = "https://localhost:7058/gateway/users/authenticate";
-export const USERS_URL = "https://localhost:7058/gateway/Users/users/";
-export const POSTS_URL = "https://localhost:7058/gateway/posts/";
+export const BASE_URL = "http://host.docker.internal:8000";
+
+export const AUTH_URL = "/gateway/users/authenticate";
+export const USERS_URL = "/gateway/Users/users/";
+export const POSTS_URL = "/gateway/posts/";
 
 //  REGEX
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
