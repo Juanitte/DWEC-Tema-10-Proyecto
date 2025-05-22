@@ -51,6 +51,8 @@ services:
         MultipleActiveResultSets=true;
     ports:
       - "5001:80"
+    volumes:
+      - posts_files_data:/app/Files
     networks:
       - proyecto-net
 
@@ -113,6 +115,7 @@ services:
 volumes:
   sql_posts_data:
   sql_users_data:
+  posts_files_data:
 
 networks:
   proyecto-net:
