@@ -1,10 +1,18 @@
+import { useTranslation } from "react-i18next";
+
 export default function Trending() {
+    const { t , i18n } = useTranslation();
+
+    const user = localStorage.getItem("user");
+    const userCountry = JSON.parse(user).country;
+    var countryString = t(`COUNTRIES.${userCountry}`);
+
     return (
         <>
             <div className="max-w-sm rounded-lg bg-dim-700 overflow-hidden shadow-lg p-4">
                 <div className="flex">
                     <div className="flex-1 m-2">
-                        <h2 className="px-4 py-2 text-xl w-48 font-semibold text-white">Trending in Spain</h2>
+                        <h2 className="px-4 py-2 text-xl w-48 font-semibold text-white">{t('TRENDS.TRENDING-IN')} {countryString}</h2>
                     </div>
                     <div className="flex-1 px-4 py-2 m-2">
                         <a href=""
@@ -27,9 +35,9 @@ export default function Trending() {
                 {/*first trending tweet*/}
                 <div className="flex">
                     <div className="flex-1 hover: cursor-pointer hover:bg-green-900">
-                        <p className="px-4 pl-2 pt-3 w-48 text-xs text-gray-400">1 . Trending</p>
+                        <p className="px-4 pl-2 pt-3 w-48 text-xs text-gray-400">1 . {t('TRENDS.TRENDING')}</p>
                         <h2 className="px-4 pl-2 w-48 font-bold text-white">#React</h2>
-                        <p className="px-4 pl-2 pb-3 w-48 text-xs text-gray-400">5,466 Posts</p>
+                        <p className="px-4 pl-2 pb-3 w-48 text-xs text-gray-400">5,466 {t('TRENDS.POSTS')}</p>
 
                     </div>
                 </div>
@@ -39,7 +47,7 @@ export default function Trending() {
 
                 <div className="flex">
                     <div className="flex-1 p-4 hover: cursor-pointer">
-                        <h2 className="px-4 pl-2 w-48 font-bold text-gray-200">Show more</h2>
+                        <h2 className="px-4 pl-2 w-48 font-bold text-gray-200">{t('TRENDS.SHOW-MORE')}</h2>
                     </div>
                 </div>
 

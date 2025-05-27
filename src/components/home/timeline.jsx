@@ -3,12 +3,16 @@ import { getFollowing } from "../../services/users-service";
 import Loading from "../shared/loading";
 import Post from "./post";
 import { getPostsByUser } from "../../services/posts-service";
+import { useTranslation } from "react-i18next";
 
 export default function Timeline({ user, searchString, isForLikedPosts, isProfilePage }) {
     const [posts, setPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [hasMorePosts, setHasMorePosts] = useState(true);
+    const { t , i18n } = useTranslation();
+
+    var buttonText = t('TIMELINE.LOAD-POSTS');
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -69,11 +73,11 @@ export default function Timeline({ user, searchString, isForLikedPosts, isProfil
                 ) : posts.length > 0 ? (
                     posts.map((post) => <Post key={post.id} post={post} isComment={false} isMainPost={false} />)
                 ) : (
-                    <p className="text-center text-white">No posts available</p>
+                    <p className="text-center text-white">{t('TIMELINE.NO-POSTS')}</p>
                 )}
             </ul>
             {hasMorePosts && (
-                <button onClick={loadMorePosts}>Load more</button>
+                <button onClick={loadMorePosts}>{buttonText}</button>
             )}
         </>
     );

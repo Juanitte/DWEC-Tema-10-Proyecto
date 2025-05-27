@@ -1,4 +1,11 @@
 {
+    "BUTTONS": {
+        "POST": "Post",
+        "REPLY": "Reply",
+        "FOLLOW": "Follow",
+        "UNFOLLOW": "Unfollow"
+    },
+
     "LOGIN": {
         "WELCOME": "Welcome to Inkas",
         "SUBTITLE": "Login",
@@ -7,6 +14,54 @@
         "FORGOT_PASSWORD": "Forgot password?",
         "LOGIN": "Login",
         "SIGNUP": "Sign up"
+    },
+
+    "SIDENAV": {
+        "HOME": "Home",
+        "EXPLORE": "Explore",
+        "NOTIFICATIONS": "Notifications",
+        "MESSAGES": "Messages",
+        "BOOKMARKS": "Bookmarks",
+        "PROFILE": "Profile",
+        "SETTINGS": "Settings",
+        "LOGOUT": "Logout"
+    },
+
+    "POST-FORM": {
+        "HEADER": "Home",
+        "POST": "Post",
+        "FORM-PLACEHOLDER": "What's happening?",
+        "COMMENT-PLACEHOLDER": "Comment..."
+    },
+
+    "TIMELINE": {
+        "NO-POSTS": "No posts available",
+        "LOAD-POSTS": "Load more posts"
+    },
+
+    "SEARCHBAR": {
+        "PLACEHOLDER": "Search Inkas"
+    },
+
+    "TRENDS": {
+        "TRENDING-IN": "Trending in ",
+        "TRENDING": "Trending",
+        "POSTS": "Posts",
+        "SHOW-MORE": "Show more"
+    },
+
+    "WHO": {
+        "WHO": "Who to follow",
+        "SHOW-MORE": "Show more"
+    },
+
+    "FOOTER": {
+        "TERMS": "Terms",
+        "PRIVACY-POLICY": "Privacy Policy",
+        "COOKIES": "Cookies",
+        "ENGLISH": "English",
+        "SPANISH": "Spanish",
+        "COPYRIGHT": "© 2025 Inkas. All rights reserved."
     },
 
     "COUNTRIES": {

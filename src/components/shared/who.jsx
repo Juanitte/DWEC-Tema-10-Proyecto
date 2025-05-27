@@ -1,10 +1,14 @@
+import { useTranslation } from "react-i18next";
+
 export default function Who() {
+    const { t , i18n } = useTranslation();
+
     return (
         <>
             <div className="max-w-sm rounded-lg  bg-dim-700 overflow-hidden shadow-lg p-4">
                 <div className="flex">
                     <div className="flex-1 p-2">
-                        <h2 className="px-4 py-2 text-xl w-48 font-semibold text-white">Who to follow</h2>
+                        <h2 className="px-4 py-2 text-xl w-48 font-semibold text-white">{t('WHO.WHO')}</h2>
                     </div>
                 </div>
 
@@ -37,7 +41,7 @@ export default function Who() {
                         <a href="" className=" float-right">
                             <button
                                 className="hover: cursor-pointer bg-transparent hover:bg-white text-white font-semibold hover:text-green-800 py-2 px-4 border border-white hover:border-transparent rounded-full">
-                                Follow
+                                {t('BUTTONS.FOLLOW')}
                             </button>
                         </a>
 
@@ -49,7 +53,7 @@ export default function Who() {
 
                 <div className="flex">
                     <div className="flex-1 p-4 hover: cursor-pointer">
-                        <h2 className="px-4 pl-2 w-48 font-bold text-gray-300">Show more</h2>
+                        <h2 className="px-4 pl-2 w-48 font-bold text-gray-300">{t('WHO.SHOW-MORE')}</h2>
                     </div>
                 </div>
 

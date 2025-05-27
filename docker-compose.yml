@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   # ----------------------------
   # Base de datos para Posts
@@ -36,7 +38,7 @@ services:
   # ----------------------------
   posts-ms:
     build:
-      context: D:/Proyectos/.NET/FireBreath_Backend
+      context: ../fireBreath-backend
       dockerfile: FireBreath.PostsMicroservice/Dockerfile
     container_name: posts-ms
     depends_on:
@@ -61,7 +63,7 @@ services:
   # ----------------------------
   users-ms:
     build:
-      context: D:/Proyectos/.NET/FireBreath_Backend
+      context: ../fireBreath-backend
       dockerfile: FireBreath.UsersMicroservice/Dockerfile
     container_name: users-ms
     depends_on:
@@ -84,7 +86,7 @@ services:
   # ----------------------------
   api-gateway:
     build:
-      context: D:/Proyectos/.NET/FireBreath_Backend
+      context: ../fireBreath-backend
       dockerfile: FireBreath.ApiGateway/Dockerfile
     container_name: api-gateway
     depends_on:
@@ -100,7 +102,7 @@ services:
   # ----------------------------
   frontend:
     build:
-      context: D:/Proyectos/React/DWEC-Tema-10-Proyecto
+      context: .
       dockerfile: Dockerfile
     container_name: react-frontend
     depends_on:

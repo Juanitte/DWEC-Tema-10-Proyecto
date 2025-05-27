@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { CreatePostDto } from "../../models/createPostDto";
 import { createPost } from "../../services/posts-service";
 import { handleInvalidToken } from "../../services/users-service";
+import { useTranslation } from "react-i18next";
 
 
 export default function PostForm({ commentedPostId }) {
@@ -13,6 +14,12 @@ export default function PostForm({ commentedPostId }) {
     const fileInputRef = useRef(null);
     const videoInputRef = useRef(null);
     const textAreaRef = useRef(null);
+    const { t , i18n } = useTranslation();
+
+    var placeholder = t('POST-FORM.FORM-PLACEHOLDER');
+    var commentPlaceholder = t('POST-FORM.COMMENT-PLACEHOLDER');
+    var buttonText = t('BUTTONS.POST');
+    var commentButtonText = t('BUTTONS.REPLY');
 
     useEffect(() => {
         if (textAreaRef.current) {
@@ -79,7 +86,7 @@ export default function PostForm({ commentedPostId }) {
                         className=" bg-transparent text-white font-medium text-lg w-full"
                         rows="2"
                         cols="50"
-                        placeholder={commentedPostId === 0 ? "What's happening?" : "Comment..."}
+                        placeholder={commentedPostId === 0 ? placeholder : commentPlaceholder}
                         value={postText}
                         onChange={(e) => {
                             if (e.target.value.length <= 500) {
@@ -214,7 +221,7 @@ export default function PostForm({ commentedPostId }) {
                         onClick={handlePost}
                         className="hover:cursor-pointer bg-green-700 hover:bg-green-600 mt-5 text-white font-bold py-2 px-8 rounded-full mr-8 float-right">
                         {
-                            commentedPostId == 0 ? 'Post' : 'Reply'
+                            commentedPostId == 0 ? buttonText : commentButtonText
                         }
                     </button>
                 </div>

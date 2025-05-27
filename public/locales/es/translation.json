@@ -1,4 +1,11 @@
 {
+    "BUTTONS": {
+        "POST": "Publicar",
+        "REPLY": "Responder",
+        "FOLLOW": "Seguir",
+        "UNFOLLOW": "Dejar de seguir"
+    },
+
     "LOGIN": {
         "WELCOME": "Bienvenido a Inkas",
         "SUBTITLE": "Iniciar sesión",
@@ -6,7 +13,56 @@
         "PASSWORD": "Contraseña",
         "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?",
         "LOGIN": "Iniciar sesión",
-        "SIGNUP": "Registrarme"
+        "SIGNUP": "Registrarme",
+        "POST": "Publicar"
+    },
+
+    "SIDENAV": {
+        "HOME": "Inicio",
+        "EXPLORE": "Explorar",
+        "NOTIFICATIONS": "Notificaciones",
+        "MESSAGES": "Mensajes",
+        "BOOKMARKS": "Guardados",
+        "PROFILE": "Perfil",
+        "SETTINGS": "Configuración",
+        "LOGOUT": "Cerrar sesión"
+    },
+
+    "POST-FORM": {
+        "HEADER": "Inicio",
+        "POST": "Publicar",
+        "FORM-PLACEHOLDER": "¿Qué está pasando?",
+        "COMMENT-PLACEHOLDER": "Comentario..."
+    },
+
+    "TIMELINE": {
+        "NO-POSTS": "No hay publicaciones disponibles",
+        "LOAD-POSTS": "Cargar más publicaciones"
+    },
+
+    "SEARCHBAR": {
+        "PLACEHOLDER": "Buscar en Inkas"
+    },
+
+    "TRENDS": {
+        "TRENDING-IN": "Tendencias en ",
+        "TRENDING": "Tendencias",
+        "POSTS": "Publicaciones",
+        "SHOW-MORE": "Mostrar más"
+    },
+
+    "WHO": {
+        "WHO": "A quién seguir",
+        "SHOW-MORE": "Mostrar más"
+    },
+
+    "FOOTER": {
+        "TERMS": "Términos de uso",
+        "PRIVACY-POLICY": "Política de privacidad",
+        "COOKIES": "Cookies",
+        "ENGLISH": "Inglés",
+        "SPANISH": "Español",
+        "COPYRIGHT": "© 2025 Inkas. Todos los derechos reservados."
     },
 
     "COUNTRIES": {

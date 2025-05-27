@@ -12,6 +12,8 @@ import {
     handleStorageChange
 } from "../utils/utils";
 
+
+
 export async function login(email, password) {
     return fetch(AUTH_URL, {
             method: "POST",

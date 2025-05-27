@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Search() {
     const [searchString, setSearchString] = useState('');
+    const { t , i18n } = useTranslation();
     const textAreaRef = useRef(null);
 
     useEffect(() => {
@@ -33,7 +35,7 @@ export default function Search() {
                 <input
                     type="search"
                     name="search"
-                    placeholder="Search FireBreath"
+                    placeholder={t('SEARCHBAR.PLACEHOLDER')}
                     value={searchString}
                     onChange={(e) => {
                         if (e.target.value.length <= 500) {
