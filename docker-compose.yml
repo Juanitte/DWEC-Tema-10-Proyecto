@@ -115,6 +115,22 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
 
   # ----------------------------
+  # Nginx Proxy Manager
+  # ----------------------------
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    restart: always
+    ports:
+      - "8081:81"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/data:/data
+      - ./nginx/letsencrypt:/etc/letsencrypt
+    networks:
+      - proyecto-net
+
+  # ----------------------------
   # Jenkins
   # ----------------------------
   jenkins:
@@ -134,6 +150,7 @@ volumes:
   sql_users_data:
   posts_files_data:
   jenkins_home:
+  
 
 networks:
   proyecto-net:

@@ -23,7 +23,9 @@ export default function HomePage() {
                             <hr className="border-green-800 border-4" />
                         </aside>
 
-                        <Timeline user={user} searchString="" isProfilePage={false} isForLikedPosts={false} />
+                        <div style={{ maxHeight: 'calc(100vh - 150px)', overflowY: 'auto' }}>
+                            <Timeline user={user} searchString="" isProfilePage={false} isForLikedPosts={false} />
+                        </div>
                     </section>
 
                     <RightMenu />
