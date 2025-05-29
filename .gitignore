@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Nginx logs
+#nginx/logs
+
+# Nginx data
+#nginx/data
+
+# Nginx certificates
+#nginx/letsencrypt
