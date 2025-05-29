@@ -9,7 +9,7 @@ export default function SiteLayout({ children }) {
 
                     <header className="text-white h-12 py-4 h-auto">
                         <div style={{ width: '275px' }}>
-                            <div className="overflow-y-auto fixed h-screen pr-3" style={{width: '275px'}}>
+                            <div className="fixed h-screen pr-3" style={{width: '275px'}}>
                                 <Sidenav />
                                 <UserWidget />
                             </div>
