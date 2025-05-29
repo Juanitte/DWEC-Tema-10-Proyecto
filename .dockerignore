@@ -5,3 +5,4 @@ docker-compose.yml
 .git
 .vscode
 npm-debug.log
+nginx/letsencrypt/

@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getUserById } from '../../services/users-service';
 import ContentHeader from '../../components/shared/content-header';
 import PostForm from '../../components/home/post-form';
@@ -11,6 +11,7 @@ export default function UserPage() {
     const { userId } = useParams();
     const [user, setUser] = useState(null);
     const loggedUser = JSON.parse(localStorage.getItem('user'));
+    const scrollRef = useRef(null);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -25,38 +26,54 @@ export default function UserPage() {
         fetchUser();
     }, [userId]);
 
+    // reenviar toda rueda al scroll interno:
+    useEffect(() => {
+        const onWheel = (e) => {
+            if (scrollRef.current) {
+                scrollRef.current.scrollTop += e.deltaY;
+                // opcional: prevenir que burbujee al body
+                e.preventDefault();
+            }
+        };
+        window.addEventListener('wheel', onWheel, { passive: false });
+        return () => window.removeEventListener('wheel', onWheel);
+    }, []);
+
     return (
-        <>
-            <main role="main">
-                <div className="flex" style={{ width: '990px' }}>
-                    <section className="w-3/5 border border-y-0 border-green-800" style={{ maxwidth: '600px' }}>
-                        <aside>
-                            {user && <ContentHeader route="" title={user.userName} hasBackButton={true} />}
+        <main role="main" className="flex h-screen overflow-hidden">
+            <div className="flex" style={{ width: '990px' }}>
+                {/* COLUMNA CENTRAL */}
+                <section
+                    className="w-3/5 border border-y-0 border-green-800 flex flex-col overflow-hidden"
+                    style={{ maxWidth: '600px' }}  /* nota la M en mayúscula */
+                >
+                    {user && <ContentHeader route="" title={user.userName} hasBackButton={true} />}
+                    <hr className="border-green-800" />
 
-                            <hr className="border-green-800" />
+                    {/* Este será el que scrollee */}
+                    <div ref={scrollRef} className="flex-1 overflow-y-auto">
+                        <ProfileCard user={user} />
+                        <hr className="border-green-800" />
 
-                            <ProfileCard user={user} />
+                        {
+                            userId == +loggedUser.id &&
+                            <>
+                                <PostForm commentedPostId={0} />
+                                <hr className="border-green-800 border-4" />
+                            </>
+                        }
 
-                            <hr className="border-green-800" />
+                        <Timeline
+                            user={user}
+                            searchString=""
+                            isForLikedPosts={false}
+                            isProfilePage={true}
+                        />
+                    </div>
+                </section>
 
-                            {
-                                user && user.id === loggedUser.id &&
-                                <>
-                                    <PostForm commentedPostId={0} />
-                                    <hr className="border-green-800 border-4" />
-                                </>
-                            }
-
-
-                        </aside>
-
-                        <Timeline user={user} searchString="" isForLikedPosts={false} isProfilePage={true} />
-                    </section>
-
-                    <RightMenu />
-                </div>
-            </main>
-
-        </>
+                <RightMenu />
+            </div>
+        </main>
     );
 }
