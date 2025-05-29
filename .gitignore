@@ -24,10 +24,10 @@ dist-ssr
 *.sw?
 
 # Nginx logs
-#nginx/logs
+nginx/logs
 
 # Nginx data
-#nginx/data
+nginx/data
 
 # Nginx certificates
-#nginx/letsencrypt
+nginx/letsencrypt
