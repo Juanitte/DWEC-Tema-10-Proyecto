@@ -5,18 +5,12 @@ import Who from "./who";
 
 export default function RightMenu() {
     return (
-        <>
-            <aside className="w-2/5 h-12 position-relative">
-                <div style={{ maxWidth: '350px' }}>
-                    <div className="fixed  h-screen px-4">
-                        <Search />
-                        <Trending />
-                        <div className="py-2"></div>
-                        <Who />
-                        <Footer />
-                    </div>
-                </div>
-            </aside>
-        </>
-    )
+        <div className="h-full w-full max-w-[300px] px-4 overflow-y-auto">
+            <Search />
+            <Trending />
+            <div className="py-2"></div>
+            <Who />
+            <Footer />
+        </div>
+    );
 }
