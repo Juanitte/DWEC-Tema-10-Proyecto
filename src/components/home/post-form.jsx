@@ -120,13 +120,13 @@ export default function PostForm({ commentedPostId }) {
                                 hidden
                                 type="file"
                                 multiple
-                                accept="image/jpeg, image/png, image/gif"
+                                accept="image/jpeg, image/png, image/gif, image/webp"
                                 onChange={(event) => {
                                     const selectedFiles = Array.from(event.target.files);
                                     const imagePreviews = selectedFiles.map(file => ({
                                         url: URL.createObjectURL(file),
                                         name: file.name,
-                                        preview: ['jpg', 'jpeg', 'png', 'gif'].includes(file.name.split('.').pop().toLowerCase()),
+                                        preview: ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(file.name.split('.').pop().toLowerCase()),
                                         size: file.size > 1024 ? (file.size > 1048576 ? Math.round(file.size / 1048576) + 'mb' : Math.round(file.size / 1024) + 'kb') : file.size + 'b'
                                     }));
                                     setImages(imagePreviews);

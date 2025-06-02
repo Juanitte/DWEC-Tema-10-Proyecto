@@ -41,39 +41,30 @@ export default function UserPage() {
 
     return (
         <main role="main" className="flex h-screen overflow-hidden">
-            <div className="flex" style={{ width: '990px' }}>
-                {/* COLUMNA CENTRAL */}
-                <section
-                    className="w-3/5 border border-y-0 border-green-800 flex flex-col overflow-hidden"
-                    style={{ maxWidth: '600px' }}  /* nota la M en mayúscula */
-                >
-                    {user && <ContentHeader route="" title={user.userName} hasBackButton={true} />}
+            <section className="w-full border border-y-0 border-green-800 flex flex-col overflow-hidden">
+                {user && <ContentHeader route="" title={user.userName} hasBackButton={true} />}
+                <hr className="border-green-800" />
+
+                <div ref={scrollRef} className="flex-1 overflow-y-auto">
+                    <ProfileCard user={user} />
                     <hr className="border-green-800" />
 
-                    {/* Este será el que scrollee */}
-                    <div ref={scrollRef} className="flex-1 overflow-y-auto">
-                        <ProfileCard user={user} />
-                        <hr className="border-green-800" />
+                    {
+                        userId == +loggedUser.id &&
+                        <>
+                            <PostForm commentedPostId={0} />
+                            <hr className="border-green-800 border-4" />
+                        </>
+                    }
 
-                        {
-                            userId == +loggedUser.id &&
-                            <>
-                                <PostForm commentedPostId={0} />
-                                <hr className="border-green-800 border-4" />
-                            </>
-                        }
-
-                        <Timeline
-                            user={user}
-                            searchString=""
-                            isForLikedPosts={false}
-                            isProfilePage={true}
-                        />
-                    </div>
-                </section>
-
-                <RightMenu />
-            </div>
+                    <Timeline
+                        user={user}
+                        searchString=""
+                        isForLikedPosts={false}
+                        isProfilePage={true}
+                    />
+                </div>
+            </section>
         </main>
     );
 }

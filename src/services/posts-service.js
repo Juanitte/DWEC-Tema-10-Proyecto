@@ -147,3 +147,12 @@ export async function getShareCount(postId) {
         },
     });
 }
+
+export async function hasNewPosts(since, userId, isProfile) {
+    return fetch(`${POSTS_URL}hasnew?since=${encodeURIComponent(since)}&userId=${userId}&isProfile=${isProfile}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}

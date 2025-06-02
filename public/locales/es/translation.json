@@ -37,7 +37,8 @@
 
     "TIMELINE": {
         "NO-POSTS": "No hay publicaciones disponibles",
-        "LOAD-POSTS": "Cargar más publicaciones"
+        "NEW-POSTS": "Cargar {{count}} nuevos posts",
+        "NEW-POST": "Cargar 1 nuevo post"
     },
 
     "SEARCHBAR": {

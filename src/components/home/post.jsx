@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { dislikePost, getCommentCount, getLikeCount, getShareCount, likePost, postIsLiked } from "../../services/posts-service";
 import { formatPostTime } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
-import ImageComponent from "../shared/image-component";
+import MediaAttachment from "../shared/media-attachment";
 
 export default function Post({ post, isMainPost }) {
 
@@ -145,18 +145,18 @@ export default function Post({ post, isMainPost }) {
                     </div>
 
 
-                    <div className="pl-16">
-                        <p className="text-base width-auto font-medium text-white flex-shrink">
+                    <div>
+                        <p className="pl-16 text-base width-auto font-medium text-white flex-shrink">
                             {post.content}
                         </p>
                         {
                             post.attachments.length > 0 ?
-                                <div className="md:flex-shrink pr-6 pt-3">
-                                    <div className="flex flex-col items-center rounded-lg w-full h-64">
+                                <div className="md:flex-shrink px-6 pt-3">
+                                    <div className="flex flex-col items-center rounded-lg w-full">
 
                                         {
                                             post.attachments.map((attachment) => {
-                                                return <ImageComponent key={attachment.id} image={attachment} />
+                                                return <MediaAttachment key={attachment.id} image={attachment} />
                                             })
                                         }
                                     </div>
@@ -165,9 +165,9 @@ export default function Post({ post, isMainPost }) {
                                 <></>
                         }
 
-                        <div className="flex items-center py-4">
+                        <div className="flex items-center justify-around py-4">
                             <div
-                                className="flex-1 flex items-center text-white text-xs text-gray-400 hover:text-blue-400 transition duration-350 ease-in-out">
+                                className="flex-1 flex items-center justify-center text-white text-xs text-gray-400 hover:text-blue-400 transition duration-350 ease-in-out">
                                 <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 mr-2">
                                     <g>
                                         <path
@@ -178,7 +178,7 @@ export default function Post({ post, isMainPost }) {
                                 <span className="pl-2">{commentCount}</span>
                             </div>
                             <div
-                                className="flex-1 flex items-center text-white text-xs text-gray-400 hover:text-green-400 transition duration-350 ease-in-out">
+                                className="flex-1 flex items-center justify-center text-white text-xs text-gray-400 hover:text-green-400 transition duration-350 ease-in-out">
                                 <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 mr-2">
                                     <g>
                                         <path
@@ -192,7 +192,7 @@ export default function Post({ post, isMainPost }) {
                                 isLiked ?
                                     <div
                                         onClick={(event) => handleLike(event)}
-                                        className="flex-1 flex items-center text-white text-xs text-red-600 hover:text-gray-400 transition duration-350 ease-in-out">
+                                        className="flex-1 flex items-center justify-center text-white text-xs text-red-600 hover:text-gray-400 transition duration-350 ease-in-out">
                                         <svg viewBox="0 0 24 24" fill="red" className="w-5 h-5 mr-2">
                                             <g>
                                                 <path
@@ -205,7 +205,7 @@ export default function Post({ post, isMainPost }) {
                                     :
                                     <div
                                         onClick={(event) => handleLike(event)}
-                                        className="flex-1 flex items-center text-white text-xs text-gray-400 hover:text-red-600 transition duration-350 ease-in-out">
+                                        className="flex-1 flex items-center justify-center text-white text-xs text-gray-400 hover:text-red-600 transition duration-350 ease-in-out">
                                         <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 mr-2">
                                             <g>
                                                 <path
@@ -217,7 +217,7 @@ export default function Post({ post, isMainPost }) {
                                     </div>
                             }
                             <div
-                                className="flex-1 flex items-center text-white text-xs text-gray-400 hover:text-orange-400 transition duration-350 ease-in-out">
+                                className="flex-1 flex items-center justify-center text-white text-xs text-gray-400 hover:text-orange-400 transition duration-350 ease-in-out">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 384 512" fill="currentColor">
                                     <path d="M0 48C0 21.5 21.5 0 48 0l0 48 0 393.4 130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4 336 48 48 48 48 0 336 0c26.5 0 48 21.5 48 48l0 440c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488L0 48z" />
                                 </svg>

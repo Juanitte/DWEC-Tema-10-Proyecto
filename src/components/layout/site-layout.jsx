@@ -8,24 +8,21 @@ export default function SiteLayout({ children }) {
 
     return (
         <div className="h-screen bg-[#162b15] text-white flex overflow-hidden">
-            {/* Columna izquierda */}
             {!isMobile && (
-                <aside className="w-[250px] flex-shrink-0 flex flex-col fixed h-screen left-0 z-10">
+                <aside className="flex-1 px-2 flex flex-col overflow-y-auto">
                     <Sidenav />
                     <UserWidget />
                 </aside>
             )}
 
-            {/* Contenido principal */}
-            <main className={`flex-1 flex justify-center ${!isMobile ? 'ml-[250px] mr-[300px]' : ''}`}>
-                <div className="w-full max-w-[800px] overflow-hidden">
+            <main className="flex-[2] min-w-0 flex justify-center overflow-hidden">
+                <div className="w-full overflow-hidden">
                     {children}
                 </div>
             </main>
 
-            {/* Columna derecha */}
             {!isMobile && (
-                <aside className="w-[300px] flex-shrink-0 fixed right-0 h-screen z-10">
+                <aside className="flex-1 px-2 overflow-y-auto">
                     <RightMenu />
                 </aside>
             )}
