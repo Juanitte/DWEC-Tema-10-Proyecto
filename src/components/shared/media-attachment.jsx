@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import useAttachmentLazyLoad from "../hooks/useAttachmentLazyLoad";
 
 export default function MediaAttachment({ image }) {
     const { ref, isVisible } = useAttachmentLazyLoad();
+    const [blobUrl, setBlobUrl] = useState(null);
 
     const getMimeTypeFromPath = (path) => {
         if (!path) return 'image/jpeg';
@@ -14,7 +16,32 @@ export default function MediaAttachment({ image }) {
     const mimeType = getMimeTypeFromPath(image.path);
     const isVideo = mimeType.startsWith('video');
 
-    // No cargar aún
+    // 👉 Solo generar blobUrl cuando el adjunto es un video y es visible
+    useEffect(() => {
+        if (!isVisible || !isVideo) return;
+
+        const byteCharacters = atob(image.file);
+        const byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
+            const slice = byteCharacters.slice(offset, offset + 1024);
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+            byteArrays.push(new Uint8Array(byteNumbers));
+        }
+
+        const blob = new Blob(byteArrays, { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        setBlobUrl(url);
+
+        return () => {
+            URL.revokeObjectURL(url);
+        };
+    }, [isVisible, isVideo, image.file, mimeType]);
+
+    // 🔄 Mostrar placeholder mientras no es visible
     if (!isVisible) {
         return (
             <div
@@ -46,27 +73,6 @@ export default function MediaAttachment({ image }) {
             </a>
         );
     }
-
-    const byteCharacters = atob(image.file);
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
-        const slice = byteCharacters.slice(offset, offset + 1024);
-        const byteNumbers = new Array(slice.length);
-        for (let i = 0; i < slice.length; i++) {
-            byteNumbers[i] = slice.charCodeAt(i);
-        }
-        byteArrays.push(new Uint8Array(byteNumbers));
-    }
-
-    const blob = new Blob(byteArrays, { type: mimeType });
-    const blobUrl = URL.createObjectURL(blob);
-    
-    useEffect(() => {
-        return () => {
-            URL.revokeObjectURL(blobUrl);
-        };
-    }, [blobUrl]);
 
     return (
         <div

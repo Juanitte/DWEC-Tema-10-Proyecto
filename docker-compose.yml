@@ -50,8 +50,8 @@ services:
         Password=Batraci0C0nPeluca;
         TrustServerCertificate=true;
         MultipleActiveResultSets=true;
-        Redis__Host: redis
-        Redis__Port: 6379
+      Redis__Host: redis
+      Redis__Port: 6379
     ports:
       - "5001:80"
     volumes:
@@ -78,8 +78,8 @@ services:
         Password=Batraci0C0nPeluca;
         TrustServerCertificate=true;
         MultipleActiveResultSets=true;
-        Redis__Host: redis
-        Redis__Port: 6379
+      Redis__Host: redis
+      Redis__Port: 6379
     ports:
       - "5002:80"
     networks:
