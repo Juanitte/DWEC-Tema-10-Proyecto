@@ -4,6 +4,7 @@ export const BASE_URL = "http://host.docker.internal:8000";
 export const AUTH_URL = "/gateway/users/authenticate";
 export const USERS_URL = "/gateway/Users/users/";
 export const POSTS_URL = "/gateway/posts/";
+export const SIGNAL_URL = "/gateway/hubs/notifications";
 
 //  REGEX
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
