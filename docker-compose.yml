@@ -96,6 +96,7 @@ services:
     depends_on:
       - posts-ms
       - users-ms
+      - redis
     ports:
       - "8000:80"
     networks:

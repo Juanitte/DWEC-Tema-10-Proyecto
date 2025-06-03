@@ -5,7 +5,6 @@ import Post from "./post";
 import { getPostsByUser, hasNewPosts } from "../../services/posts-service";
 import { useTranslation } from "react-i18next";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
-import useSignalRNewPosts from "../hooks/useSignalRNewPosts";
 
 export default function Timeline({ user, searchString, isForLikedPosts, isProfilePage }) {
     const [posts, setPosts] = useState([]);
@@ -62,12 +61,40 @@ export default function Timeline({ user, searchString, isForLikedPosts, isProfil
         fetchPosts();
     }, [fetchPosts]);
 
-    useSignalRNewPosts((newPost) => {
-        if (!posts.some(p => p.id === newPost.id)) {
-            setQueuedPosts((prev) => [newPost, ...prev]);
-            setNewPostsAvailable(true);
-        }
-    });
+    // 👀 Comprobación periódica de nuevos postsAdd commentMore actions
+    useEffect(() => {
+        if (!user?.id || !lastPostDate) return;
+
+        const interval = setInterval(async () => {
+            try {
+                const response = await hasNewPosts(lastPostDate.toISOString(), user.id, isProfilePage);
+                const isNewAvailable = await response.json();
+                if (isNewAvailable) {
+                    // Volvemos a pedir la página 1 solo para ver qué hay de nuevo
+                    const sources = isProfilePage ? [user] : await (await getFollowing(user.id)).json();
+
+                    const promises = sources.map(async (u) => {
+                        const res = await getPostsByUser(u.id, 1);
+                        return await res.json();
+                    });
+
+                    const newPostsRaw = (await Promise.all(promises)).flat();
+                    const filtered = newPostsRaw
+                        .filter(p => !posts.some(existing => existing.id === p.id))
+                        .sort((a, b) => new Date(b.created) - new Date(a.created));
+
+                    if (filtered.length > 0) {
+                        setQueuedPosts(filtered);
+                        setNewPostsAvailable(true);
+                    }
+                }
+            } catch (e) {
+                console.error("Error checking for new posts:", e);
+            }
+        }, 30000);
+
+        return () => clearInterval(interval);
+    }, [user, isProfilePage, lastPostDate, posts]);
 
     const showNewPosts = () => {
         setPosts(prev => [...queuedPosts, ...prev]);
@@ -87,7 +114,7 @@ export default function Timeline({ user, searchString, isForLikedPosts, isProfil
                 <div className="flex justify-center">
                     <button
                         onClick={showNewPosts}
-                        className="bg-green-600 hover:bg-green-400 text-white px-4 py-1 w-full"
+                        className="bg-green-600 hover:bg-green-400 text-white px-4 py-2 w-full"
                     >
                         {
                             queuedPosts.length === 1
