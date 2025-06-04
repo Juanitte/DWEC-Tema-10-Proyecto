@@ -16,6 +16,9 @@ export default function PostPage() {
         const fetchPost = async () => {
             try {
                 const response = await getPostById(postId);
+                if(response.status === 401) {
+                    handleInvalidToken();
+                }
                 const post = await response.json();
                 setPost(post);
                 setIsLoading(false);

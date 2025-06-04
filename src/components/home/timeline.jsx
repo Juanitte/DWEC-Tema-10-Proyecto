@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { getFollowing } from "../../services/users-service";
+import { getFollowing, handleInvalidToken } from "../../services/users-service";
 import Loading from "../shared/loading";
 import Post from "./post";
 import { getPostsByUser, hasNewPosts } from "../../services/posts-service";
@@ -30,6 +30,9 @@ export default function Timeline({ user, searchString, isForLikedPosts, isProfil
                 const postsPromises = followingData.map(async (u) => {
                     if (!u?.id) return [];
                     const res = await getPostsByUser(u.id, page);
+                    if(res.status === 401) {
+                        handleInvalidToken();
+                    }
                     return await res.json();
                 });
 
@@ -68,6 +71,9 @@ export default function Timeline({ user, searchString, isForLikedPosts, isProfil
         const interval = setInterval(async () => {
             try {
                 const response = await hasNewPosts(lastPostDate.toISOString(), user.id, isProfilePage);
+                if (response.status === 401) {
+                    handleInvalidToken();
+                }
                 const isNewAvailable = await response.json();
                 if (isNewAvailable) {
                     // Volvemos a pedir la página 1 solo para ver qué hay de nuevo

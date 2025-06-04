@@ -3,6 +3,7 @@ import { getComments } from "../../services/posts-service";
 import Post from "../home/post";
 import PostForm from "../home/post-form";
 import CommentFeed from "./comment-feed";
+import { handleInvalidToken } from "../../services/users-service";
 
 export default function PostDetails({ post }) {
     const [comments, setComments] = useState([]);
@@ -12,7 +13,11 @@ export default function PostDetails({ post }) {
             try {
                 let result;
                 await getComments(post.id)
-                    .then((response) => response.json())
+                    .then((response) => {
+                        if (response.status === 401) {
+                            handleInvalidToken();
+                        }
+                    })
                     .then((data) => {
                         result = data;
                         if (result && Array.isArray(result)) {

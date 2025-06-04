@@ -3,6 +3,7 @@ import { dislikePost, getCommentCount, getLikeCount, getShareCount, likePost, po
 import { formatPostTime } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import MediaAttachment from "../shared/media-attachment";
+import { handleInvalidToken } from "../../services/users-service";
 
 export default function Post({ post, isMainPost }) {
 
@@ -18,7 +19,11 @@ export default function Post({ post, isMainPost }) {
             try {
                 let commentResponse;
                 await getCommentCount(post.id)
-                    .then((response) => response)
+                    .then((response) => {
+                        if (response.status === 401) {
+                            handleInvalidToken();
+                        }
+                    })
                     .then((data) => (commentResponse = data));
                 setCommentCount(await commentResponse.json());
             } catch (error) {
@@ -30,7 +35,11 @@ export default function Post({ post, isMainPost }) {
             try {
                 let likeResponse;
                 await getLikeCount(post.id)
-                    .then((response) => response)
+                    .then((response) => {
+                        if (response.status === 401) {
+                            handleInvalidToken();
+                        }
+                    })
                     .then((data) => (likeResponse = data));
                 setLikeCount(await likeResponse.json());
             } catch (error) {
@@ -42,7 +51,11 @@ export default function Post({ post, isMainPost }) {
             try {
                 let shareResponse;
                 await getShareCount(post.id)
-                    .then((response) => response)
+                    .then((response) => {
+                        if (response.status === 401) {
+                            handleInvalidToken();
+                        }
+                    })
                     .then((data) => (shareResponse = data));
                 setShareCount(await shareResponse.json());
             } catch (error) {
@@ -54,7 +67,11 @@ export default function Post({ post, isMainPost }) {
             try {
                 let isLikedResponse;
                 await postIsLiked(JSON.parse(localStorage.getItem("user")).id, post.id)
-                    .then((response) => response)
+                    .then((response) => {
+                        if (response.status === 401) {
+                            handleInvalidToken();
+                        }
+                    })
                     .then((data) => (isLikedResponse = data));
                 setIsLiked(await isLikedResponse.json());
             } catch (error) {

@@ -28,6 +28,9 @@ export default function ProfileCard({ user }) {
         const fetchFollowers = async () => {
             try {
                 const response = await getFollowers(user.id);
+                if(response.status === 401) {
+                    handleInvalidToken();
+                }
                 const data = await response.json();
                 setFollowers(data);
             } catch (error) {
@@ -37,6 +40,9 @@ export default function ProfileCard({ user }) {
         const fetchFollowing = async () => {
             try {
                 const response = await getFollowing(user.id);
+                if(response.status === 401) {
+                    handleInvalidToken();
+                }
                 const data = await response.json();
                 setFollowing(data);
             } catch (error) {

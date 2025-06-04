@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { getUserById } from '../../services/users-service';
+import { getUserById, handleInvalidToken } from '../../services/users-service';
 import ContentHeader from '../../components/shared/content-header';
 import PostForm from '../../components/home/post-form';
 import RightMenu from '../../components/shared/right-menu';
@@ -17,6 +17,9 @@ export default function UserPage() {
         const fetchUser = async () => {
             try {
                 const response = await getUserById(userId);
+                if (response.status === 401) {
+                    handleInvalidToken();
+                }
                 const data = await response.json();
                 setUser(data);
             } catch (error) {
