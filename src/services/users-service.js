@@ -6,6 +6,7 @@ import {
 } from "../models/user";
 import {
     AUTH_URL,
+    BASE_URL,
     USERS_URL
 } from "../utils/literals";
 import {
@@ -15,7 +16,7 @@ import {
 
 
 export async function login(email, password) {
-    return fetch(AUTH_URL, {
+    return fetch(BASE_URL + AUTH_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -42,7 +43,7 @@ export async function login(email, password) {
 }
 
 export async function createUser(userDto) {
-    return fetch(`${USERS_URL}create`, {
+    return fetch(`${BASE_URL}${USERS_URL}create`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -52,7 +53,7 @@ export async function createUser(userDto) {
 }
 
 export async function getUserById(userId) {
-    return fetch(`${USERS_URL}getbyid/${userId}`, {
+    return fetch(`${BASE_URL}${USERS_URL}getbyid/${userId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -62,7 +63,7 @@ export async function getUserById(userId) {
 }
 
 export async function follow(userId, followerId) {
-    return fetch(`${USERS_URL}followuser/${userId}/${followerId}`, {
+    return fetch(`${BASE_URL}${USERS_URL}followuser/${userId}/${followerId}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -72,7 +73,7 @@ export async function follow(userId, followerId) {
 }
 
 export async function unfollow(userId, followerId) {
-    return fetch(`${USERS_URL}unfollow/${userId}/${followerId}`, {
+    return fetch(`${BASE_URL}${USERS_URL}unfollow/${userId}/${followerId}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -82,7 +83,7 @@ export async function unfollow(userId, followerId) {
 }
 
 export async function getFollowers(userId) {
-    return fetch(`${USERS_URL}getfollowers/${userId}`, {
+    return fetch(`${BASE_URL}${USERS_URL}getfollowers/${userId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -92,7 +93,7 @@ export async function getFollowers(userId) {
 }
 
 export async function getFollowing(userId) {
-    return fetch(`${USERS_URL}getfollowing/${userId}`, {
+    return fetch(`${BASE_URL}${USERS_URL}getfollowing/${userId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

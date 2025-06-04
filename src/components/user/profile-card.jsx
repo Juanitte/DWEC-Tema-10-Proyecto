@@ -33,6 +33,11 @@ export default function ProfileCard({ user }) {
                 }
                 const data = await response.json();
                 setFollowers(data);
+                
+                const loggedInUserId = JSON.parse(localStorage.getItem("user")).id;
+                const alreadyFollowing = data.some(f => f.id === loggedInUserId);
+                setIsFollowing(alreadyFollowing);
+              
             } catch (error) {
                 console.error("Error fetching followers:", error);
             }

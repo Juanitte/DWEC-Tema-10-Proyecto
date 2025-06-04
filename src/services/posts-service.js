@@ -1,4 +1,4 @@
-import { POSTS_URL } from "../utils/literals";
+import { BASE_URL, POSTS_URL } from "../utils/literals";
 
 export async function createPost(postDto) {
     const formData = new FormData();
@@ -14,7 +14,7 @@ export async function createPost(postDto) {
         formData.append("attachments", file, file.name);
     });
 
-    return fetch(`${POSTS_URL}create`, {
+    return fetch(`${BASE_URL}${POSTS_URL}create`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -24,7 +24,7 @@ export async function createPost(postDto) {
 }
 
 export async function getPosts() {
-    return fetch(`${POSTS_URL}getall`, {
+    return fetch(`${BASE_URL}${POSTS_URL}getall`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -34,7 +34,7 @@ export async function getPosts() {
 }
 
 export async function getPostById(postId) {
-    return fetch(`${POSTS_URL}getbyid/${postId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}getbyid/${postId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -44,7 +44,7 @@ export async function getPostById(postId) {
 }
 
 export async function getPostsByUser(userId, page) {
-    return fetch(`${POSTS_URL}getbyuser/${userId}/${page}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}getbyuser/${userId}/${page}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -54,7 +54,7 @@ export async function getPostsByUser(userId, page) {
 }
 
 export async function getPostsFilter(searchString) {
-    return fetch(`${POSTS_URL}getallfilter`, {
+    return fetch(`${BASE_URL}${POSTS_URL}getallfilter`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -69,7 +69,7 @@ export async function getPostsFilter(searchString) {
 }
 
 export async function getLikedPosts(userId, searchString) {
-    return fetch(`${POSTS_URL}getliked/${userId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}getliked/${userId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export async function getLikedPosts(userId, searchString) {
 }
 
 export async function getCommentCount(postId) {
-    return fetch(`${POSTS_URL}getcommentcount/${postId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}getcommentcount/${postId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -89,7 +89,7 @@ export async function getCommentCount(postId) {
 }
 
 export async function getComments(postId) {
-    return fetch(`${POSTS_URL}getcomments/${postId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}getcomments/${postId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -100,7 +100,7 @@ export async function getComments(postId) {
 
 export async function likePost(userId, postId) {
 
-    return fetch(`${POSTS_URL}like/${userId}/${postId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}like/${userId}/${postId}`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -109,7 +109,7 @@ export async function likePost(userId, postId) {
 }
 
 export async function postIsLiked(userId, postId) {
-    return fetch(`${POSTS_URL}postIsLiked/${userId}/${postId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}postIsLiked/${userId}/${postId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -119,7 +119,7 @@ export async function postIsLiked(userId, postId) {
 }
 
 export async function getLikeCount(postId) {
-    return fetch(`${POSTS_URL}getlikecount/${postId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}getlikecount/${postId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -130,7 +130,7 @@ export async function getLikeCount(postId) {
 
 export async function dislikePost(userId, postId) {
 
-    return fetch(`${POSTS_URL}dislike/${userId}/${postId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}dislike/${userId}/${postId}`, {
         method: "DELETE",
         headers: {
             "Authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -139,7 +139,7 @@ export async function dislikePost(userId, postId) {
 }
 
 export async function getShareCount(postId) {
-    return fetch(`${POSTS_URL}getsharecount/${postId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}getsharecount/${postId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -149,7 +149,7 @@ export async function getShareCount(postId) {
 }
 
 export async function hasNewPosts(since, userId, isProfile) {
-    return fetch(`${POSTS_URL}hasnew?since=${encodeURIComponent(since)}&userId=${userId}&isProfile=${isProfile}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}hasnew?since=${encodeURIComponent(since)}&userId=${userId}&isProfile=${isProfile}`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${localStorage.getItem("token")}`,
