@@ -156,3 +156,15 @@ export async function hasNewPosts(since, userId, isProfile) {
         },
     });
 }
+
+export async function streamAttachment(attachmentId) {
+  return fetch(
+    `${BASE_URL}${POSTS_URL}streamattachment/${attachmentId}`,
+    {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
+      }
+    }
+  );
+}
