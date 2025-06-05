@@ -33,6 +33,19 @@ export default function PostPage() {
         fetchPost();
     }, [postId]);
 
+    // reenviar toda rueda al scroll interno:
+    useEffect(() => {
+        const onWheel = (e) => {
+            if (scrollRef.current) {
+                scrollRef.current.scrollTop += e.deltaY;
+                // opcional: prevenir que burbujee al body
+                e.preventDefault();
+            }
+        };
+        window.addEventListener('wheel', onWheel, { passive: false });
+        return () => window.removeEventListener('wheel', onWheel);
+    }, []);
+
     if (isLoading) {
         // Mientras esperamos la respuesta, podemos mostrar un componente <Loading />
         return (
@@ -53,11 +66,10 @@ export default function PostPage() {
 
     return (
         <main role="main" className="h-screen overflow-hidden">
-            <section className="w-full border border-y-0 border-green-800 flex flex-col overflow-hidden">
+            <section className="flex flex-col h-full border border-y-0 border-green-800">
                 <ContentHeader route="" title="Post" hasBackButton={true} />
                 <hr className="border-green-800 border-4" />
                 <div ref={scrollRef} className="flex-1 overflow-y-auto">
-                    {/* A partir de aquí sabemos que post NO es null */}
                     <PostDetails post={post} />
                 </div>
             </section>

@@ -45,6 +45,13 @@
         "PLACEHOLDER": "Buscar en Inkas"
     },
 
+    "PROFILE": {
+        "FOLLOWERS": "Seguidores",
+        "FOLLOWING": "Siguiendo",
+        "EDIT-PROFILE": "Editar Perfil",
+        "JOINED": "Se unió en"
+    },
+
     "TRENDS": {
         "TRENDING-IN": "Tendencias en ",
         "TRENDING": "Tendencias",

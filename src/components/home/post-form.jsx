@@ -83,7 +83,7 @@ export default function PostForm({ commentedPostId }) {
                 </div>
                 <div className="flex-1 px-2 pt-2 mt-2">
                     <textarea
-                        className=" bg-transparent text-white font-medium text-lg w-full"
+                        className=" bg-transparent text-white font-medium text-lg w-full focus:outline-none focus:border-none"
                         rows="2"
                         cols="50"
                         placeholder={commentedPostId === 0 ? placeholder : commentPlaceholder}

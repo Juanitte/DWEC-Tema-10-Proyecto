@@ -92,8 +92,28 @@ export async function getFollowers(userId) {
     });
 }
 
+export async function getFollowersPage(userId, page) {
+    return fetch(`${BASE_URL}${USERS_URL}getfollowers/${userId}/${page}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
 export async function getFollowing(userId) {
     return fetch(`${BASE_URL}${USERS_URL}getfollowing/${userId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function getFollowingPage(userId, page) {
+    return fetch(`${BASE_URL}${USERS_URL}getfollowing/${userId}/${page}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

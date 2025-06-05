@@ -30,7 +30,7 @@ export default function Timeline({ user, searchString, isForLikedPosts, isProfil
                 const postsPromises = followingData.map(async (u) => {
                     if (!u?.id) return [];
                     const res = await getPostsByUser(u.id, page);
-                    if(res.status === 401) {
+                    if (res.status === 401) {
                         handleInvalidToken();
                     }
                     return await res.json();
@@ -124,9 +124,9 @@ export default function Timeline({ user, searchString, isForLikedPosts, isProfil
                     >
                         {
                             queuedPosts.length === 1
-                            ?
+                                ?
                                 t('TIMELINE.NEW-POST', { count: queuedPosts.length })
-                            :
+                                :
                                 t('TIMELINE.NEW-POSTS', { count: queuedPosts.length })
                         }
                     </button>
@@ -135,7 +135,10 @@ export default function Timeline({ user, searchString, isForLikedPosts, isProfil
 
             <ul className="list-none">
                 {posts.map(post => (
-                    <Post key={post.id} post={post} isComment={false} isMainPost={false} />
+                    post.postId !== 0 ?
+                        <Post key={post.id} post={post} isComment={true} isUserPage={isProfilePage} />
+                        :
+                        <Post key={post.id} post={post} isComment={false} isUserPage={isProfilePage} />
                 ))}
             </ul>
 

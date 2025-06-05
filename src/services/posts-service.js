@@ -53,8 +53,8 @@ export async function getPostsByUser(userId, page) {
     });
 }
 
-export async function getPostsFilter(searchString) {
-    return fetch(`${BASE_URL}${POSTS_URL}getallfilter`, {
+export async function getPostsFilter(searchString, page) {
+    return fetch(`${BASE_URL}${POSTS_URL}getallfilter/${page}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -68,8 +68,8 @@ export async function getPostsFilter(searchString) {
     });
 }
 
-export async function getLikedPosts(userId, searchString) {
-    return fetch(`${BASE_URL}${POSTS_URL}getliked/${userId}`, {
+export async function getLikedPosts(userId, page) {
+    return fetch(`${BASE_URL}${POSTS_URL}getliked/${userId}/${page}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -88,8 +88,8 @@ export async function getCommentCount(postId) {
     });
 }
 
-export async function getComments(postId) {
-    return fetch(`${BASE_URL}${POSTS_URL}getcomments/${postId}`, {
+export async function getComments(postId, page) {
+    return fetch(`${BASE_URL}${POSTS_URL}getcomments/${postId}/${page}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
