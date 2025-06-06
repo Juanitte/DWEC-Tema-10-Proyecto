@@ -186,6 +186,16 @@ export async function getShareCount(postId) {
     });
 }
 
+export async function getSavedPosts(userId, page) {
+    return fetch(`${BASE_URL}${POSTS_URL}getsaved/${userId}/${page}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
 export async function savePost(userId, postId) {
     return fetch(`${BASE_URL}${POSTS_URL}save/${userId}/${postId}`, {
         method: "POST",

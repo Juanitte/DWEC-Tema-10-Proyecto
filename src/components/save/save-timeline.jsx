@@ -1,12 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { getFollowing, handleInvalidToken } from "../../services/users-service";
-import { getPostsByUser, getSharedPosts, hasNewPosts } from "../../services/posts-service";
+import { getPostsByUser, getSavedPosts, getSharedPosts, hasNewPosts } from "../../services/posts-service";
 import { useTranslation } from "react-i18next";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import Post from "../home/post";
 import Loading from "../shared/loading";
 
-export default function CommentTimeline({ user }) {
+export default function RepostTimeline({ user }) {
     const [posts, setPosts] = useState([]);
     const [queuedPosts, setQueuedPosts] = useState([]);
     const [newPostsAvailable, setNewPostsAvailable] = useState(false);
@@ -21,7 +21,7 @@ export default function CommentTimeline({ user }) {
         try {
             if (!user?.id) return;
 
-            const response = await getPostsByUser(user.id, true, page);
+            const response = await getSavedPosts(user.id, page);
             if (response.status === 401) {
                 handleInvalidToken();
                 return;
@@ -126,7 +126,10 @@ export default function CommentTimeline({ user }) {
 
             <ul className="list-none">
                 {posts.map(post => (
-                    <Post key={post.id} post={post} isComment={true} isUserPage={true} />
+                    post.postId !== 0 ?
+                        <Post key={post.id} post={post} isComment={true} isUserPage={true} />
+                        :
+                        <Post key={post.id} post={post} isComment={false} isUserPage={true} />
                 ))}
             </ul>
 
