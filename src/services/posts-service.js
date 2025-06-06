@@ -43,8 +43,8 @@ export async function getPostById(postId) {
     });
 }
 
-export async function getPostsByUser(userId, page) {
-    return fetch(`${BASE_URL}${POSTS_URL}getbyuser/${userId}/${page}`, {
+export async function getPostsByUser(userId, areComments = false, page) {
+    return fetch(`${BASE_URL}${POSTS_URL}getbyuser/${userId}/${page}?areComments=${areComments}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -138,8 +138,84 @@ export async function dislikePost(userId, postId) {
     });
 }
 
+export async function sharePost(userId, postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}share/${userId}/${postId}`, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function stopSharingPost(userId, postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}stopsharing/${userId}/${postId}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function getSharedPosts(userId, page) {
+    return fetch(`${BASE_URL}${POSTS_URL}getshared/${userId}/${page}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function postIsShared(userId, postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}postisshared/${userId}/${postId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
 export async function getShareCount(postId) {
     return fetch(`${BASE_URL}${POSTS_URL}getsharecount/${postId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function savePost(userId, postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}save/${userId}/${postId}`, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function stopSavingPost(userId, postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}stopsaving/${userId}/${postId}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function postIsSaved(userId, postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}postissaved/${userId}/${postId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function getSaveCount(postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}getsavecount/${postId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

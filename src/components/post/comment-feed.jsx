@@ -8,7 +8,7 @@ import useInfiniteScroll from "../hooks/useInfiniteScroll";
 
 export default function CommentFeed({ parentAuthor, postId }) {
     const [comments, setComments] = useState([]);
-    const commentsRef = useRef([]); // 👈 controla referencias sin disparar renders
+    const commentsRef = useRef([]);
     const [queuedComments, setQueuedComments] = useState([]);
     const [newCommentsAvailable, setNewCommentsAvailable] = useState(false);
     const [isLoading, setIsLoading] = useState(true);

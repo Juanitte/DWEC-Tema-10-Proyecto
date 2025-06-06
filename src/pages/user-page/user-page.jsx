@@ -6,6 +6,7 @@ import PostForm from '../../components/home/post-form';
 import RightMenu from '../../components/shared/right-menu';
 import Timeline from '../../components/home/timeline';
 import ProfileCard from '../../components/user/profile-card';
+import UserTimelineTabs from '../../components/user/user-timeline-tabs';
 
 export default function UserPage() {
     const { userId } = useParams();
@@ -60,12 +61,7 @@ export default function UserPage() {
                         </>
                     }
 
-                    <Timeline
-                        user={user}
-                        searchString=""
-                        isForLikedPosts={false}
-                        isProfilePage={true}
-                    />
+                    <UserTimelineTabs user={user} />
                 </div>
             </section>
         </main>

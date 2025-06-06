@@ -56,9 +56,8 @@ export default function ProfileCard({ user }) {
                 }
                 const data = await response.json();
                 setFollowers(data);
-                
                 const loggedInUserId = JSON.parse(localStorage.getItem("user")).id;
-                const alreadyFollowing = data.some(f => f.id === loggedInUserId);
+                const alreadyFollowing = data.some(f => f.id === +loggedInUserId);
                 setIsFollowing(alreadyFollowing);
               
             } catch (error) {
@@ -79,7 +78,7 @@ export default function ProfileCard({ user }) {
         };
         fetchFollowers();
         fetchFollowing();
-    }, [user]);
+    }, [isFollowing]);
 
     const handleFollow = async (event) => {
         event.preventDefault();
@@ -135,7 +134,7 @@ export default function ProfileCard({ user }) {
                                     </button>
                                     :
                                     isFollowing ? (
-                                        <button className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-transparent border-green-500 text-white hover:border-green-300 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
+                                        <button onClick={(event) => { handleFollow(event) }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-transparent border-green-500 text-white hover:border-green-300 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
                                             {t('BUTTONS.UNFOLLOW')}
                                         </button>
                                     )
