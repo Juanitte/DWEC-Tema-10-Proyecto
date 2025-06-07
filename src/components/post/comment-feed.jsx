@@ -42,6 +42,7 @@ export default function CommentFeed({ parentAuthor, postId }) {
         } catch (error) {
             console.error("Error loading comments:", error);
             setIsLoading(false);
+            handleInvalidToken();
         }
     }, [postId, page]);
 
@@ -70,6 +71,7 @@ export default function CommentFeed({ parentAuthor, postId }) {
             }
         } catch (error) {
             console.error("Error checking for new comments:", error);
+            handleInvalidToken();
         }
     }, [postId, lastCommentDate]);
 

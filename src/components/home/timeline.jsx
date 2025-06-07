@@ -29,7 +29,7 @@ export default function Timeline({ user, isProfilePage }) {
             if (followingData?.length > 0) {
                 const postsPromises = followingData.map(async (u) => {
                     if (!u?.id) return [];
-                    const res = await getPostsByUser(u.id, page);
+                    const res = await getPostsByUser(u.id, page, false);
                     if (res.status === 401) {
                         handleInvalidToken();
                     }
@@ -57,6 +57,7 @@ export default function Timeline({ user, isProfilePage }) {
         } catch (err) {
             console.error("Error fetching posts:", err);
             setIsLoading(false);
+            handleInvalidToken();
         }
     }, [page, user, isProfilePage]);
 
@@ -96,6 +97,7 @@ export default function Timeline({ user, isProfilePage }) {
                 }
             } catch (e) {
                 console.error("Error checking for new posts:", e);
+                handleInvalidToken();
             }
         }, 30000);
 

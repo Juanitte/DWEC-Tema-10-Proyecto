@@ -3,6 +3,7 @@ import {
     dislikePost,
     getCommentCount,
     getLikeCount,
+    getPostById,
     getSaveCount,
     getShareCount,
     likePost,
@@ -19,7 +20,9 @@ import { useNavigate } from "react-router-dom";
 import MediaAttachment from "../shared/media-attachment";
 import { handleInvalidToken } from "../../services/users-service";
 
-export default function Post({ post, isComment, parentAuthor, isUserPage }) {
+export default function Post({ post, isComment, parentAuthor,
+    isUserPage = false, isSharePage = false, isSavePage = false,
+    isCommentPage = false, isLikePage = false }) {
     const navigate = useNavigate();
 
     const [commentCount, setCommentCount] = useState(0);
@@ -29,11 +32,18 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
     const [isShared, setIsShared] = useState(false);
     const [saveCount, setSaveCount] = useState(0);
     const [isSaved, setIsSaved] = useState(false);
+    const [parentAuthorNotPostPage, setParentAuthorNotPostPage] = useState("");
 
     // ─── Fetch inicial de contadores
     useEffect(() => {
         // Sacamos el userId del localStorage una sola vez
         const currentUserId = JSON.parse(localStorage.getItem("user"))?.id;
+
+        const setParentAuthor = async () => {
+            const parentPost = await getPostById(post.postId);
+            const parentPostJson = await parentPost.json();
+            setParentAuthorNotPostPage(parentPostJson.author);
+        };
 
         const fetchCommentCount = async () => {
             try {
@@ -46,6 +56,7 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
                 setCommentCount(count);
             } catch (error) {
                 console.error("Error fetching comment count:", error);
+                handleInvalidToken();
             }
         };
 
@@ -60,6 +71,7 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
                 setLikeCount(count);
             } catch (error) {
                 console.error("Error fetching like count:", error);
+                handleInvalidToken();
             }
         };
 
@@ -74,6 +86,7 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
                 setShareCount(count);
             } catch (error) {
                 console.error("Error fetching share count:", error);
+                handleInvalidToken();
             }
         };
 
@@ -88,6 +101,7 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
                 setSaveCount(count);
             } catch (error) {
                 console.error("Error fetching save count:", error);
+                handleInvalidToken();
             }
         };
 
@@ -103,6 +117,7 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
                 setIsLiked(liked);
             } catch (error) {
                 console.error("Error fetching isLiked:", error);
+                handleInvalidToken();
             }
         };
 
@@ -118,6 +133,7 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
                 setIsShared(shared);
             } catch (error) {
                 console.error("Error fetching isShared:", error);
+                handleInvalidToken();
             }
         };
 
@@ -133,8 +149,12 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
                 setIsSaved(shared);
             } catch (error) {
                 console.error("Error fetching isSaved:", error);
+                handleInvalidToken();
             }
         };
+        if (isCommentPage || isLikePage || isSharePage || isSavePage) {
+            setParentAuthor();
+        }
 
         // Llamadas iniciales
         fetchIsLiked();
@@ -250,20 +270,35 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
     return (
         <>
             {
-                isComment && isUserPage ? null :
+                isComment && isUserPage && !isCommentPage && !isSharePage && !isSavePage && !isLikePage ? null :
                     <li onClick={() => goToPostPage(post.id)} className="cursor-pointer">
                         <article className="hover:bg-green-800 transition duration-350 ease-in-out">
-                            {post.postId !== 0 && isComment && parentAuthor != null ? (
-                                <p
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        goToPostPage(post.postId);
-                                    }}
-                                    className="hover:cursor-pointer pl-4 pt-2 text-sm leading-5 font-medium text-gray-400"
-                                >
-                                    Replying to {parentAuthor}
-                                </p>
-                            ) : null}
+                            {
+                                post.postId !== 0 && isComment && parentAuthor != null ? (
+                                    isCommentPage || isLikePage || isSharePage || isSavePage ? (
+                                        <p
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                goToPostPage(post.postId);
+                                            }}
+                                            className="hover:cursor-pointer pl-4 pt-2 text-sm leading-5 font-medium text-gray-400"
+                                        >
+                                            Replying to {parentAuthorNotPostPage}
+                                        </p>
+                                    ) : (
+                                        <p
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                goToPostPage(post.postId);
+                                            }}
+                                            className="hover:cursor-pointer pl-4 pt-2 text-sm leading-5 font-medium text-gray-400"
+                                        >
+                                            Replying to {parentAuthor}
+                                        </p>
+                                    )
+
+                                ) : null
+                            }
 
                             <div className="flex flex-shrink-0 p-4 pb-0">
                                 <a className="flex-shrink-0 group block">
@@ -309,7 +344,7 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
 
                                 <div className="flex items-center justify-around py-4">
                                     {/* ➤ Comentarios */}
-                                    <div className="flex-1 flex items-center justify-center text-white text-xs text-gray-400 hover:text-blue-400 transition duration-350 ease-in-out">
+                                    <div className="flex-1 flex items-center justify-center text-white text-xs text-gray-400 hover:text-white transition duration-350 ease-in-out">
                                         <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 mr-2">
                                             <g>
                                                 <path
@@ -324,8 +359,8 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
                                     {isShared ? (
                                         <div
                                             onClick={(e) => handleShare(e)}
-                                            className="flex-1 flex items-center justify-center text-white text-xs text-green-600 hover:text-green-600 transition duration-350 ease-in-out">
-                                            <svg viewBox="0 0 24 24" fill="green" className="w-5 h-5 mr-2">
+                                            className="flex-1 flex items-center justify-center text-white text-xs text-blue-400 hover:text-blue-400 transition duration-350 ease-in-out">
+                                            <svg viewBox="0 0 24 24" fill="royalblue" className="w-5 h-5 mr-2">
                                                 <g>
                                                     <path
                                                         d="M23.77 15.67c-.292-.293-.767-.293-1.06 0l-2.22 2.22V7.65c0-2.068-1.683-3.75-3.75-3.75h-5.85c-.414 0-.75.336-.75.75s.336.75.75.75h5.85c1.24 0 2.25 1.01 2.25 2.25v10.24l-2.22-2.22c-.293-.293-.768-.293-1.06 0s-.294.768 0 1.06l3.5 3.5c.145.147.337.22.53.22s.383-.072.53-.22l3.5-3.5c.294-.292.294-.767 0-1.06zm-10.66 3.28H7.26c-1.24 0-2.25-1.01-2.25-2.25V6.46l2.22 2.22c.148.147.34.22.532.22s.384-.073.53-.22c.293-.293.293-.768 0-1.06l-3.5-3.5c-.293-.294-.768-.294-1.06 0l-3.5 3.5c-.294.292-.294.767 0 1.06s.767.293 1.06 0l2.22-2.22V16.7c0 2.068 1.683 3.75 3.75 3.75h5.85c.414 0 .75-.336.75-.75s-.337-.75-.75-.75z">
@@ -337,7 +372,7 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
                                     ) : (
                                         <div
                                             onClick={(e) => handleShare(e)}
-                                            className="flex-1 flex items-center justify-center text-white text-xs text-gray-400 hover:text-green-400 transition duration-350 ease-in-out">
+                                            className="flex-1 flex items-center justify-center text-white text-xs text-gray-400 hover:text-blue-400 transition duration-350 ease-in-out">
                                             <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 mr-2">
                                                 <g>
                                                     <path
@@ -354,7 +389,7 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
                                     {isLiked ? (
                                         <div
                                             onClick={(e) => handleLike(e)}
-                                            className="flex-1 flex items-center justify-center text-white text-xs text-red-600 hover:text-gray-400 transition duration-350 ease-in-out"
+                                            className="flex-1 flex items-center justify-center text-white text-xs text-red-400 hover:text-gray-400 transition duration-350 ease-in-out"
                                         >
                                             <svg viewBox="0 0 24 24" fill="red" className="w-5 h-5 mr-2">
                                                 <g>
@@ -363,7 +398,7 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
                                                     </path>
                                                 </g>
                                             </svg>
-                                            <span className="pl-2 text-red-600">{likeCount}</span>
+                                            <span className="pl-2 text-red-500">{likeCount}</span>
                                         </div>
                                     ) : (
                                         <div
@@ -389,7 +424,7 @@ export default function Post({ post, isComment, parentAuthor, isUserPage }) {
                                             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 384 512" fill="orange">
                                                 <path d="M0 48C0 21.5 21.5 0 48 0l0 48 0 393.4 130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4 336 48 48 48 48 0 336 0c26.5 0 48 21.5 48 48l0 440c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488L0 48z" />
                                             </svg>
-                                            <span className="pl-2">{saveCount}</span>
+                                            <span className="pl-2 text-orange-300">{saveCount}</span>
                                         </div>
                                     ) : (
                                         <div

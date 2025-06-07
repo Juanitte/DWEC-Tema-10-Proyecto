@@ -62,6 +62,7 @@ export default function ProfileCard({ user }) {
               
             } catch (error) {
                 console.error("Error fetching followers:", error);
+                handleInvalidToken();
             }
         };
         const fetchFollowing = async () => {
@@ -74,6 +75,7 @@ export default function ProfileCard({ user }) {
                 setFollowing(data);
             } catch (error) {
                 console.error("Error fetching following:", error);
+                handleInvalidToken();
             }
         };
         fetchFollowers();

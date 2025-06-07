@@ -43,7 +43,7 @@ export async function getPostById(postId) {
     });
 }
 
-export async function getPostsByUser(userId, areComments = false, page) {
+export async function getPostsByUser(userId, page, areComments = false) {
     return fetch(`${BASE_URL}${POSTS_URL}getbyuser/${userId}/${page}?areComments=${areComments}`, {
         method: "GET",
         headers: {
@@ -236,6 +236,42 @@ export async function getSaveCount(postId) {
 
 export async function hasNewPosts(since, userId, isProfile) {
     return fetch(`${BASE_URL}${POSTS_URL}hasnew?since=${encodeURIComponent(since)}&userId=${userId}&isProfile=${isProfile}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function hasNewComments(since, userId) {
+    return fetch(`${BASE_URL}${POSTS_URL}hasnewcomments?since=${encodeURIComponent(since)}&userId=${userId}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function hasNewShares(since, userId) {
+    return fetch(`${BASE_URL}${POSTS_URL}hasnewshares?since=${encodeURIComponent(since)}&userId=${userId}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function hasNewSaves(since, userId) {
+    return fetch(`${BASE_URL}${POSTS_URL}hasnewsaves?since=${encodeURIComponent(since)}&userId=${userId}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function hasNewLikes(since, userId) {
+    return fetch(`${BASE_URL}${POSTS_URL}hasnewlikes?since=${encodeURIComponent(since)}&userId=${userId}`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${localStorage.getItem("token")}`,

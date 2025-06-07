@@ -15,7 +15,7 @@ import {
 
 
 
-export async function login(email, password) {
+export async function login(email, password, rememberMe) {
     return fetch(BASE_URL + AUTH_URL, {
             method: "POST",
             headers: {
@@ -23,7 +23,8 @@ export async function login(email, password) {
             },
             body: JSON.stringify({
                 email,
-                password
+                password,
+                rememberMe
             }),
         })
         .then((response) => response.json())
@@ -126,5 +127,5 @@ export function handleInvalidToken() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
-    Navigate("/");
+    window.location.href = "/login";
 }

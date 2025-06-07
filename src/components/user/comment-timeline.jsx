@@ -1,12 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { getFollowing, handleInvalidToken } from "../../services/users-service";
-import { getPostsByUser, getSharedPosts, hasNewPosts } from "../../services/posts-service";
+import { getPostById, getPostsByUser, getSharedPosts, hasNewComments, hasNewPosts } from "../../services/posts-service";
 import { useTranslation } from "react-i18next";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import Post from "../home/post";
 import Loading from "../shared/loading";
 
-export default function CommentTimeline({ user }) {
+export default function RepostTimeline({ user }) {
     const [posts, setPosts] = useState([]);
     const [queuedPosts, setQueuedPosts] = useState([]);
     const [newPostsAvailable, setNewPostsAvailable] = useState(false);
@@ -21,32 +21,40 @@ export default function CommentTimeline({ user }) {
         try {
             if (!user?.id) return;
 
-            const response = await getPostsByUser(user.id, true, page);
+            // 1) Llamo al endpoint que me devuelve un único array de “shared posts”
+            const response = await getPostsByUser(user.id, page, true);
             if (response.status === 401) {
                 handleInvalidToken();
                 return;
             }
 
-            const data = await response.json();
+            // 2) Convierto a JSON: aquí “data” es un array de objetos PostDto
+            const data = await response.json(); // ej: [ { id: 12, content: "...", created: "..." }, { ... } ]
 
+            // 3) Filtrar solo elementos “truthy” (por si algún null/falso se colara)
             const allPosts = data.filter(Boolean);
 
+            // 4) Eliminar duplicados (por si acaso la API devolviera posts repetidos)
             const uniquePosts = allPosts.filter(
                 (post, index, self) => index === self.findIndex(p => p.id === post.id)
             );
 
+            // 5) Insertar en el estado, manteniendo los anteriores y evitando ya-guardados
             setPosts(prev => {
                 const combined = [
                     ...prev,
                     ...uniquePosts.filter(p => !prev.some(existing => existing.id === p.id))
                 ];
+                // Si recibimos menos de 10, asumimos que ya no hay más páginas
                 if (uniquePosts.length < 10) setHasMorePosts(false);
                 return combined;
             });
 
-            setIsLoading(false);
         } catch (err) {
-            console.error("Error fetching shared posts:", err);
+            console.error("Error fetching comments:", err);
+            handleInvalidToken();
+        }
+        finally {
             setIsLoading(false);
         }
     }, [page, user]);
@@ -61,17 +69,17 @@ export default function CommentTimeline({ user }) {
 
         const interval = setInterval(async () => {
             try {
-                const response = await hasNewPosts(lastPostDate.toISOString(), user.id, true);
+                const response = await hasNewComments(lastPostDate.toISOString(), user.id);
                 if (response.status === 401) {
                     handleInvalidToken();
                 }
                 const isNewAvailable = await response.json();
                 if (isNewAvailable) {
                     // Volvemos a pedir la página 1 solo para ver qué hay de nuevo
-                    const sources = true ? [user] : await (await getFollowing(user.id)).json();
+                    const sources = [user];
 
                     const promises = sources.map(async (u) => {
-                        const res = await getPostsByUser(u.id, 1);
+                        const res = await getPostsByUser(u.id, 1, true);
                         return await res.json();
                     });
 
@@ -87,6 +95,7 @@ export default function CommentTimeline({ user }) {
                 }
             } catch (e) {
                 console.error("Error checking for new posts:", e);
+                handleInvalidToken();
             }
         }, 30000);
 
@@ -126,7 +135,7 @@ export default function CommentTimeline({ user }) {
 
             <ul className="list-none">
                 {posts.map(post => (
-                    <Post key={post.id} post={post} isComment={true} isUserPage={true} />
+                    <Post key={post.id} post={post} isComment={true} parentAuthor={""} isUserPage={true} isCommentPage={true} />
                 ))}
             </ul>
 

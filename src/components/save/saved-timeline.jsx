@@ -1,12 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { getFollowing, handleInvalidToken } from "../../services/users-service";
-import { getPostsByUser, getSharedPosts, hasNewPosts, hasNewShares } from "../../services/posts-service";
+import { getPostsByUser, getSavedPosts, getSharedPosts, hasNewPosts, hasNewSaves, hasNewShares } from "../../services/posts-service";
 import { useTranslation } from "react-i18next";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import Post from "../home/post";
 import Loading from "../shared/loading";
 
-export default function RepostTimeline({ user }) {
+export default function SavedTimeline({ user }) {
     const [posts, setPosts] = useState([]);
     const [queuedPosts, setQueuedPosts] = useState([]);
     const [newPostsAvailable, setNewPostsAvailable] = useState(false);
@@ -22,7 +22,7 @@ export default function RepostTimeline({ user }) {
             if (!user?.id) return;
 
             // 1) Llamo al endpoint que me devuelve un único array de “shared posts”
-            const response = await getSharedPosts(user.id, page);
+            const response = await getSavedPosts(user.id, page);
             if (response.status === 401) {
                 handleInvalidToken();
                 return;
@@ -68,7 +68,7 @@ export default function RepostTimeline({ user }) {
     
             const interval = setInterval(async () => {
                 try {
-                    const response = await hasNewShares(lastPostDate.toISOString(), user.id);
+                    const response = await hasNewSaves(lastPostDate.toISOString(), user.id);
                     if (response.status === 401) {
                         handleInvalidToken();
                     }
@@ -78,7 +78,7 @@ export default function RepostTimeline({ user }) {
                         const sources = [user];
     
                         const promises = sources.map(async (u) => {
-                            const res = await getSharedPosts(u.id, 1);
+                            const res = await getSavedPosts(u.id, 1);
                             return await res.json();
                         });
     
@@ -135,9 +135,9 @@ export default function RepostTimeline({ user }) {
             <ul className="list-none">
                 {posts.map(post => (
                     post.postId !== 0 ?
-                        <Post key={post.id} post={post} isComment={true} isUserPage={true} isSharePage={true} />
+                        <Post key={post.id} post={post} isComment={true} isUserPage={true} isSavePage={true} />
                         :
-                        <Post key={post.id} post={post} isComment={false} isUserPage={true} isSharePage={true} />
+                        <Post key={post.id} post={post} isComment={false} isUserPage={true} isSavePage={true} />
                 ))}
             </ul>
 

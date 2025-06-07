@@ -1,26 +1,33 @@
 import { useState, useRef, useEffect } from "react";
+import EmojiPicker from "emoji-picker-react";
 import { CreatePostDto } from "../../models/createPostDto";
 import { createPost } from "../../services/posts-service";
 import { handleInvalidToken } from "../../services/users-service";
 import { useTranslation } from "react-i18next";
-
+import { createPortal } from "react-dom";
 
 export default function PostForm({ commentedPostId }) {
     const [images, setImages] = useState([]);
     const [videos, setVideos] = useState([]);
     const [files, setFiles] = useState([]);
-    const [postText, setPostText] = useState('');
-    const user = JSON.parse(localStorage.getItem('user'));
+    const [postText, setPostText] = useState("");
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [pickerPos, setPickerPos] = useState({ top: 0, left: 0 });
+
+    const user = JSON.parse(localStorage.getItem("user"));
     const fileInputRef = useRef(null);
     const videoInputRef = useRef(null);
     const textAreaRef = useRef(null);
-    const { t , i18n } = useTranslation();
+    const pickerRef = useRef(null);
 
-    var placeholder = t('POST-FORM.FORM-PLACEHOLDER');
-    var commentPlaceholder = t('POST-FORM.COMMENT-PLACEHOLDER');
-    var buttonText = t('BUTTONS.POST');
-    var commentButtonText = t('BUTTONS.REPLY');
+    const { t } = useTranslation();
+    const placeholder = t("POST-FORM.FORM-PLACEHOLDER");
+    const commentPlaceholder = t("POST-FORM.COMMENT-PLACEHOLDER");
+    const buttonText = t("BUTTONS.POST");
+    const commentButtonText = t("BUTTONS.REPLY");
+    const emojiSearchPlaceholder = t("POST-FORM.EMOJI-SEARCH-PLACEHOLDER");
 
+    // Auto-resize textarea
     useEffect(() => {
         if (textAreaRef.current) {
             textAreaRef.current.style.height = "auto";
@@ -28,49 +35,81 @@ export default function PostForm({ commentedPostId }) {
         }
     }, [postText]);
 
-    const removeImage = (index) => {
-        setImages((prevImages) => prevImages.filter((_, i) => i !== index));
-        setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-        if (fileInputRef.current) {
-            fileInputRef.current.value = "";
+    // Close emoji picker on outside click
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (
+                pickerRef.current &&
+                !pickerRef.current.contains(e.target) &&
+                !e.target.closest("#emoji-button")
+            ) {
+                setShowEmojiPicker(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const toggleEmojiPicker = () => {
+        if (!showEmojiPicker && textAreaRef.current) {
+            const rect = textAreaRef.current.getBoundingClientRect();
+            setPickerPos({
+                top: rect.bottom + window.scrollY + 4,
+                left: rect.left + window.scrollX,
+            });
         }
+        setShowEmojiPicker(v => !v);
+    };
+
+    // Insert emoji into textarea
+    const onEmojiClick = (emojiObject, event) => {
+        const emojiChar = emojiObject.emoji;
+        const ta = textAreaRef.current;
+        const start = ta.selectionStart, end = ta.selectionEnd;
+        const newText = postText.slice(0, start) + emojiChar + postText.slice(end);
+        setPostText(newText);
+        setTimeout(() => {
+            ta.focus();
+            const pos = start + emojiChar.length;
+            ta.setSelectionRange(pos, pos);
+        }, 0);
+        setShowEmojiPicker(false);
+    };
+
+    const removeImage = (index) => {
+        setImages((prev) => prev.filter((_, i) => i !== index));
+        setFiles((prev) => prev.filter((_, i) => i !== index));
+        if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
     const removeVideo = (index) => {
-        setVideos((prevVideos) => prevVideos.filter((_, i) => i !== index));
-        setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-        if (videoInputRef.current) {
-            videoInputRef.current.value = "";
-        }
+        setVideos((prev) => prev.filter((_, i) => i !== index));
+        setFiles((prev) => prev.filter((_, i) => i !== index));
+        if (videoInputRef.current) videoInputRef.current.value = "";
     };
 
-    const handlePost = (event) => {
-        event.preventDefault();
-
-        let post;
-        if (commentedPostId !== 0)
-            post = new CreatePostDto(user.userName, user.tag, user.avatar, postText, files, user.id, commentedPostId);
-        else
-            post = new CreatePostDto(user.userName, user.tag, user.avatar, postText, files, user.id, 0);
-
-        createPost(post).then((response) => {
-            response.json();
-            if (response.status === 200) {
-                setPostText('');
-                setImages([]);
-                setVideos([]);
-                setFiles([]);
-                if (fileInputRef.current) {
-                    fileInputRef.current.value = "";
-                }
-                if (videoInputRef.current) {
-                    videoInputRef.current.value = "";
-                }
-            }
-            else if (response.status === 401) {
-                handleInvalidToken();
-            }
-        });
+    const handlePost = async (e) => {
+        e.preventDefault();
+        const dto = new CreatePostDto(
+            user.userName,
+            user.tag,
+            user.avatar,
+            postText,
+            files,
+            user.id,
+            commentedPostId || 0
+        );
+        const response = await createPost(dto);
+        if (response.status === 200) {
+            setPostText("");
+            setImages([]);
+            setVideos([]);
+            setFiles([]);
+            fileInputRef.current.value = "";
+            videoInputRef.current.value = "";
+        } else if (response.status === 401) {
+            handleInvalidToken();
+        }
     };
 
     return (
@@ -81,18 +120,40 @@ export default function PostForm({ commentedPostId }) {
                         src={localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).avatar : "https://pbs.twimg.com/profile_images/1254779846615420930/7I4kP65u_400x400.jpg"}
                         alt="" />
                 </div>
-                <div className="flex-1 px-2 pt-2 mt-2">
+                <div className="flex-1 px-2 pt-2 mt-2 relative">
                     <textarea
-                        className=" bg-transparent text-white font-medium text-lg w-full focus:outline-none focus:border-none"
+                        className="bg-transparent text-white font-medium text-lg w-full focus:outline-none focus:border-none"
                         rows="2"
                         cols="50"
                         placeholder={commentedPostId === 0 ? placeholder : commentPlaceholder}
+                        ref={textAreaRef}
                         value={postText}
                         onChange={(e) => {
                             if (e.target.value.length <= 500) {
                                 setPostText(e.target.value);
                             }
                         }} ></textarea>
+                    {showEmojiPicker &&
+                        createPortal(
+                            <div
+                                ref={pickerRef}
+                                style={{
+                                    position: "fixed",
+                                    top: pickerPos.top,
+                                    left: pickerPos.left,
+                                    zIndex: 9999,
+                                }}
+                            >
+                                <EmojiPicker
+                                    onEmojiClick={onEmojiClick}
+                                    searchPlaceHolder={emojiSearchPlaceholder}
+                                    emojiStyle="twitter"
+                                    theme="dark"
+                                />
+                            </div>,
+                            document.body
+                        )
+                    }
                 </div>
             </div>
 
@@ -164,7 +225,7 @@ export default function PostForm({ commentedPostId }) {
                                             ogg: 'video/ogg'
                                         };
                                         const type = mimeMap[extension] || 'video/mp4';
-                                
+
                                         return {
                                             url: URL.createObjectURL(file),
                                             name: file.name,
@@ -177,32 +238,15 @@ export default function PostForm({ commentedPostId }) {
                                             type
                                         };
                                     });
-                                
+
                                     setVideos(newVideoObjects);
                                     setFiles(prev => [...prev, ...selectedVideos]);
                                 }}
                             />
                         </div>
-                        {
-                            commentedPostId === 0 ?
-                                <div className="flex-1 text-center py-2 m-2">
-                                    <a href="#"
-                                        className="mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300">
-                                        <svg className="text-center h-7 w-6" fill="none" strokeLinecap="round"
-                                            strokeLinejoin="round" strokeWidth="2" stroke="silver"
-                                            viewBox="0 0 24 24">
-                                            <path
-                                                d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                            </path>
-                                        </svg>
-                                    </a>
-                                </div>
-                                :
-                                <></>
-                        }
                         <div className="flex-1 text-center py-2 m-2">
-                            <a href="#"
-                                className="mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300">
+                            <a onClick={() => toggleEmojiPicker()}
+                                className="hover:cursor-pointer mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300">
                                 <svg className="text-center h-7 w-6" fill="none" strokeLinecap="round"
                                     strokeLinejoin="round" strokeWidth="2" stroke="silver"
                                     viewBox="0 0 24 24">

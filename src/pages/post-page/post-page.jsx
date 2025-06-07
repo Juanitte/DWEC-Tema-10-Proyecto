@@ -25,6 +25,7 @@ export default function PostPage() {
                 setPost(postData);
             } catch (error) {
                 console.error('Error fetching post:', error);
+                handleInvalidToken();
             } finally {
                 setIsLoading(false);
             }

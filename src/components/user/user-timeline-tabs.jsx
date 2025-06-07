@@ -2,6 +2,8 @@ import { t } from "i18next";
 import { useState } from "react";
 import RepostTimeline from "./repost-timeline";
 import Timeline from "../home/timeline";
+import CommentTimeline from "./comment-timeline";
+import LikeTimeline from "./like-timeline";
 
 export default function UserTimelineTabs({ user }) {
     // Tab == 0 -> Posts
@@ -100,9 +102,9 @@ export default function UserTimelineTabs({ user }) {
             }
             {
                 tab === 1 && (
-                    <div className="py-4">
-                        <p>{t('USER_TIMELINE_TABS.REPLIES')}</p>
-                    </div>
+                    <CommentTimeline
+                        user={user}
+                    />
                 )
             }
             {
@@ -114,9 +116,9 @@ export default function UserTimelineTabs({ user }) {
             }
             {
                 tab === 3 && (
-                    <div className="py-4">
-                        <p>{t('USER_TIMELINE_TABS.LIKES')}</p>
-                    </div>
+                    <LikeTimeline
+                        user={user}
+                    />
                 )
             }
         </>

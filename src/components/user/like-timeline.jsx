@@ -1,12 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
-import { getFollowing, handleInvalidToken } from "../../services/users-service";
-import { getPostsByUser, getSavedPosts, getSharedPosts, hasNewPosts } from "../../services/posts-service";
+import { handleInvalidToken } from "../../services/users-service";
+import { getLikedPosts, hasNewLikes } from "../../services/posts-service";
 import { useTranslation } from "react-i18next";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import Post from "../home/post";
 import Loading from "../shared/loading";
 
-export default function RepostTimeline({ user }) {
+export default function LikeTimeline({ user }) {
     const [posts, setPosts] = useState([]);
     const [queuedPosts, setQueuedPosts] = useState([]);
     const [newPostsAvailable, setNewPostsAvailable] = useState(false);
@@ -21,25 +21,31 @@ export default function RepostTimeline({ user }) {
         try {
             if (!user?.id) return;
 
-            const response = await getSavedPosts(user.id, page);
+            // 1) Llamo al endpoint que me devuelve un único array de “shared posts”
+            const response = await getLikedPosts(user.id, page);
             if (response.status === 401) {
                 handleInvalidToken();
                 return;
             }
 
-            const data = await response.json();
+            // 2) Convierto a JSON: aquí “data” es un array de objetos PostDto
+            const data = await response.json(); // ej: [ { id: 12, content: "...", created: "..." }, { ... } ]
 
+            // 3) Filtrar solo elementos “truthy” (por si algún null/falso se colara)
             const allPosts = data.filter(Boolean);
 
+            // 4) Eliminar duplicados (por si acaso la API devolviera posts repetidos)
             const uniquePosts = allPosts.filter(
                 (post, index, self) => index === self.findIndex(p => p.id === post.id)
             );
 
+            // 5) Insertar en el estado, manteniendo los anteriores y evitando ya-guardados
             setPosts(prev => {
                 const combined = [
                     ...prev,
                     ...uniquePosts.filter(p => !prev.some(existing => existing.id === p.id))
                 ];
+                // Si recibimos menos de 10, asumimos que ya no hay más páginas
                 if (uniquePosts.length < 10) setHasMorePosts(false);
                 return combined;
             });
@@ -48,6 +54,7 @@ export default function RepostTimeline({ user }) {
         } catch (err) {
             console.error("Error fetching shared posts:", err);
             setIsLoading(false);
+            handleInvalidToken();
         }
     }, [page, user]);
 
@@ -56,39 +63,39 @@ export default function RepostTimeline({ user }) {
     }, [fetchPosts]);
 
     // 👀 Comprobación periódica de nuevos postsAdd commentMore actions
-    useEffect(() => {
-        if (!user?.id || !lastPostDate) return;
-
-        const interval = setInterval(async () => {
-            try {
-                const response = await hasNewPosts(lastPostDate.toISOString(), user.id, true);
-                if (response.status === 401) {
+        useEffect(() => {
+            if (!user?.id || !lastPostDate) return;
+    
+            const interval = setInterval(async () => {
+                try {
+                    const response = await hasNewLikes(lastPostDate.toISOString(), user.id);
+                    if (response.status === 401) {
+                        handleInvalidToken();
+                    }
+                    const isNewAvailable = await response.json();
+                    if (isNewAvailable) {
+                        // Volvemos a pedir la página 1 solo para ver qué hay de nuevo
+                        const sources = [user];
+    
+                        const promises = sources.map(async (u) => {
+                            const res = await getLikedPosts(u.id, 1);
+                            return await res.json();
+                        });
+    
+                        const newPostsRaw = (await Promise.all(promises)).flat();
+                        const filtered = newPostsRaw
+                            .filter(p => !posts.some(existing => existing.id === p.id));
+    
+                        if (filtered.length > 0) {
+                            setQueuedPosts(filtered);
+                            setNewPostsAvailable(true);
+                        }
+                    }
+                } catch (e) {
+                    console.error("Error checking for new posts:", e);
                     handleInvalidToken();
                 }
-                const isNewAvailable = await response.json();
-                if (isNewAvailable) {
-                    // Volvemos a pedir la página 1 solo para ver qué hay de nuevo
-                    const sources = true ? [user] : await (await getFollowing(user.id)).json();
-
-                    const promises = sources.map(async (u) => {
-                        const res = await getPostsByUser(u.id, 1);
-                        return await res.json();
-                    });
-
-                    const newPostsRaw = (await Promise.all(promises)).flat();
-                    const filtered = newPostsRaw
-                        .filter(p => !posts.some(existing => existing.id === p.id))
-                        .sort((a, b) => new Date(b.created) - new Date(a.created));
-
-                    if (filtered.length > 0) {
-                        setQueuedPosts(filtered);
-                        setNewPostsAvailable(true);
-                    }
-                }
-            } catch (e) {
-                console.error("Error checking for new posts:", e);
-            }
-        }, 30000);
+            }, 30000);
 
         return () => clearInterval(interval);
     }, [user, lastPostDate, posts]);
@@ -127,9 +134,9 @@ export default function RepostTimeline({ user }) {
             <ul className="list-none">
                 {posts.map(post => (
                     post.postId !== 0 ?
-                        <Post key={post.id} post={post} isComment={true} isUserPage={true} />
+                        <Post key={post.id} post={post} isComment={true} isUserPage={true} isLikePage={true} />
                         :
-                        <Post key={post.id} post={post} isComment={false} isUserPage={true} />
+                        <Post key={post.id} post={post} isComment={false} isUserPage={true} isLikePage={true} />
                 ))}
             </ul>
 
