@@ -3,7 +3,9 @@
         "POST": "Post",
         "REPLY": "Reply",
         "FOLLOW": "Follow",
-        "UNFOLLOW": "Unfollow"
+        "UNFOLLOW": "Unfollow",
+        "SAVE": "Save",
+        "BACK": "Back"
     },
 
     "LOGIN": {

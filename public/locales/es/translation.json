@@ -3,7 +3,9 @@
         "POST": "Publicar",
         "REPLY": "Responder",
         "FOLLOW": "Seguir",
-        "UNFOLLOW": "Dejar de seguir"
+        "UNFOLLOW": "Dejar de seguir",
+        "SAVE": "Guardar",
+        "BACK": "Volver"
     },
 
     "LOGIN": {

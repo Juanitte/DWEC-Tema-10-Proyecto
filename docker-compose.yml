@@ -82,6 +82,8 @@ services:
       Redis__Port: 6379
     ports:
       - "5002:80"
+    volumes:
+      - users_files_data:/app/Files
     networks:
       - proyecto-net
 
@@ -165,6 +167,7 @@ volumes:
   sql_posts_data:
   sql_users_data:
   posts_files_data:
+  users_files_data:
   jenkins_home:
   
 

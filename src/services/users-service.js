@@ -123,6 +123,40 @@ export async function getFollowingPage(userId, page) {
     });
 }
 
+export async function getAvatar(userId){
+    return fetch(`${BASE_URL}${USERS_URL}getavatar/${userId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function UpdateAvatar(userId, avatarFile){
+    const formData = new FormData();
+  formData.append("file", avatarFile);
+
+  return fetch(`${BASE_URL}${USERS_URL}updateavatar/${userId}`, {
+    method: "PUT",
+    headers: {
+      "Authorization": `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: formData,
+  });
+}
+
+export async function UpdateUser(userId, userDto){
+    return fetch(`${BASE_URL}${USERS_URL}update/${userId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(userDto),
+    });
+}
+
 export function handleInvalidToken() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
