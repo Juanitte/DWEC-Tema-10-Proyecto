@@ -1,4 +1,5 @@
 import { BASE_URL, POSTS_URL } from "../utils/literals";
+import { handleInvalidToken } from "./users-service";
 
 export async function createPost(postDto) {
     const formData = new FormData();
@@ -53,19 +54,45 @@ export async function getPostsByUser(userId, page, areComments = false) {
     });
 }
 
-export async function getPostsFilter(searchString, page) {
-    return fetch(`${BASE_URL}${POSTS_URL}getallfilter/${page}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-            "SearchString": searchString,
-            "ByDate": true,
-            "PropertyName": "Content"
-        })
-    });
+/**
+ * @param {string} searchString  texto a buscar
+ * @param {number} page          número de página
+ * @param {boolean} byDate       ordenar por fecha
+ * @param {string} propertyName  nombre de la propiedad, p.ej. "Content"
+ * @param {string} filterType    tipo de filtrado (contains, equals, etc.)
+ */
+export async function getPostsFilter(
+  searchString,
+  page,
+  byDate       = true,
+  propertyName = 'Content',
+  filterType   = 'contains'
+) {
+  const params = new URLSearchParams({
+    SearchString: searchString,
+    ByDate:       byDate.toString(),
+    PropertyName: propertyName,
+    FilterType:   filterType
+  });
+
+  const url = `${BASE_URL}${POSTS_URL}getallfilter/${page}?${params}`;
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  });
+
+  if (!res.ok) {
+    if (res.status === 401) {
+      handleInvalidToken();
+      return;
+    }
+    throw new Error(`Error ${res.status}: ${await res.text()}`);
+  }
+
+  return res.json();
 }
 
 export async function getLikedPosts(userId, page) {

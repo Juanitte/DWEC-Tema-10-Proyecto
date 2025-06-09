@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Loading from "../shared/loading";
-import { follow, getFollowers, getFollowing, handleInvalidToken, unfollow, UpdateAvatar, UpdateUser } from "../../services/users-service";
+import { follow, getAvatar, getFollowers, getFollowing, handleInvalidToken, unfollow, UpdateAvatar, UpdateUser } from "../../services/users-service";
 import UsersModal from "./users-modal";
 import { useTranslation } from "react-i18next";
-import { CreateUserDto } from "../../models/createUserDto";
 
 export default function ProfileCard({ user }) {
     if (!user) return <Loading />;
@@ -44,16 +43,16 @@ export default function ProfileCard({ user }) {
     const [isForFollowers, setIsForFollowers] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [userName, setUserName] = useState(user.userName);
-    const [userAvatar, setUserAvatar] = useState(user.avatar);
+    const [avatarPreview, setAvatarPreview] = useState(null);
+    const previewRef = useRef(null);
+    const [avatarFilename, setAvatarFilename] = useState(user.avatar);
     const [userBio, setUserBio] = useState(user.bio);
     const [userLink, setUserLink] = useState(user.link);
     const [hasChanged, setHasChanged] = useState(false);
     const [formValues, setFormValues] = useState({
         userName: user.userName,
-        tag: user.tag,
         bio: user.bio || '',
-        link: user.link || '',
-        avatarFile: null
+        link: user.link || ''
     });
     const { t } = useTranslation();
 
@@ -69,29 +68,32 @@ export default function ProfileCard({ user }) {
         const { name, value } = e.target;
         setFormValues(prev => ({ ...prev, [name]: value }));
         setHasChanged(true);
+        if (name === "bio") setUserBio(value);
+        if (name === "link") setUserLink(value);
+        if (name === "userName") setUserName(value);
     };
 
-    const handleFileChange = async (e) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
+    const handleFileChange = async e => {
+        const file = e.target.files?.[0];
+        if (!file) return;
 
-            setFormValues(prev => ({
-                ...prev,
-                avatarFile: file
-            }));
+        const url = URL.createObjectURL(file);
+        if (previewRef.current) URL.revokeObjectURL(previewRef.current);
+        setAvatarPreview(url);
+        previewRef.current = url;
 
-            try {
-                const response = await UpdateAvatar(user.id, file);
-                if (response.ok) {
-                    const result = await response.json();
-                    setUserAvatar(result.path);
-                } else if (response.status === 401) {
-                } else {
-                    console.error("Error subiendo avatar:", await response.text());
-                }
-            } catch (err) {
-                console.error("Excepción al subir avatar:", err);
+        try {
+            const res = await UpdateAvatar(user.id, file);
+            if (res.ok) {
+                const { path: newFilename } = await res.json();
+                setAvatarFilename(newFilename);
+            } else if (response.status === 401) {
+                handleInvalidToken();
+            } else {
+                console.error("Error subiendo avatar:", await response.text());
             }
+        } catch (err) {
+            console.error("Excepción al subir avatar:", err);
         }
     };
 
@@ -100,13 +102,13 @@ export default function ProfileCard({ user }) {
         setHasChanged(false);
         const userDto = {
             UserName: formValues.userName,
-            Tag: formValues.tag,
+            Tag: user.tag,
             Bio: formValues.bio,
             Link: formValues.link,
-            Avatar: userAvatar,         // la URL que ya tienes guardada
-            Email: user.email,         // necesitas tener user.email en props
-            Password: "",                 // si no cambias password, déjalo vacío
-            PhoneNumber: user.phoneNumber, // igual para otros campos que no editas
+            Avatar: avatarFilename,
+            Email: user.email,
+            Password: "",
+            PhoneNumber: user.phoneNumber,
             FullName: user.fullName,
             Country: user.country,
             Language: user.language,
@@ -119,16 +121,13 @@ export default function ProfileCard({ user }) {
             const response = await UpdateUser(user.id, userDto);
             if (response.ok) {
                 const updated = await response.json();
-                // Opcional: vuelca los nuevos valores en tu UI
-                setUserName(updated.userName);
-                setUserBio(updated.bio);
-                setUserLink(updated.link);
+                setUserName(formValues.userName);
+                setUserBio(formValues.bio);
+                setUserLink(formValues.link);
                 setFormValues({
-                    userName: updated.userName,
-                    tag: updated.tag,
-                    bio: updated.bio,
-                    link: updated.link,
-                    avatarFile: null
+                    UserName: formValues.userName,
+                    Bio: formValues.bio,
+                    Link: formValues.link
                 });
                 setIsEditing(false);
             } else if (response.status === 401) {
@@ -142,13 +141,43 @@ export default function ProfileCard({ user }) {
     };
 
     useEffect(() => {
+        let isMounted = true;
+        (async () => {
+            try {
+                const res = await getAvatar(user.id);
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    if (isMounted) {
+                        setAvatarPreview(url);
+                        previewRef.current = url;
+                    }
+                } else if (res.status === 404) {
+                    console.warn("Avatar no encontrado, usar fallback");
+                } else if (res.status === 401) {
+                    handleInvalidToken();
+                } else {
+                    console.error("Error al obtener avatar:", await res.text());
+                }
+            } catch (err) {
+                console.error("Excepción al fetch-avatar:", err);
+            }
+        })();
+
+        // Cleanup: revocar object URL para liberar memoria
+        return () => {
+            isMounted = false;
+            if (previewRef.current) URL.revokeObjectURL(previewRef.current);
+        };
+    }, [user.id]);
+
+    useEffect(() => {
         if (isEditing) {
             setFormValues(prev => ({
                 ...prev,
-                userName: userName,
-                tag: user.tag,    // o user.tag
-                bio: userBio,
-                link: userLink
+                UserName: userName,
+                Bio: userBio,
+                Link: userLink
             }));
         }
     }, [isEditing]);
@@ -222,24 +251,31 @@ export default function ProfileCard({ user }) {
                     <div className="relative flex w-full">
                         {/* Avatar */}
                         <div className="flex flex-1">
-                            <div>
+                            <div className="relative" style={{ height: '9rem', width: '9rem' }}>
                                 <div
                                     style={{ height: '9rem', width: '9rem' }}
-                                    className="rounded-full overflow-hidden relative avatar"
+                                    className="rounded-full overflow-hidden h-full w-full avatar"
                                 >
                                     <img
-                                        src={userAvatar}
-                                        alt=""
+                                        src={avatarPreview ?? user.avatar}
+                                        alt={`${userName} avatar`}
                                         className="h-full w-full object-contain bg-gray-300 border-4 border-gray-900 rounded-full"
                                     />
 
                                     {isEditing && (
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={handleFileChange}
-                                            className="absolute bottom-0 right-0 cursor-pointer rounded-full p-2 shadow hover:bg-gray-100 bg-white text-gray-800"
-                                        />
+                                        <label
+                                            htmlFor="avatarUpload"
+                                            className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow cursor-pointer hover:bg-gray-100 text-gray-800"
+                                        >
+                                            <i className="fa fa-pencil-alt fa-lg" aria-hidden="true" />
+                                            <input
+                                                id="avatarUpload"
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleFileChange}
+                                                className="hidden"
+                                            />
+                                        </label>
                                     )}
                                 </div>
                             </div>
@@ -274,11 +310,11 @@ export default function ProfileCard({ user }) {
                                     )
                                 )
                                     :
-                                    isFollowing ? (
+                                    isFollowing ? 
                                         <button onClick={(event) => { handleFollow(event) }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
                                             {t('BUTTONS.UNFOLLOW')}
                                         </button>
-                                    )
+                                    
                                         :
                                         <button onClick={(event) => { handleFollow(event) }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
                                             {t('BUTTONS.FOLLOW')}
@@ -296,12 +332,12 @@ export default function ProfileCard({ user }) {
                                     name="userName"
                                     value={formValues.userName}
                                     onChange={handleInputChange}
-                                    className="w-full text-xl font-bold p-2 rounded bg-gray-800 text-white"
+                                    className="w-full text-xl font-bold p-2 rounded bg-gray-300 text-black"
                                 />
                             </div>
                         ) : (
                             <div>
-                                <h2 className="text-xl leading-6 font-bold text-white">{formValues.userName}</h2>
+                                <h2 className="text-xl leading-6 font-bold text-white">{userName}</h2>
                             </div>
                         )}
 
@@ -316,7 +352,7 @@ export default function ProfileCard({ user }) {
                                         value={formValues.bio}
                                         onChange={handleInputChange}
                                         rows={3}
-                                        className="w-full p-2 rounded bg-gray-800 text-white"
+                                        className="w-full p-2 rounded bg-gray-300 text-black"
                                     />
                                     <div className="text-white flex items-center mt-2">
                                         <input
@@ -324,13 +360,13 @@ export default function ProfileCard({ user }) {
                                             value={formValues.link}
                                             onChange={handleInputChange}
                                             placeholder="https://tusitio.com"
-                                            className="ml-2 p-1 rounded bg-gray-700 text-gray-200 flex-1"
+                                            className="ml-2 p-1 rounded bg-gray-300 text-black flex-1"
                                         />
                                     </div>
                                 </>
                             ) : (
                                 <>
-                                    <p className="text-white leading-tight pb-2">{formValues.bio}</p>
+                                    <p className="text-white leading-tight pb-2">{userBio}</p>
                                     <div className="text-gray-400 flex items-center">
                                         <svg viewBox="0 0 24 24" className="h-5 w-5 paint-icon">
                                             <g>
@@ -339,7 +375,7 @@ export default function ProfileCard({ user }) {
                                             </g>
                                         </svg>
                                         <a
-                                            href={formValues.link}
+                                            href={userLink}
                                             target="_blank"
                                             className="leading-5 ml-1 text-blue-400 break-all"
                                         >

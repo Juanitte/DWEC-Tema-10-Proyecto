@@ -48,11 +48,21 @@
         "PLACEHOLDER": "Search Inkas"
     },
 
+    "EXPLORE": {
+        "HEADER": "Explore Inkas",
+        "POSTS": "Posts",
+        "USERS": "Users"
+    },
+
     "PROFILE": {
         "FOLLOWERS": "Followers",
         "FOLLOWING": "Following",
         "EDIT-PROFILE": "Edit Profile",
-        "JOINED": "Joined"
+        "JOINED": "Joined",
+        "POSTS": "Posts",
+        "REPLIES": "Replies",
+        "SHARES": "Shares",
+        "LIKES": "Likes"
     },
 
     "SAVED": {

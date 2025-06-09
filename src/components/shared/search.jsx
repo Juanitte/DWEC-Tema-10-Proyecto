@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-export default function Search() {
+export default function Search({ onSearch }) {
     const [searchString, setSearchString] = useState('');
     const { t } = useTranslation();
     const textAreaRef = useRef(null);
@@ -14,7 +14,7 @@ export default function Search() {
     }, [searchString]);
 
     const handleSearch = () => {
-        console.log(searchString);
+        onSearch(searchString);
     };
 
     return (

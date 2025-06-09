@@ -2,23 +2,26 @@ import { useState, useRef, useEffect } from "react";
 import EmojiPicker from "emoji-picker-react";
 import { CreatePostDto } from "../../models/createPostDto";
 import { createPost } from "../../services/posts-service";
-import { handleInvalidToken } from "../../services/users-service";
+import { getAvatar, handleInvalidToken } from "../../services/users-service";
 import { useTranslation } from "react-i18next";
 import { createPortal } from "react-dom";
 
 export default function PostForm({ commentedPostId }) {
+    
+    const user = JSON.parse(localStorage.getItem("user"));
+    const fileInputRef = useRef(null);
+    const videoInputRef = useRef(null);
+    const textAreaRef = useRef(null);
+    const pickerRef = useRef(null);
+
     const [images, setImages] = useState([]);
     const [videos, setVideos] = useState([]);
     const [files, setFiles] = useState([]);
     const [postText, setPostText] = useState("");
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [pickerPos, setPickerPos] = useState({ top: 0, left: 0 });
-
-    const user = JSON.parse(localStorage.getItem("user"));
-    const fileInputRef = useRef(null);
-    const videoInputRef = useRef(null);
-    const textAreaRef = useRef(null);
-    const pickerRef = useRef(null);
+    const [userAvatar, setUserAvatar] = useState(user.avatar);
+    const avatarUrlRef = useRef(null);
 
     const { t } = useTranslation();
     const placeholder = t("POST-FORM.FORM-PLACEHOLDER");
@@ -26,6 +29,37 @@ export default function PostForm({ commentedPostId }) {
     const buttonText = t("BUTTONS.POST");
     const commentButtonText = t("BUTTONS.REPLY");
     const emojiSearchPlaceholder = t("POST-FORM.EMOJI-SEARCH-PLACEHOLDER");
+
+    useEffect(() => {
+        let isMounted = true;
+        (async () => {
+          try {
+            const res = await getAvatar(user.id);
+            if (res.ok) {
+              const blob = await res.blob();
+              const objectUrl = URL.createObjectURL(blob);
+              if (isMounted) {
+                setUserAvatar(objectUrl);
+                avatarUrlRef.current = objectUrl;
+              }
+            } else if (res.status === 404) {
+              console.warn("Avatar no encontrado, usar fallback");
+            } else if (res.status === 401) {
+              handleInvalidToken();
+            } else {
+              console.error("Error al obtener avatar:", await res.text());
+            }
+          } catch (err) {
+            console.error("Excepción al fetch-avatar:", err);
+          }
+        })();
+    
+        // Cleanup: revocar object URL para liberar memoria
+        return () => {
+          isMounted = false;
+          if (avatarUrlRef.current) URL.revokeObjectURL(avatarUrlRef.current);
+        };
+      }, [user.id]);
 
     // Auto-resize textarea
     useEffect(() => {
@@ -117,7 +151,7 @@ export default function PostForm({ commentedPostId }) {
             <div className="flex p-2">
                 <div className="m-2 w-10 py-1">
                     <img className="inline-block h-10 w-10 rounded-full bg-gray-300"
-                        src={localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).avatar : "https://pbs.twimg.com/profile_images/1254779846615420930/7I4kP65u_400x400.jpg"}
+                        src={userAvatar ?? user.avatar}
                         alt="" />
                 </div>
                 <div className="flex-1 px-2 pt-2 mt-2 relative">

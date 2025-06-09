@@ -157,6 +157,16 @@ export async function UpdateUser(userId, userDto){
     });
 }
 
+export async function GetUsersFilter(searchString, page) {
+    return fetch(`${BASE_URL}${USERS_URL}getusersfilter/${searchString}/${page}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
 export function handleInvalidToken() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     dislikePost,
     getCommentCount,
@@ -18,11 +18,11 @@ import {
 import { formatPostTime } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import MediaAttachment from "../shared/media-attachment";
-import { handleInvalidToken } from "../../services/users-service";
+import { getAvatar, getUserById, handleInvalidToken } from "../../services/users-service";
 
 export default function Post({ post, isComment, parentAuthor,
     isUserPage = false, isSharePage = false, isSavePage = false,
-    isCommentPage = false, isLikePage = false }) {
+    isCommentPage = false, isLikePage = false, isExplorePage = false }) {
     const navigate = useNavigate();
 
     const [commentCount, setCommentCount] = useState(0);
@@ -33,6 +33,8 @@ export default function Post({ post, isComment, parentAuthor,
     const [saveCount, setSaveCount] = useState(0);
     const [isSaved, setIsSaved] = useState(false);
     const [parentAuthorNotPostPage, setParentAuthorNotPostPage] = useState("");
+    const [userAvatar, setUserAvatar] = useState(post.authorAvatar);
+    const avatarUrlRef = useRef(null);
 
     // ─── Fetch inicial de contadores
     useEffect(() => {
@@ -176,6 +178,37 @@ export default function Post({ post, isComment, parentAuthor,
         return () => clearInterval(interval);
     }, [post.id]);
 
+    useEffect(() => {
+            let isMounted = true;
+            (async () => {
+              try {
+                const res = await getAvatar(post.userId);
+                if (res.ok) {
+                  const blob = await res.blob();
+                  const objectUrl = URL.createObjectURL(blob);
+                  if (isMounted) {
+                    setUserAvatar(objectUrl);
+                    avatarUrlRef.current = objectUrl;
+                  }
+                } else if (res.status === 404) {
+                  console.warn("Avatar no encontrado, usar fallback");
+                } else if (res.status === 401) {
+                  handleInvalidToken();
+                } else {
+                  console.error("Error al obtener avatar:", await res.text());
+                }
+              } catch (err) {
+                console.error("Excepción al fetch-avatar:", err);
+              }
+            })();
+        
+            // Cleanup: revocar object URL para liberar memoria
+            return () => {
+              isMounted = false;
+              if (avatarUrlRef.current) URL.revokeObjectURL(avatarUrlRef.current);
+            };
+          }, [post.userId]);
+
     // ─── Función para alternar “like” / “dislike”
     const fetchLike = async () => {
         const currentUserId = JSON.parse(localStorage.getItem("user"))?.id;
@@ -275,7 +308,7 @@ export default function Post({ post, isComment, parentAuthor,
                         <article className="hover:bg-green-800 transition duration-350 ease-in-out">
                             {
                                 post.postId !== 0 && isComment && parentAuthor != null ? (
-                                    isCommentPage || isLikePage || isSharePage || isSavePage ? (
+                                    isCommentPage || isLikePage || isSharePage || isSavePage || isExplorePage ? (
                                         <p
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -307,7 +340,7 @@ export default function Post({ post, isComment, parentAuthor,
                                             <img
                                                 onClick={(e) => goToUserPage(post.userId, e)}
                                                 className="bg-gray-300 inline-block h-10 w-10 rounded-full"
-                                                src={post.authorAvatar}
+                                                src={userAvatar ?? post.authorAvatar}
                                                 alt=""
                                             />
                                         </div>

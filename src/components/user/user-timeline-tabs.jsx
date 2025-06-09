@@ -1,9 +1,9 @@
-import { t } from "i18next";
 import { useState } from "react";
 import RepostTimeline from "./repost-timeline";
 import Timeline from "../home/timeline";
 import CommentTimeline from "./comment-timeline";
 import LikeTimeline from "./like-timeline";
+import { useTranslation } from "react-i18next";
 
 export default function UserTimelineTabs({ user }) {
     // Tab == 0 -> Posts
@@ -11,6 +11,7 @@ export default function UserTimelineTabs({ user }) {
     // Tab == 2 -> Shares
     // Tab == 3 -> Likes
     const [tab, setTab] = useState(0);
+    const { t } = useTranslation();
 
     const handleTabClick = (index) => {
         setTab(index);
@@ -25,7 +26,7 @@ export default function UserTimelineTabs({ user }) {
                             type="button"
                             className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                         >
-                            Posts
+                            {t('PROFILE.POSTS')}
                         </button>
                     ) : (
                         <button
@@ -33,7 +34,7 @@ export default function UserTimelineTabs({ user }) {
                             type="button"
                             className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                         >
-                            Posts
+                            {t('PROFILE.POSTS')}
                         </button>
                     )
                 }
@@ -43,7 +44,7 @@ export default function UserTimelineTabs({ user }) {
                             type="button"
                             className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                         >
-                            Replies
+                            {t('PROFILE.REPLIES')}
                         </button>
                     ) : (
                         <button
@@ -51,7 +52,7 @@ export default function UserTimelineTabs({ user }) {
                             onClick={() => handleTabClick(1)}
                             className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                         >
-                            Replies
+                            {t('PROFILE.REPLIES')}
                         </button>
                     )
                 }
@@ -61,7 +62,7 @@ export default function UserTimelineTabs({ user }) {
                             type="button"
                             className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                         >
-                            Shares
+                            {t('PROFILE.SHARES')}
                         </button>
                     ) : (
                         <button
@@ -69,7 +70,7 @@ export default function UserTimelineTabs({ user }) {
                             type="button"
                             className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                         >
-                            Shares
+                            {t('PROFILE.SHARES')}
                         </button>
                     )
                 }
@@ -79,7 +80,7 @@ export default function UserTimelineTabs({ user }) {
                             type="button"
                             className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                         >
-                            Likes
+                            {t('PROFILE.LIKES')}
                         </button>
                     ) : (
                         <button
@@ -87,7 +88,7 @@ export default function UserTimelineTabs({ user }) {
                             type="button"
                             className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                         >
-                            Likes
+                            {t('PROFILE.LIKES')}
                         </button>
                     )
                 }
