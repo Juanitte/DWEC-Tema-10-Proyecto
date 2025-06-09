@@ -1,9 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
-export default function Search({ onSearch }) {
-    const [searchString, setSearchString] = useState('');
+export default function Search({
+    onSearch,
+    isExplorePage = false,
+    searchString,
+    setSearchString
+}) {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const textAreaRef = useRef(null);
 
     useEffect(() => {
@@ -15,10 +21,13 @@ export default function Search({ onSearch }) {
 
     const handleSearch = () => {
         onSearch(searchString);
+        if (!isExplorePage) {
+            navigate(`/explore?search=${encodeURIComponent(searchString)}`);
+        }
     };
 
     return (
-        <div className="w-full max-w-md px-4 py-5">
+        <div className="w-full px-4 py-5">
             <div className="relative">
                 {/* Ícono de búsqueda dentro del input */}
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -39,17 +48,18 @@ export default function Search({ onSearch }) {
                 </div>
 
                 <input
+                    ref={textAreaRef}
                     type="search"
-                    name="search"
-                    placeholder={t('SEARCHBAR.PLACEHOLDER')}
+                    placeholder={t("SEARCHBAR.PLACEHOLDER")}
                     value={searchString}
                     onChange={(e) => {
-                        if (e.target.value.length <= 500) setSearchString(e.target.value);
+                        if (e.target.value.length <= 500)
+                            setSearchString(e.target.value);
                     }}
                     onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleSearch();
+                        if (e.key === "Enter") handleSearch();
                     }}
-                    className="w-full h-10 pl-10 pr-4 rounded-full text-sm focus:outline-none bg-dim-700 border-0 shadow text-white"
+                    className="w-full py-3 pl-10 pr-4 rounded-full text-sm focus:outline-none bg-dim-700 border-0 shadow text-white"
                 />
             </div>
         </div>

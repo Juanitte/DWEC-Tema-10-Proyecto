@@ -157,13 +157,23 @@ export async function UpdateUser(userId, userDto){
     });
 }
 
-export async function GetUsersFilter(searchString, page) {
-    return fetch(`${BASE_URL}${USERS_URL}getusersfilter/${searchString}/${page}`, {
+export async function GetUsersFilter(page, searchString) {
+    const query = searchString ? `?searchString=${encodeURIComponent(searchString)}` : '';
+    return fetch(`${BASE_URL}${USERS_URL}getusersfilter/${page}${query}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${localStorage.getItem("token")}`,
         },
+    });
+}
+
+export async function checkIfFollowing(userId, followerId) {
+    return await fetch(`${BASE_URL}${USERS_URL}isfollowing/${userId}/${followerId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
     });
 }
 

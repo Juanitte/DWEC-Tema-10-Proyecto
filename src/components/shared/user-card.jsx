@@ -1,43 +1,68 @@
 import { useTranslation } from "react-i18next";
-import { follow, getAvatar, handleInvalidToken, unfollow } from "../../services/users-service";
-import { useRef } from "react";
+import { checkIfFollowing, follow, getAvatar, handleInvalidToken, unfollow } from "../../services/users-service";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function UserCard({ user }) {
     const [isFollowing, setIsFollowing] = useState(false);
-    const [userAvatar, setUserAvatar] = useState(post.authorAvatar);
+    const [userAvatar, setUserAvatar] = useState(user.avatar);
     const avatarUrlRef = useRef(null);
+    const navigate = useNavigate();
     const { t } = useTranslation();
 
     useEffect(() => {
-                let isMounted = true;
-                (async () => {
-                  try {
-                    const res = await getAvatar(user.id);
-                    if (res.ok) {
-                      const blob = await res.blob();
-                      const objectUrl = URL.createObjectURL(blob);
-                      if (isMounted) {
+        let isMounted = true;
+        (async () => {
+            try {
+                const res = await getAvatar(user.id);
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const objectUrl = URL.createObjectURL(blob);
+                    if (isMounted) {
                         setUserAvatar(objectUrl);
                         avatarUrlRef.current = objectUrl;
-                      }
-                    } else if (res.status === 404) {
-                      console.warn("Avatar no encontrado, usar fallback");
-                    } else if (res.status === 401) {
-                      handleInvalidToken();
-                    } else {
-                      console.error("Error al obtener avatar:", await res.text());
                     }
-                  } catch (err) {
-                    console.error("Excepción al fetch-avatar:", err);
-                  }
-                })();
-            
-                // Cleanup: revocar object URL para liberar memoria
-                return () => {
-                  isMounted = false;
-                  if (avatarUrlRef.current) URL.revokeObjectURL(avatarUrlRef.current);
-                };
-              }, [post.userId]);
+                } else if (res.status === 404) {
+                    console.warn("Avatar no encontrado, usar fallback");
+                } else if (res.status === 401) {
+                    handleInvalidToken();
+                } else {
+                    console.error("Error al obtener avatar:", await res.text());
+                }
+            } catch (err) {
+                console.error("Excepción al fetch-avatar:", err);
+            }
+        })();
+
+        // Cleanup: revocar object URL para liberar memoria
+        return () => {
+            isMounted = false;
+            if (avatarUrlRef.current) URL.revokeObjectURL(avatarUrlRef.current);
+        };
+    }, [user.id]);
+
+    useEffect(() => {
+        const checkFollowStatus = async () => {
+            const loggedUser = JSON.parse(localStorage.getItem("user"));
+            if (!loggedUser || !user?.id || loggedUser.id === user.id) return;
+
+            try {
+                const res = await checkIfFollowing(user.id, loggedUser.id);
+                if (res.status === 401) {
+                    handleInvalidToken();
+                    return;
+                }
+
+                const text = await res.text();
+                const isFollow = text === "true";
+                setIsFollowing(isFollow);
+            } catch (err) {
+                console.error("Error al verificar follow:", err);
+            }
+        };
+
+        checkFollowStatus();
+    }, [user]);
 
     const handleFollow = async (event) => {
         event.preventDefault();
@@ -71,7 +96,7 @@ export default function UserCard({ user }) {
     };
 
     return (
-        <div className="flex flex-row items-center justify-between py-4 flex-wrap gap-2"
+        <div className="flex flex-row items-center justify-between py-4 px-4 flex-wrap gap-2 hover:bg-green-600 hover:cursor-pointer"
             onClick={(e) => {
                 e.stopPropagation();
                 goToUserPage(user.id, e);
@@ -79,11 +104,11 @@ export default function UserCard({ user }) {
         >
             <div className="flex items-center min-w-0 flex-shrink">
                 <img
-                    className="h-10 w-10 rounded-full hover:cursor-pointer"
+                    className="h-12 w-12 rounded-full hover:cursor-pointer bg-gray-300 border border-gray-900"
                     src={userAvatar || user.avatar}
                     alt=""
                 />
-                <div className="text-white pl-3 min-w-0 flex flex-col">
+                <div className="text-white pl-5 min-w-0 flex flex-col">
                     <div className="text-white min-w-0">
                         <p className="font-medium truncate">{user.userName}</p>
                         <p className="text-sm text-gray-400 truncate">{user.tag}</p>
@@ -97,12 +122,12 @@ export default function UserCard({ user }) {
             <div className="ml-auto">
                 {
                     isFollowing ?
-                        <button onClick={(e) => {e.stopPropagation(); handleFollow(e);}} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
+                        <button onClick={(e) => { e.stopPropagation(); handleFollow(e); }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-white hover:bg-white hover:text-green-800 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
                             {t('BUTTONS.UNFOLLOW')}
                         </button>
 
                         :
-                        <button onClick={(e) => {e.stopPropagation(); handleFollow(e); }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
+                        <button onClick={(e) => { e.stopPropagation(); handleFollow(e); }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-white hover:bg-white hover:text-green-800 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
                             {t('BUTTONS.FOLLOW')}
                         </button>
                 }

@@ -92,7 +92,7 @@ export async function getPostsFilter(
     throw new Error(`Error ${res.status}: ${await res.text()}`);
   }
 
-  return res.json();
+  return res;
 }
 
 export async function getLikedPosts(userId, page) {

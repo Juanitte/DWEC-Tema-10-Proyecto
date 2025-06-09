@@ -141,6 +141,62 @@ export default function ProfileCard({ user }) {
     };
 
     useEffect(() => {
+        if (user) {
+            setUserName(user.userName);
+            setUserBio(user.bio || '');
+            setUserLink(user.link || '');
+            setAvatarFilename(user.avatar);
+            setFormValues({
+                userName: user.userName,
+                bio: user.bio || '',
+                link: user.link || ''
+            });
+            setHasChanged(false);
+            setIsEditing(false);
+        }
+    }, [user]);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadAvatar = async () => {
+            try {
+                const res = await getAvatar(user.id);
+
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const objectUrl = URL.createObjectURL(blob);
+
+                    if (isMounted) {
+                        if (previewRef.current) URL.revokeObjectURL(previewRef.current);
+                        setAvatarPreview(objectUrl);
+                        previewRef.current = objectUrl;
+                    }
+                } else if (res.status === 404) {
+                    // No hay avatar personalizado, usar el avatar por defecto del objeto `user`
+                    if (isMounted) {
+                        if (previewRef.current) URL.revokeObjectURL(previewRef.current);
+                        setAvatarPreview(null); // Importante: limpiamos el avatar anterior
+                    }
+                } else if (res.status === 401) {
+                    handleInvalidToken();
+                } else {
+                    console.error("Error al obtener avatar:", await res.text());
+                }
+            } catch (err) {
+                console.error("Excepción al obtener avatar:", err);
+            }
+        };
+
+        loadAvatar();
+
+        return () => {
+            isMounted = false;
+            if (previewRef.current) URL.revokeObjectURL(previewRef.current);
+        };
+    }, [user.id]);
+
+    useEffect(() => {
         let isMounted = true;
         (async () => {
             try {
@@ -310,11 +366,11 @@ export default function ProfileCard({ user }) {
                                     )
                                 )
                                     :
-                                    isFollowing ? 
+                                    isFollowing ?
                                         <button onClick={(event) => { handleFollow(event) }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
                                             {t('BUTTONS.UNFOLLOW')}
                                         </button>
-                                    
+
                                         :
                                         <button onClick={(event) => { handleFollow(event) }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
                                             {t('BUTTONS.FOLLOW')}

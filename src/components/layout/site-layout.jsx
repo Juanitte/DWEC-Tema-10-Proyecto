@@ -3,7 +3,7 @@ import UserWidget from "../shared/user-widget";
 import Sidenav from "./sidenav";
 import { useMediaQuery } from 'react-responsive';
 
-export default function SiteLayout({ children }) {
+export default function SiteLayout({ children , isExplorePage = false }) {
     const isMobile = useMediaQuery({ maxWidth: 1024 }); // Tailwind md:1024px
 
     return (
@@ -23,7 +23,7 @@ export default function SiteLayout({ children }) {
 
             {!isMobile && (
                 <aside className="flex-1 px-2 overflow-y-auto">
-                    <RightMenu />
+                    <RightMenu isExplorePage={isExplorePage} />
                 </aside>
             )}
         </div>

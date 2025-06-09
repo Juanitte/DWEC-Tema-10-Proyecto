@@ -19,6 +19,24 @@
         "REMEMBER_ME": "Remember me"
     },
 
+    "SIGNUP": {
+        "WELCOME": "Welcome to Inkas",
+        "SUBTITLE": "Sign up",
+        "EMAIL": "Email",
+        "PASSWORD": "Password",
+        "CONFIRM_PASSWORD": "Confirm password",
+        "USERNAME": "Username",
+        "FULLNAME": "Full name",
+        "TAG": "Tag",
+        "COUNTRY": "Country",
+        "SIGNUP": "Sign up",
+        "BACK": "Back",
+        "PASSWORD_TOOLTIP": "Must include at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character",
+        "USERNAME_TOOLTIP": "Must be between 3 and 30 characters long",
+        "FULLNAME_TOOLTIP": "Must be between 3 and 40 characters long",
+        "TAG_TOOLTIP": "Must be between 3 and 20 characters long"
+    },
+
     "SIDENAV": {
         "HOME": "Home",
         "EXPLORE": "Explore",
@@ -36,6 +54,10 @@
         "FORM-PLACEHOLDER": "What's happening?",
         "COMMENT-PLACEHOLDER": "Comment...",
         "EMOJI-SEARCH-PLACEHOLDER": "Search emoji"
+    },
+
+    "POST": {
+        "REPLY": "Replying to"
     },
 
     "TIMELINE": {

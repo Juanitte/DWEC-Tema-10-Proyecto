@@ -19,6 +19,7 @@ import { formatPostTime } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import MediaAttachment from "../shared/media-attachment";
 import { getAvatar, getUserById, handleInvalidToken } from "../../services/users-service";
+import { useTranslation } from "react-i18next";
 
 export default function Post({ post, isComment, parentAuthor,
     isUserPage = false, isSharePage = false, isSavePage = false,
@@ -35,6 +36,7 @@ export default function Post({ post, isComment, parentAuthor,
     const [parentAuthorNotPostPage, setParentAuthorNotPostPage] = useState("");
     const [userAvatar, setUserAvatar] = useState(post.authorAvatar);
     const avatarUrlRef = useRef(null);
+    const { t } = useTranslation();
 
     // ─── Fetch inicial de contadores
     useEffect(() => {
@@ -307,16 +309,16 @@ export default function Post({ post, isComment, parentAuthor,
                     <li onClick={() => goToPostPage(post.id)} className="cursor-pointer">
                         <article className="hover:bg-green-800 transition duration-350 ease-in-out">
                             {
-                                post.postId !== 0 && isComment && parentAuthor != null ? (
+                                post.postId !== 0 && isComment ? (
                                     isCommentPage || isLikePage || isSharePage || isSavePage || isExplorePage ? (
                                         <p
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 goToPostPage(post.postId);
                                             }}
-                                            className="hover:cursor-pointer pl-4 pt-2 text-sm leading-5 font-medium text-gray-400"
+                                            className="hover:cursor-pointer pl-4 pt-2 text-sm leading-5 font-medium text-gray-400 hover:text-white"
                                         >
-                                            Replying to {parentAuthorNotPostPage}
+                                            {`${t('POST.REPLY')} ${parentAuthorNotPostPage}`}
                                         </p>
                                     ) : (
                                         <p
@@ -324,9 +326,9 @@ export default function Post({ post, isComment, parentAuthor,
                                                 e.stopPropagation();
                                                 goToPostPage(post.postId);
                                             }}
-                                            className="hover:cursor-pointer pl-4 pt-2 text-sm leading-5 font-medium text-gray-400"
+                                            className="hover:cursor-pointer pl-4 pt-2 text-sm leading-5 font-medium text-gray-400 hover:text-white"
                                         >
-                                            Replying to {parentAuthor}
+                                            {`${t('POST.REPLY')} ${parentAuthor}`}
                                         </p>
                                     )
 

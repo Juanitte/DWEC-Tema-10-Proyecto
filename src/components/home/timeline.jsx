@@ -44,11 +44,21 @@ export default function Timeline({ user, isProfilePage }) {
                 );
 
                 setPosts((prev) => {
+                    // fusionar sin duplicados
                     const combined = [
                         ...prev,
                         ...uniquePosts.filter(p => !prev.some(existing => existing.id === p.id))
                     ];
                     if (uniquePosts.length < 10) setHasMorePosts(false);
+
+                    // si NO es profile page, ordenamos descendente por fecha
+                    if (!isProfilePage) {
+                        return combined.sort((a, b) =>
+                            new Date(b.created) - new Date(a.created)
+                        );
+                    }
+
+                    // si es profile page, mantenemos el orden original
                     return combined;
                 });
             }
