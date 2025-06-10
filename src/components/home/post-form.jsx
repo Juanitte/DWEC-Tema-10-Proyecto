@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { createPortal } from "react-dom";
 
 export default function PostForm({ commentedPostId }) {
-    
+    const emojiButtonRef = useRef(null);
     const user = JSON.parse(localStorage.getItem("user"));
     const fileInputRef = useRef(null);
     const videoInputRef = useRef(null);
@@ -33,33 +33,33 @@ export default function PostForm({ commentedPostId }) {
     useEffect(() => {
         let isMounted = true;
         (async () => {
-          try {
-            const res = await getAvatar(user.id);
-            if (res.ok) {
-              const blob = await res.blob();
-              const objectUrl = URL.createObjectURL(blob);
-              if (isMounted) {
-                setUserAvatar(objectUrl);
-                avatarUrlRef.current = objectUrl;
-              }
-            } else if (res.status === 404) {
-              console.warn("Avatar no encontrado, usar fallback");
-            } else if (res.status === 401) {
-              handleInvalidToken();
-            } else {
-              console.error("Error al obtener avatar:", await res.text());
+            try {
+                const res = await getAvatar(user.id);
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const objectUrl = URL.createObjectURL(blob);
+                    if (isMounted) {
+                        setUserAvatar(objectUrl);
+                        avatarUrlRef.current = objectUrl;
+                    }
+                } else if (res.status === 404) {
+                    console.warn("Avatar no encontrado, usar fallback");
+                } else if (res.status === 401) {
+                    handleInvalidToken();
+                } else {
+                    console.error("Error al obtener avatar:", await res.text());
+                }
+            } catch (err) {
+                console.error("Excepción al fetch-avatar:", err);
             }
-          } catch (err) {
-            console.error("Excepción al fetch-avatar:", err);
-          }
         })();
-    
+
         // Cleanup: revocar object URL para liberar memoria
         return () => {
-          isMounted = false;
-          if (avatarUrlRef.current) URL.revokeObjectURL(avatarUrlRef.current);
+            isMounted = false;
+            if (avatarUrlRef.current) URL.revokeObjectURL(avatarUrlRef.current);
         };
-      }, [user.id]);
+    }, [user.id]);
 
     // Auto-resize textarea
     useEffect(() => {
@@ -85,12 +85,30 @@ export default function PostForm({ commentedPostId }) {
     }, []);
 
     const toggleEmojiPicker = () => {
-        if (!showEmojiPicker && textAreaRef.current) {
-            const rect = textAreaRef.current.getBoundingClientRect();
-            setPickerPos({
-                top: rect.bottom + window.scrollY + 4,
-                left: rect.left + window.scrollX,
-            });
+        if (!showEmojiPicker && emojiButtonRef.current) {
+            const btnRect = emojiButtonRef.current.getBoundingClientRect();
+
+            // Altura estimada del picker (ajusta si cambias theme / tamaño)
+            const pickerH = 350;
+            const pickerW = 300;
+
+            // Espacio por debajo / por encima
+            const spaceBelow = window.innerHeight - btnRect.bottom;
+            const spaceAbove = btnRect.top;
+
+            // Decide si ponerlo abajo o arriba
+            const top = spaceBelow > pickerH
+                ? btnRect.bottom + 4 + window.scrollY
+                : btnRect.top - pickerH - 4 + window.scrollY;
+
+            // Acomoda el left para que no se salga a la derecha
+            let left = btnRect.left + window.scrollX;
+            if (left + pickerW > window.innerWidth) {
+                left = window.innerWidth - pickerW - 4;
+            }
+            if (left < 4) left = 4;
+
+            setPickerPos({ top, left });
         }
         setShowEmojiPicker(v => !v);
     };
@@ -191,13 +209,13 @@ export default function PostForm({ commentedPostId }) {
                 </div>
             </div>
 
-            <div className="flex p-2">
+            <div className="flex px-2 pb-2">
                 <div className="w-10"></div>
 
                 <div className="w-64 px-2">
                     <div className="flex items-center">
 
-                        <div className="flex-1 text-center py-2 m-2">
+                        <div className="flex-1 text-center pb-2 mb-2 mx-2">
                             <a
                                 className="hover:cursor-pointer mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300"
                                 onClick={() => fileInputRef.current.click()}
@@ -230,7 +248,7 @@ export default function PostForm({ commentedPostId }) {
                             />
                         </div>
 
-                        <div className="flex-1 text-center py-2 m-2">
+                        <div className="flex-1 text-center pb-2 mb-2 mx-2">
                             <a
                                 className="hover:cursor-pointer mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300"
                                 onClick={() => videoInputRef.current.click()}
@@ -278,8 +296,11 @@ export default function PostForm({ commentedPostId }) {
                                 }}
                             />
                         </div>
-                        <div className="flex-1 text-center py-2 m-2">
-                            <a onClick={() => toggleEmojiPicker()}
+                        <div className="flex-1 text-center pb-2 mb-2 mx-2">
+                            <a
+                                ref={emojiButtonRef}
+                                onClick={() => toggleEmojiPicker()}
+                                id="emoji-button"
                                 className="hover:cursor-pointer mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300">
                                 <svg className="text-center h-7 w-6" fill="none" strokeLinecap="round"
                                     strokeLinejoin="round" strokeWidth="2" stroke="silver"
@@ -297,7 +318,7 @@ export default function PostForm({ commentedPostId }) {
                 <div className="flex-1">
                     <button
                         onClick={handlePost}
-                        className="hover:cursor-pointer bg-green-700 hover:bg-green-600 mt-5 text-white font-bold py-2 px-8 rounded-full mr-8 float-right">
+                        className="hover:cursor-pointer bg-green-700 hover:bg-green-600 mb-2 text-white font-bold py-2 px-8 rounded-full mr-8 float-right">
                         {
                             commentedPostId == 0 ? buttonText : commentButtonText
                         }

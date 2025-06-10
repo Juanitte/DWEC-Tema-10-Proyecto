@@ -23,13 +23,13 @@ export default function HomePage() {
 
     return (
         <>
-            <main role="main" className="h-screen overflow-hidden">
+            <main role="main" className="flex h-screen overflow-hidden">
                 <section className="w-full border border-y-0 border-green-800 flex flex-col overflow-hidden">
                     <ContentHeader route="" title={t('POST-FORM.HEADER')} hasBackButton={false} />
                     <hr className="border-green-800" />
-                    <PostForm commentedPostId={0} />
-                    <hr className="border-green-800 border-4" />
                     <div ref={scrollRef} className="flex-1 overflow-y-auto">
+                        <PostForm commentedPostId={0} />
+                        <hr className="border-green-800 border-4" />
                         <Timeline user={user} searchString="" isProfilePage={false} isForLikedPosts={false} />
                     </div>
                 </section>
