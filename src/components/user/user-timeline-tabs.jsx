@@ -17,6 +17,8 @@ export default function UserTimelineTabs({ user }) {
         setTab(index);
     };
 
+    console.log("User: ", user);
+
     return (
         <>
             <div className="flex justify-stretch border-b border-green-800">
@@ -96,6 +98,7 @@ export default function UserTimelineTabs({ user }) {
             {
                 tab === 0 && (
                     <Timeline
+                        key={user.id}
                         user={user}
                         isProfilePage={true}
                     />
@@ -104,6 +107,7 @@ export default function UserTimelineTabs({ user }) {
             {
                 tab === 1 && (
                     <CommentTimeline
+                        key={user.id}
                         user={user}
                     />
                 )
@@ -111,6 +115,7 @@ export default function UserTimelineTabs({ user }) {
             {
                 tab === 2 && (
                     <RepostTimeline
+                        key={user.id}
                         user={user}
                     />
                 )
@@ -118,6 +123,7 @@ export default function UserTimelineTabs({ user }) {
             {
                 tab === 3 && (
                     <LikeTimeline
+                        key={user.id}
                         user={user}
                     />
                 )

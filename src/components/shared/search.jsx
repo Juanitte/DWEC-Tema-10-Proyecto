@@ -32,14 +32,8 @@ export default function Search({
 
   // 4) Función que se llama sólo al pulsar Enter
   const handleSearch = () => {
-    if (isExplorePage) {
-      // Explora: sólo actualizo la query interna
-      onSearch(inputValue);
-    } else {
-      // Resto de la app: hago search y navego
       onSearch(inputValue);
       navigate(`/explore?search=${encodeURIComponent(inputValue)}`);
-    }
   };
 
   // 5) Manejador de cambio: 

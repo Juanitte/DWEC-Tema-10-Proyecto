@@ -17,6 +17,19 @@ export default function Timeline({ user, isProfilePage }) {
 
     const lastPostDate = posts.length > 0 ? new Date(posts[0].created) : null;
 
+    useEffect(() => {
+        setPosts([]);
+        setQueuedPosts([]);
+        setPage(1);
+        setNewPostsAvailable(false);
+        setIsLoading(true);
+        setHasMorePosts(true);
+    }, [user?.id, isProfilePage]);
+
+    useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" }); // o simplemente: window.scrollTo(0, 0);
+}, [user?.id, isProfilePage]);
+
     const fetchPosts = useCallback(async () => {
         try {
             if (!user?.id) return;

@@ -73,7 +73,8 @@
     "EXPLORE": {
         "HEADER": "Explore Inkas",
         "POSTS": "Posts",
-        "USERS": "Users"
+        "USERS": "Users",
+        "TRENDING": "Trending"
     },
 
     "PROFILE": {

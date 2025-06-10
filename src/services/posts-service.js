@@ -306,6 +306,15 @@ export async function hasNewLikes(since, userId) {
     });
 }
 
+export async function getTopHashtags(hours, count = 10) {
+    return fetch(`${BASE_URL}${POSTS_URL}gettophashtags?hours=${encodeURIComponent(hours)}&count=${count}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
 export async function streamAttachment(attachmentId) {
   return fetch(
     `${BASE_URL}${POSTS_URL}streamattachment/${attachmentId}`,

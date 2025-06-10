@@ -3,7 +3,7 @@ import { checkIfFollowing, follow, getAvatar, handleInvalidToken, unfollow } fro
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function UserCard({ user }) {
+export default function UserCard({ user, isFollowSuggestions = false }) {
     const [isFollowing, setIsFollowing] = useState(false);
     const [userAvatar, setUserAvatar] = useState(user.avatar);
     const avatarUrlRef = useRef(null);
@@ -110,11 +110,41 @@ export default function UserCard({ user }) {
                 />
                 <div className="text-white pl-5 min-w-0 flex flex-col">
                     <div className="text-white min-w-0">
-                        <p className="font-medium truncate">{user.userName}</p>
-                        <p className="text-sm text-gray-400 truncate">{user.tag}</p>
+                        {
+                            isFollowSuggestions ? (
+                                <p className="text-sm truncate">
+                                    {
+                                        user.userName?.length > 15
+                                            ?
+                                            `${user.userName.slice(0, 15)}...`
+                                            :
+                                            user.userName
+                                    }
+                                </p>
+                            ) :
+                                <p className="font-medium truncate">{user.userName}</p>
+                        }
+                        {
+                            isFollowSuggestions ? (
+                                <p className="text-sm text-gray-400 truncate">
+                                    {
+                                        user.tag?.length > 15
+                                            ?
+                                            `${user.tag.slice(0, 15)}...`
+                                            :
+                                            user.tag
+                                    }
+                                </p>
+                            ) :
+                                <p className="text-sm text-gray-400 truncate">{user.tag}</p>
+                        }
                     </div>
                     <div>
-                        <p className="text-sm truncate">{user.bio}</p>
+                        <p className="text-sm truncate">
+                            {isFollowSuggestions
+                                ? (user.bio?.length > 15 ? `${user.bio.slice(0, 15)}...` : user.bio)
+                                : user.bio}
+                        </p>
                     </div>
                 </div>
             </div>

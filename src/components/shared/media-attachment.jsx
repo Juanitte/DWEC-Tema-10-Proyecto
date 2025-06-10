@@ -6,15 +6,51 @@ export default function MediaAttachment({ attachment }) {
   const { ref, isVisible } = useAttachmentLazyLoad();
   const [videoUrl, setVideoUrl] = useState(null);
   const [loadingVideo, setLoadingVideo] = useState(false);
+  const [imgUrl, setImgUrl] = useState(null);
   const videoRef = useRef();
 
   // Detectar MIME según extensión:
   const getMimeTypeFromPath = (path) => {
     if (!path) return "application/octet-stream";
     const ext = path.split(".").pop().toLowerCase();
-    if (["mp4", "webm", "ogg"].includes(ext)) return `video/${ext}`;
+
+    // Vídeos
+    if (["mp4", "webm", "ogg"].includes(ext)) {
+      return `video/${ext}`;
+    }
+
+    // Imágenes
+    if (["png", "jpg", "jpeg", "gif", "webp"].includes(ext)) {
+      // mapear 'jpg' → 'jpeg'
+      const imageExt = ext === "jpg" ? "jpeg" : ext;
+      return `image/${imageExt}`;
+    }
+
+    // Fallback
     return "application/octet-stream";
   };
+
+  useEffect(() => {
+    if (!isVisible || isVideo) return;
+
+    (async () => {
+      try {
+        const res = await streamAttachment(attachment.id);
+        if (!res.ok) throw new Error(res.status);
+        const rawBlob = await res.blob();
+        // enlazamos el MIME que ya tienes en `mimeType`
+        const blob = new Blob([rawBlob], { type: mimeType });
+        const blobUrl = URL.createObjectURL(blob);
+        setImgUrl(blobUrl);
+      } catch (err) {
+        console.error("Error cargando imagen:", err);
+      }
+    })();
+
+    return () => {
+      if (imgUrl) URL.revokeObjectURL(imgUrl);
+    };
+  }, [isVisible]);
 
   const mimeType = getMimeTypeFromPath(attachment.path);
   const isVideo = mimeType.startsWith("video");
@@ -28,8 +64,7 @@ export default function MediaAttachment({ attachment }) {
 
     const fetchVideo = async () => {
       setLoadingVideo(true);
-      try
-      {
+      try {
         const response = await streamAttachment(attachment.id);
         if (!response.ok) {
           console.error("Error al obtener el vídeo:", response.status);
@@ -41,8 +76,7 @@ export default function MediaAttachment({ attachment }) {
         const blobUrl = URL.createObjectURL(blob);
         setVideoUrl(blobUrl);
       }
-      catch (err)
-      {
+      catch (err) {
         console.error("Error fetching video attachment:", err);
       }
       finally {
@@ -73,22 +107,9 @@ export default function MediaAttachment({ attachment }) {
 
   // Si no es vídeo, renderizamos la imagen normal:
   if (!isVideo) {
-    const base64Image = `data:${mimeType};base64,${attachment.file}`;
     return (
-      <a
-        href={base64Image}
-        target="_blank"
-        rel="noopener noreferrer"
-        ref={ref}
-        className="bg-green-800 border border-gray-300 rounded-xl flex flex-col justify-center items-center max-w-[90%]"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <img
-          src={base64Image}
-          className="rounded-xl object-cover w-full h-auto"
-          alt="Post attachment"
-          loading="lazy"
-        />
+      <a href={imgUrl} target="_blank" rel="noopener noreferrer" ref={ref} className="bg-green-800 border border-gray-300 rounded-xl flex flex-col justify-center items-center max-w-[90%]" onClick={e => e.stopPropagation()}>
+        <img src={imgUrl} alt="Post attachment" loading="lazy" className="rounded-xl object-cover w-full h-auto" />
       </a>
     );
   }

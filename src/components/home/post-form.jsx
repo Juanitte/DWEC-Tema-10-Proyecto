@@ -184,7 +184,13 @@ export default function PostForm({ commentedPostId }) {
                             if (e.target.value.length <= 500) {
                                 setPostText(e.target.value);
                             }
-                        }} ></textarea>
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && !e.shiftKey) {
+                                handlePost();
+                            }
+                        }}
+                        ></textarea>
                     {showEmojiPicker &&
                         createPortal(
                             <div

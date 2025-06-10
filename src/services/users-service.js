@@ -177,6 +177,15 @@ export async function checkIfFollowing(userId, followerId) {
     });
 }
 
+export async function getTopFollowed(userId) {
+    return await fetch(`${BASE_URL}${USERS_URL}gettopfollowed/${userId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
+    });
+}
+
 export function handleInvalidToken() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");

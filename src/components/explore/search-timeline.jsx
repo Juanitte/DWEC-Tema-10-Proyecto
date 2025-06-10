@@ -37,14 +37,19 @@ export default function SearchTimeline({ user, searchString, isPosts = false, is
                 (post, index, self) => index === self.findIndex(p => p.id === post.id)
             );
 
+            if (uniquePosts.length < 10) setHasMore(false);
+
             setPosts(prev => {
                 const combined = [
                     ...prev,
                     ...uniquePosts.filter(p => !prev.some(existing => existing.id === p.id))
                 ];
-                if (uniquePosts.length < 10) setHasMore(false);
                 return combined;
             });
+
+            if (uniquePosts.length < 10) {
+                setHasMore(false);
+            }
 
             setIsLoading(false);
         } catch (err) {
@@ -79,6 +84,10 @@ export default function SearchTimeline({ user, searchString, isPosts = false, is
                 return combined;
             });
 
+            if (uniqueUsers.length < 10) {
+                setHasMore(false);
+            }
+
             setIsLoading(false);
         } catch (err) {
             console.error("Error fetching users:", err);
@@ -95,7 +104,8 @@ export default function SearchTimeline({ user, searchString, isPosts = false, is
     }, [fetchUsers, isUsers]);
 
     const loadMore = () => {
-        if (hasMore && !isLoading) setPage(prev => prev + 1);
+        if (!hasMore || isLoading) return;
+        setPage(prev => prev + 1);
     };
 
     const loaderRef = useInfiniteScroll(loadMore, hasMore, isLoading);
@@ -107,9 +117,9 @@ export default function SearchTimeline({ user, searchString, isPosts = false, is
                     isPosts &&
                     posts.map(post => (
                         post.postId !== 0 ?
-                            <Post key={post.id} post={post} isComment={true} parentAuthor={post.author} isExplorePage={true} />
+                            <Post key={post.id} post={post} isComment={true} parentAuthor={post.author} />
                             :
-                            <Post key={post.id} post={post} isComment={false} parentAuthor={post.author} isExplorePage={true} />
+                            <Post key={post.id} post={post} isComment={false} parentAuthor={post.author} />
                     ))
                 }
                 {

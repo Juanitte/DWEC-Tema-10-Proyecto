@@ -7,13 +7,31 @@ import ContentHeader from "../../components/shared/content-header";
 
 export default function ExplorePage() {
     const { search } = useLocation();
-    const params = new URLSearchParams(search);
-    const initial = params.get("search") || "";
-
-    const [searchString, setSearchString] = useState(initial);
+    const [searchString, setSearchString] = useState("");
     const scrollRef = useRef(null);
     const { t } = useTranslation();
     const user = JSON.parse(localStorage.getItem("user"));
+
+    useEffect(() => {
+        const params = new URLSearchParams(search);
+        const newSearchString = params.get("search") || "";
+        setSearchString(newSearchString);
+    }, [search]);
+
+    useEffect(() => {
+        const handler = (e) => {
+            const clicked = e.detail.query;
+
+            // Forzamos cambio incluso si el valor es el mismo
+            setSearchString("");
+            setTimeout(() => {
+                setSearchString(clicked);
+            }, 0);
+        };
+
+        window.addEventListener("search-hashtag-clicked", handler);
+        return () => window.removeEventListener("search-hashtag-clicked", handler);
+    }, []);
 
     useEffect(() => {
         const onWheel = (e) => {
@@ -49,7 +67,7 @@ export default function ExplorePage() {
                 />
 
                 <div ref={scrollRef} className="flex-1 overflow-y-auto">
-                    <ExploreTimelineTabs user={user} searchString={searchString} />
+                    <ExploreTimelineTabs key={searchString} user={user} searchString={searchString} />
                 </div>
             </section>
         </main>

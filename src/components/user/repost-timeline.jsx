@@ -17,6 +17,10 @@ export default function RepostTimeline({ user }) {
 
     const lastPostDate = posts.length > 0 ? new Date(posts[0].created) : null;
 
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" }); // o simplemente: window.scrollTo(0, 0);
+    }, [user?.id]);
+
     const fetchPosts = useCallback(async () => {
         try {
             if (!user?.id) return;
@@ -63,40 +67,40 @@ export default function RepostTimeline({ user }) {
     }, [fetchPosts]);
 
     // 👀 Comprobación periódica de nuevos postsAdd commentMore actions
-        useEffect(() => {
-            if (!user?.id || !lastPostDate) return;
-    
-            const interval = setInterval(async () => {
-                try {
-                    const response = await hasNewShares(lastPostDate.toISOString(), user.id);
-                    if (response.status === 401) {
-                        handleInvalidToken();
-                    }
-                    const isNewAvailable = await response.json();
-                    if (isNewAvailable) {
-                        // Volvemos a pedir la página 1 solo para ver qué hay de nuevo
-                        const sources = [user];
-    
-                        const promises = sources.map(async (u) => {
-                            const res = await getSharedPosts(u.id, 1);
-                            return await res.json();
-                        });
-    
-                        const newPostsRaw = (await Promise.all(promises)).flat();
-                        const filtered = newPostsRaw
-                            .filter(p => !posts.some(existing => existing.id === p.id))
-                            .sort((a, b) => new Date(b.created) - new Date(a.created));
-    
-                        if (filtered.length > 0) {
-                            setQueuedPosts(filtered);
-                            setNewPostsAvailable(true);
-                        }
-                    }
-                } catch (e) {
-                    console.error("Error checking for new posts:", e);
+    useEffect(() => {
+        if (!user?.id || !lastPostDate) return;
+
+        const interval = setInterval(async () => {
+            try {
+                const response = await hasNewShares(lastPostDate.toISOString(), user.id);
+                if (response.status === 401) {
                     handleInvalidToken();
                 }
-            }, 30000);
+                const isNewAvailable = await response.json();
+                if (isNewAvailable) {
+                    // Volvemos a pedir la página 1 solo para ver qué hay de nuevo
+                    const sources = [user];
+
+                    const promises = sources.map(async (u) => {
+                        const res = await getSharedPosts(u.id, 1);
+                        return await res.json();
+                    });
+
+                    const newPostsRaw = (await Promise.all(promises)).flat();
+                    const filtered = newPostsRaw
+                        .filter(p => !posts.some(existing => existing.id === p.id))
+                        .sort((a, b) => new Date(b.created) - new Date(a.created));
+
+                    if (filtered.length > 0) {
+                        setQueuedPosts(filtered);
+                        setNewPostsAvailable(true);
+                    }
+                }
+            } catch (e) {
+                console.error("Error checking for new posts:", e);
+                handleInvalidToken();
+            }
+        }, 30000);
 
         return () => clearInterval(interval);
     }, [user, lastPostDate, posts]);

@@ -23,7 +23,7 @@ import { useTranslation } from "react-i18next";
 
 export default function Post({ post, isComment, parentAuthor,
     isUserPage = false, isSharePage = false, isSavePage = false,
-    isCommentPage = false, isLikePage = false, isExplorePage = false }) {
+    isCommentPage = false, isLikePage = false }) {
     const navigate = useNavigate();
 
     const [commentCount, setCommentCount] = useState(0);
@@ -37,6 +37,82 @@ export default function Post({ post, isComment, parentAuthor,
     const [userAvatar, setUserAvatar] = useState(post.authorAvatar);
     const avatarUrlRef = useRef(null);
     const { t } = useTranslation();
+
+    // Expresión regular para hashtags: # + caracteres alfanuméricos y guiones bajos
+    const hashtagRegex = /#[\w]+/g;
+    const urlRegex = /https?:\/\/[^\s]+/g;
+
+    function renderContentWithLinks(text, navigate) {
+        // Queremos detectar hashtags y URLs, así que combinamos en una regex global
+        // La idea es separar el texto en fragmentos normales y enlaces
+
+        // Crear array para las posiciones y tipos de matches
+        const matches = [];
+
+        // Encontrar URLs
+        let match;
+        while ((match = urlRegex.exec(text)) !== null) {
+            matches.push({ index: match.index, text: match[0], type: "url" });
+        }
+        // Encontrar Hashtags
+        while ((match = hashtagRegex.exec(text)) !== null) {
+            matches.push({ index: match.index, text: match[0], type: "hashtag" });
+        }
+
+        // Ordenar matches por posición
+        matches.sort((a, b) => a.index - b.index);
+
+        const parts = [];
+        let lastIndex = 0;
+
+        for (let i = 0; i < matches.length; i++) {
+            const { index, text: matchedText, type } = matches[i];
+            // Texto antes del match
+            if (index > lastIndex) {
+                parts.push(text.substring(lastIndex, index));
+            }
+
+            if (type === "url") {
+                parts.push(
+                    <a
+                        key={index}
+                        href={matchedText}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            window.open(matchedText, "_blank", "noopener");
+                        }}
+                        className="text-blue-400 hover:underline"
+                        rel="noopener noreferrer"
+                    >
+                        {matchedText}
+                    </a>
+                );
+            } else if (type === "hashtag") {
+                parts.push(
+                    <a
+                        key={index}
+                        href="#"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate(`/explore?search=${encodeURIComponent(matchedText)}`);
+                        }}
+                        className="text-blue-400 bold italic hover:underline"
+                    >
+                        {matchedText}
+                    </a>
+                );
+            }
+
+            lastIndex = index + matchedText.length;
+        }
+
+        // Texto después del último match
+        if (lastIndex < text.length) {
+            parts.push(text.substring(lastIndex));
+        }
+
+        return parts;
+    }
 
     // ─── Fetch inicial de contadores
     useEffect(() => {
@@ -181,35 +257,35 @@ export default function Post({ post, isComment, parentAuthor,
     }, [post.id]);
 
     useEffect(() => {
-            let isMounted = true;
-            (async () => {
-              try {
+        let isMounted = true;
+        (async () => {
+            try {
                 const res = await getAvatar(post.userId);
                 if (res.ok) {
-                  const blob = await res.blob();
-                  const objectUrl = URL.createObjectURL(blob);
-                  if (isMounted) {
-                    setUserAvatar(objectUrl);
-                    avatarUrlRef.current = objectUrl;
-                  }
+                    const blob = await res.blob();
+                    const objectUrl = URL.createObjectURL(blob);
+                    if (isMounted) {
+                        setUserAvatar(objectUrl);
+                        avatarUrlRef.current = objectUrl;
+                    }
                 } else if (res.status === 404) {
-                  console.warn("Avatar no encontrado, usar fallback");
+                    console.warn("Avatar no encontrado, usar fallback");
                 } else if (res.status === 401) {
-                  handleInvalidToken();
+                    handleInvalidToken();
                 } else {
-                  console.error("Error al obtener avatar:", await res.text());
+                    console.error("Error al obtener avatar:", await res.text());
                 }
-              } catch (err) {
+            } catch (err) {
                 console.error("Excepción al fetch-avatar:", err);
-              }
-            })();
-        
-            // Cleanup: revocar object URL para liberar memoria
-            return () => {
-              isMounted = false;
-              if (avatarUrlRef.current) URL.revokeObjectURL(avatarUrlRef.current);
-            };
-          }, [post.userId]);
+            }
+        })();
+
+        // Cleanup: revocar object URL para liberar memoria
+        return () => {
+            isMounted = false;
+            if (avatarUrlRef.current) URL.revokeObjectURL(avatarUrlRef.current);
+        };
+    }, [post.userId]);
 
     // ─── Función para alternar “like” / “dislike”
     const fetchLike = async () => {
@@ -310,7 +386,7 @@ export default function Post({ post, isComment, parentAuthor,
                         <article className="hover:bg-green-800 transition duration-350 ease-in-out">
                             {
                                 post.postId !== 0 && isComment ? (
-                                    isCommentPage || isLikePage || isSharePage || isSavePage || isExplorePage ? (
+                                    isCommentPage || isLikePage || isSharePage || isSavePage ? (
                                         <p
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -362,7 +438,14 @@ export default function Post({ post, isComment, parentAuthor,
                             </div>
 
                             <div>
-                                <p className="pl-16 text-base font-medium text-white">{post.content}</p>
+                                <p
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                    }}
+                                    className="px-16 text-base font-medium text-white"
+                                >
+                                    {renderContentWithLinks(post.content, navigate)}
+                                </p>
 
                                 {post.attachments.length > 0 && (
                                     <div className="md:flex-shrink px-6 pt-3">

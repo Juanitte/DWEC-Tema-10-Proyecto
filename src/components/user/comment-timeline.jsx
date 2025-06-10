@@ -6,7 +6,7 @@ import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import Post from "../home/post";
 import Loading from "../shared/loading";
 
-export default function RepostTimeline({ user }) {
+export default function CommentTimeline({ user }) {
     const [posts, setPosts] = useState([]);
     const [queuedPosts, setQueuedPosts] = useState([]);
     const [newPostsAvailable, setNewPostsAvailable] = useState(false);
@@ -16,6 +16,10 @@ export default function RepostTimeline({ user }) {
     const { t } = useTranslation();
 
     const lastPostDate = posts.length > 0 ? new Date(posts[0].created) : null;
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" }); // o simplemente: window.scrollTo(0, 0);
+    }, [user?.id]);
 
     const fetchPosts = useCallback(async () => {
         try {

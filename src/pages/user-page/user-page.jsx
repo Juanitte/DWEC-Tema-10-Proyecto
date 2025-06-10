@@ -59,7 +59,9 @@ export default function UserPage() {
                         </>
                     }
 
-                    <UserTimelineTabs user={user} />
+                    {
+                        user && <UserTimelineTabs user={user} />
+                    }
                 </div>
             </section>
         </main>

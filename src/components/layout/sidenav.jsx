@@ -18,7 +18,7 @@ export default function Sidenav() {
             <div className="flex justify-end pr-4">
                 <img src="/logo_new_2.png" alt="Placeholder" className="w-20 h-20" />
             </div>
-            <nav className="pt-5 px-2 flex flex-col gap-1 items-end text-right">
+            <nav className="pt-5 px-2 flex flex-col gap-1 items-end text-end">
                 <a onClick={() => navigate("/")} className="w-full max-w-[200px] hover:cursor-pointer group flex self-end items-center px-2 py-2 text-base leading-6 font-semibold rounded-full hover:bg-green-800">
                     <svg className="mr-4 h-6 w-6 " stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10M9 21h6"></path>

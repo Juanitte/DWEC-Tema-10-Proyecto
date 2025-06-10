@@ -344,14 +344,14 @@ export default function ProfileCard({ user }) {
                                         hasChanged ? (
                                             <button
                                                 onClick={handleSave}
-                                                className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none focus:ring rounded max-w-max border bg-blue-600 border-blue-600 text-white hover:border-blue-500 hover:bg-blue-500 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
+                                                className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none max-w-max border bg-blue-600 border-blue-600 text-white hover:border-blue-500 hover:bg-blue-500 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
                                             >
                                                 {t('BUTTONS.SAVE')}
                                             </button>
                                         ) : (
                                             <button
                                                 onClick={handleEditing}
-                                                className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none focus:ring rounded max-w-max border bg-blue-600 border-blue-600 text-white hover:border-blue-500 hover:bg-blue-500 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
+                                                className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none max-w-max border bg-blue-600 border-blue-600 text-white hover:border-blue-500 hover:bg-blue-500 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
                                             >
                                                 {t('BUTTONS.BACK')}
                                             </button>
@@ -359,7 +359,7 @@ export default function ProfileCard({ user }) {
                                     ) : (
                                         <button
                                             onClick={handleEditing}
-                                            className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none focus:ring rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
+                                            className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
                                         >
                                             {t('PROFILE.EDIT-PROFILE')}
                                         </button>
@@ -367,12 +367,12 @@ export default function ProfileCard({ user }) {
                                 )
                                     :
                                     isFollowing ?
-                                        <button onClick={(event) => { handleFollow(event) }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
+                                        <button onClick={(event) => { handleFollow(event) }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
                                             {t('BUTTONS.UNFOLLOW')}
                                         </button>
 
                                         :
-                                        <button onClick={(event) => { handleFollow(event) }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
+                                        <button onClick={(event) => { handleFollow(event) }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
                                             {t('BUTTONS.FOLLOW')}
                                         </button>
                             }

@@ -31,7 +31,6 @@ export default function RightMenu({ isExplorePage = false }) {
             <Trending />
             <div className="py-2"></div>
             <Who />
-            <Footer />
         </div>
     );
 }
