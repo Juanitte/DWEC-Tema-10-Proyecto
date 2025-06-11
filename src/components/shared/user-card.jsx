@@ -97,7 +97,7 @@ export default function UserCard({ user, isFollowSuggestions = false }) {
 
     return (
         <>
-            <div className="flex flex-row items-center justify-between py-4 px-4 flex-wrap gap-2 hover:bg-green-600 hover:cursor-pointer"
+            <div className="flex flex-row items-center justify-between py-4 px-4 flex-wrap gap-2 hover:bg-green-800 hover:cursor-pointer"
                 onClick={(e) => {
                     e.stopPropagation();
                     goToUserPage(user.id, e);

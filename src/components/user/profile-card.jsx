@@ -3,9 +3,15 @@ import Loading from "../shared/loading";
 import { follow, getAvatar, getFollowers, getFollowing, handleInvalidToken, unfollow, UpdateAvatar, UpdateUser } from "../../services/users-service";
 import UsersModal from "./users-modal";
 import { useTranslation } from "react-i18next";
+import { Country } from "../../utils/enums";
+import { getCountryKeyByValue } from "../../utils/utils";
 
 export default function ProfileCard({ user }) {
     if (!user) return <Loading />;
+    const { t } = useTranslation();
+    
+    const key = getCountryKeyByValue(user.country);
+    const countryString = key ? t(`COUNTRIES.${key}`) : t("COUNTRIES.UNDEFINED");
 
     const userCreatedDate = new Date(user.created);
     const locale = localStorage.getItem("i18nextLng");
@@ -54,7 +60,6 @@ export default function ProfileCard({ user }) {
         bio: user.bio || '',
         link: user.link || ''
     });
-    const { t } = useTranslation();
 
     const handleClose = () => {
         setIsOpen(false);
@@ -271,7 +276,7 @@ export default function ProfileCard({ user }) {
         };
         fetchFollowers();
         fetchFollowing();
-    }, [isFollowing]);
+    }, [user.id]);
 
     const handleFollow = async (event) => {
         event.preventDefault();
@@ -457,7 +462,7 @@ export default function ProfileCard({ user }) {
                                     </g>
                                 </svg>
                                 <span className="leading-5 ml-1">
-                                    {t('PROFILE.JOINED')} {dateString}
+                                    {t('PROFILE.JOINED')} {dateString}, {countryString}.
                                 </span>
                             </div>
                         </div>

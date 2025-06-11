@@ -47,7 +47,7 @@ export default function Language({ isLogin = false }) {
                 {/* botón también inline-flex */}
                 {
                     !isLogin ?
-                        <Listbox.Button className="inline-flex items-center justify-between w-auto bg-dim-700 text-white py-2 px-3 rounded-md">
+                        <Listbox.Button className="focus:outline-none border border-white inline-flex items-center justify-between w-auto bg-[#235f1e] text-white py-2 px-3 rounded-md">
                             <img src={selected.flag} className="w-5 h-5 mr-2 rounded-sm" alt="" />
                             <span>{selected.label}</span>
                             <svg
@@ -84,10 +84,12 @@ export default function Language({ isLogin = false }) {
                                 className="
                                     absolute left-0 z-10 mt-1
                                     min-w-full
-                                    bg-dim-700 text-white
+                                    bg-white text-black
                                     rounded-md shadow-lg
                                     overflow-y-auto max-h-60
                                     overflow-x-hidden
+                                    focus:outline-none
+                                    border border-white
                                 "
                             >
                                 {LANGUAGES.map((lang) => (
@@ -95,7 +97,7 @@ export default function Language({ isLogin = false }) {
                                         key={lang.code}
                                         value={lang}
                                         className={({ active }) =>
-                                            `flex items-center cursor-pointer px-3 py-2 ${active ? "bg-dim-600" : ""
+                                            `flex items-center cursor-pointer px-3 py-2 ${active ? "bg-[#235f1e] text-white" : ""
                                             }`
                                         }
                                     >

@@ -1,3 +1,5 @@
+import { Country } from "./enums";
+
 export function formatPostTime(time) {
     const postDate = new Date(time.split('.')[0] + 'Z');
     if (isNaN(postDate.getTime())) {
@@ -123,3 +125,7 @@ export const handleStorageChange = (event) => {
         window.location.href = "/login";
     }
   };
+
+export function getCountryKeyByValue(value) {
+  return Object.keys(Country).find(key => Country[key] === value);
+}
