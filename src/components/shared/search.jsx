@@ -31,9 +31,9 @@ export default function Search({
   }, [inputValue]);
 
   // 4) Función que se llama sólo al pulsar Enter
-  const handleSearch = () => {
-      onSearch(inputValue);
-      navigate(`/explore?search=${encodeURIComponent(inputValue)}`);
+  const handleSearch = (search) => {
+      onSearch(search);
+      navigate(`/explore?search=${encodeURIComponent(search)}`);
   };
 
   // 5) Manejador de cambio: 
@@ -80,7 +80,7 @@ export default function Search({
           onChange={handleChange}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              handleSearch();
+              handleSearch(e.target.value);
             }
           }}
           className="w-full py-3 pl-10 pr-4 rounded-full text-sm focus:outline-none bg-dim-700 border-0 shadow text-white"

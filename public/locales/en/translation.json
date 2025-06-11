@@ -48,6 +48,10 @@
         "LOGOUT": "Logout"
     },
 
+    "HEADER": {
+        "CONFIG": "Settings"
+    },
+
     "POST-FORM": {
         "HEADER": "Home",
         "POST": "Post",
@@ -93,16 +97,20 @@
         "NO-POSTS": "No saved posts"
     },
 
+    "SETTINGS": {
+        "LANGUAGE": "Select language"
+    },
+
     "TRENDS": {
         "TRENDING-IN": "Trending in ",
         "TRENDING": "Trending",
         "POSTS": "Posts",
-        "SHOW-MORE": "Show more"
+        "NO-TRENDS": "No trends"
     },
 
     "WHO": {
         "WHO": "Who to follow",
-        "SHOW-MORE": "Show more"
+        "NO-USERS": "No people to follow"
     },
 
     "FOOTER": {

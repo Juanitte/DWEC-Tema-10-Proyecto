@@ -49,6 +49,10 @@
         "LOGOUT": "Cerrar sesión"
     },
 
+    "HEADER": {
+        "CONFIG": "Configuración"
+    },
+
     "POST-FORM": {
         "HEADER": "Inicio",
         "POST": "Publicar",
@@ -94,16 +98,20 @@
         "NO-POSTS": "No hay posts guardados"
     },
 
+    "SETTINGS": {
+        "LANGUAGE": "Seleccionar idioma"
+    },
+
     "TRENDS": {
         "TRENDING-IN": "Tendencias en ",
         "TRENDING": "Tendencias",
         "POSTS": "Publicaciones",
-        "SHOW-MORE": "Mostrar más"
+        "NO-TRENDS": "No hay tendencias disponibles"
     },
 
     "WHO": {
         "WHO": "A quién seguir",
-        "SHOW-MORE": "Mostrar más"
+        "NO-USERS": "No hay usuarios disponibles"
     },
 
     "FOOTER": {

@@ -6,6 +6,7 @@ import { CreateUserDto } from "../../models/createUserDto";
 import { createUser } from "../../services/users-service";
 import CryptoJS from "crypto-js";
 import { useTranslation } from "react-i18next";
+import Language from "../settings/language";
 
 export default function Signup() {
     const { t, i18n } = useTranslation();
@@ -23,7 +24,6 @@ export default function Signup() {
     const [country, setCountry] = useState(0);
     const [countries, setCountries] = useState(Object.values(Country));
     const navigate = useNavigate();
-    let count = 0;
 
     const validateForm = () => {
         return EMAIL_REGEX.test(email) && PASSWORD_REGEX.test(password) && password === confirmPassword && USERNAME_REGEX.test(username) && USERNAME_REGEX.test(fullname) && TAG_REGEX.test(tag) && country != 0;
@@ -63,6 +63,9 @@ export default function Signup() {
 
     return (
         <div className="p-8 w-full">
+            <div className="absolute top-4 right-4">
+                <Language isLogin={true} />
+            </div>
             <h1 className="text-4xl font-bold mb-4">
                 {t('SIGNUP.WELCOME')}
             </h1>
@@ -186,24 +189,20 @@ export default function Signup() {
                         id="country"
                         name="country"
                         value={country}
-                        onChange={(e) => setCountry(e.target.value)}
+                        onChange={(e) => setCountry(parseInt(e.target.value, 10))}
                         className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-[#3a9932]"
                         autoComplete="off"
                     >
 
-                        <option key={Country.UNDEFINED} value={count++}>
-                            ---
-                        </option>
-                        {
-                            countries.map((country) => (
-                                country !== Country.UNDEFINED ?
-                                    <option key={country} value={count++}>
-                                        {t(`COUNTRIES.${Object.keys(Country).find(key => Country[key] === country)}`)}
-                                    </option>
-                                    :
-                                    null
-                            ))
-                        }
+                        {/* Opción placeholder */}
+                        <option value={Country.UNDEFINED}>---</option>
+
+                        {/* Una opción por cada valor numérico del enum, manteniendo su valor original */}
+                        {countries.map((c) => (
+                            <option key={c} value={c}>
+                                {t(`COUNTRIES.${Object.keys(Country).find(key => Country[key] === c)}`)}
+                            </option>
+                        ))}
                     </select>
                 </div>
                 <button type="submit" disabled={!validateForm()} className="disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:cursor-not-allowed bg-[#3a9932] hover:bg-[#296d24] text-white font-semibold rounded-md py-2 px-4 w-full">

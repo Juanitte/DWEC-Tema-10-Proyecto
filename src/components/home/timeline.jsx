@@ -27,8 +27,8 @@ export default function Timeline({ user, isProfilePage }) {
     }, [user?.id, isProfilePage]);
 
     useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" }); // o simplemente: window.scrollTo(0, 0);
-}, [user?.id, isProfilePage]);
+        window.scrollTo({ top: 0, behavior: "smooth" }); // o simplemente: window.scrollTo(0, 0);
+    }, [user?.id, isProfilePage]);
 
     const fetchPosts = useCallback(async () => {
         try {
@@ -38,6 +38,12 @@ export default function Timeline({ user, isProfilePage }) {
             const followingData = isProfilePage
                 ? [user]
                 : await (await getFollowing(user.id)).json();
+
+            if (!isProfilePage && followingData.length === 0) {
+                setHasMorePosts(false);
+                setIsLoading(false);
+                return;
+            }
 
             if (followingData?.length > 0) {
                 const postsPromises = followingData.map(async (u) => {

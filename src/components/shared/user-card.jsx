@@ -96,72 +96,76 @@ export default function UserCard({ user, isFollowSuggestions = false }) {
     };
 
     return (
-        <div className="flex flex-row items-center justify-between py-4 px-4 flex-wrap gap-2 hover:bg-green-600 hover:cursor-pointer"
-            onClick={(e) => {
-                e.stopPropagation();
-                goToUserPage(user.id, e);
-            }}
-        >
-            <div className="flex items-center min-w-0 flex-shrink">
-                <img
-                    className="h-12 w-12 rounded-full hover:cursor-pointer bg-gray-300 border border-gray-900"
-                    src={userAvatar || user.avatar}
-                    alt=""
-                />
-                <div className="text-white pl-5 min-w-0 flex flex-col">
-                    <div className="text-white min-w-0">
-                        {
-                            isFollowSuggestions ? (
-                                <p className="text-sm truncate">
-                                    {
-                                        user.userName?.length > 15
-                                            ?
-                                            `${user.userName.slice(0, 15)}...`
-                                            :
-                                            user.userName
-                                    }
-                                </p>
-                            ) :
-                                <p className="font-medium truncate">{user.userName}</p>
-                        }
-                        {
-                            isFollowSuggestions ? (
-                                <p className="text-sm text-gray-400 truncate">
-                                    {
-                                        user.tag?.length > 15
-                                            ?
-                                            `${user.tag.slice(0, 15)}...`
-                                            :
-                                            user.tag
-                                    }
-                                </p>
-                            ) :
-                                <p className="text-sm text-gray-400 truncate">{user.tag}</p>
-                        }
+        <>
+            <div className="flex flex-row items-center justify-between py-4 px-4 flex-wrap gap-2 hover:bg-green-600 hover:cursor-pointer"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    goToUserPage(user.id, e);
+                }}
+            >
+                <div className="flex items-center min-w-0 flex-shrink">
+                    <img
+                        className="h-12 w-12 rounded-full hover:cursor-pointer bg-gray-300 border border-gray-900"
+                        src={userAvatar || user.avatar}
+                        alt=""
+                    />
+                    <div className="text-white pl-5 min-w-0 flex flex-col">
+                        <div className="text-white min-w-0">
+                            {
+                                isFollowSuggestions ? (
+                                    <p className="text-sm truncate">
+                                        {
+                                            user.userName?.length > 15
+                                                ?
+                                                `${user.userName.slice(0, 15)}...`
+                                                :
+                                                user.userName
+                                        }
+                                    </p>
+                                ) :
+                                    <p className="font-medium truncate">{user.userName}</p>
+                            }
+                            {
+                                isFollowSuggestions ? (
+                                    <p className="text-sm text-gray-400 truncate">
+                                        {
+                                            user.tag?.length > 15
+                                                ?
+                                                `${user.tag.slice(0, 15)}...`
+                                                :
+                                                user.tag
+                                        }
+                                    </p>
+                                ) :
+                                    <p className="text-sm text-gray-400 truncate">{user.tag}</p>
+                            }
+                        </div>
+                        <div>
+                            <p className="text-sm truncate">
+                                {isFollowSuggestions
+                                    ? (user.bio?.length > 15 ? `${user.bio.slice(0, 15)}...` : user.bio)
+                                    : user.bio}
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <p className="text-sm truncate">
-                            {isFollowSuggestions
-                                ? (user.bio?.length > 15 ? `${user.bio.slice(0, 15)}...` : user.bio)
-                                : user.bio}
-                        </p>
-                    </div>
+                </div>
+
+                <div className="ml-auto">
+                    {
+                        isFollowing ?
+                            <button onClick={(e) => { e.stopPropagation(); handleFollow(e); }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-white hover:bg-white hover:text-green-800 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
+                                {t('BUTTONS.UNFOLLOW')}
+                            </button>
+
+                            :
+                            <button onClick={(e) => { e.stopPropagation(); handleFollow(e); }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-white hover:bg-white hover:text-green-800 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
+                                {t('BUTTONS.FOLLOW')}
+                            </button>
+                    }
                 </div>
             </div>
 
-            <div className="ml-auto">
-                {
-                    isFollowing ?
-                        <button onClick={(e) => { e.stopPropagation(); handleFollow(e); }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-white hover:bg-white hover:text-green-800 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
-                            {t('BUTTONS.UNFOLLOW')}
-                        </button>
-
-                        :
-                        <button onClick={(e) => { e.stopPropagation(); handleFollow(e); }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-white hover:bg-white hover:text-green-800 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
-                            {t('BUTTONS.FOLLOW')}
-                        </button>
-                }
-            </div>
-        </div>
+            <hr className="border-green-800" />
+        </>
     );
 }

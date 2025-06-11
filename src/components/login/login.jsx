@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import CryptoJS from "crypto-js";
 import { login } from "../../services/users-service";
 import { useTranslation } from "react-i18next";
+import Language from "../settings/language";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -27,6 +28,9 @@ export default function Login() {
 
     return (
         <div className="lg:p-36 md:p-52 sm:20 p-8 w-full">
+            <div className="absolute top-4 right-4">
+                <Language isLogin={true} />
+            </div>
             <h1 className="text-4xl font-bold">
                 {t('LOGIN.WELCOME')}
             </h1>

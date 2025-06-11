@@ -4,40 +4,43 @@ import Loading from "../shared/loading";
 import TrendingCard from "./trending-card";
 import { getTopHashtags } from "../../services/posts-service";
 
-export default function TrendingTimeline({ user , isWidget = false }) {
+export default function TrendingTimeline({ user, isWidget = false }) {
     const [hashtags, setHashtags] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const { t } = useTranslation();
 
     useEffect(() => {
-    const fetchHashtags = async () => {
-        try {
-            setIsLoading(true);
-            const response = isWidget ? await getTopHashtags(12, 3) : await getTopHashtags(12);
+        const fetchHashtags = async () => {
+            try {
+                setIsLoading(true);
+                const response = isWidget ? await getTopHashtags(12, 3) : await getTopHashtags(12);
 
-            if (!response.ok) throw new Error("Error fetching hashtags");
+                if (!response.ok) throw new Error("Error fetching hashtags");
 
-            const data = await response.json();
-            setHashtags(data);
+                const data = await response.json();
+                setHashtags(data);
 
-        } catch (error) {
-            console.error("Failed to load hashtags:", error);
-            setHashtags([]);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+            } catch (error) {
+                console.error("Failed to load hashtags:", error);
+                setHashtags([]);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-    fetchHashtags();
-}, []);
+        fetchHashtags();
+    }, []);
 
     return (
         <>
             <ul className="list-none">
                 {
-                    hashtags.map(hashtag => (
-                        <TrendingCard key={hashtag.text} hashtag={hashtag.text} index={hashtags.indexOf(hashtag)} count={hashtag.count} />
-                    ))
+                    hashtags.length == 0 ?
+                        <p className="pt-4 pl-4 text-sm text-gray-400">{t('TRENDS.NO-TRENDS')}</p>
+                        :
+                        hashtags.map(hashtag => (
+                            <TrendingCard key={hashtag.text} hashtag={hashtag.text} index={hashtags.indexOf(hashtag)} count={hashtag.count} />
+                        ))
                 }
             </ul>
 

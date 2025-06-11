@@ -12,6 +12,7 @@ import UserPage from './pages/user-page/user-page';
 import { useEffect } from 'react';
 import { handleStorageChange } from './utils/utils';
 import SavedPage from './pages/saved-page/saved-page';
+import ConfigPage from './pages/config-page/config-page';
 
 function App() {
 
@@ -34,6 +35,7 @@ function App() {
             <Route path="/saved/:userId" element={<PrivateRoute><SiteLayout><SavedPage /></SiteLayout></PrivateRoute>} />
             <Route path="/user/:userId" element={<PrivateRoute><SiteLayout><UserPage /></SiteLayout></PrivateRoute>} />
             <Route path="/post/:postId" element={<PrivateRoute><SiteLayout><PostPage /></SiteLayout></PrivateRoute>} />
+            <Route path='/settings' element={<PrivateRoute><SiteLayout><ConfigPage /></SiteLayout></PrivateRoute>} />
 
             {/* Rutas públicas */}
             <Route path="/login" element={<BaseLayout><LoginPage /></BaseLayout>} />

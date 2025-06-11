@@ -68,7 +68,7 @@ export default function PostPage() {
     return (
         <main role="main" className="h-screen overflow-hidden">
             <section className="flex flex-col h-full border border-y-0 border-green-800">
-                <ContentHeader route="" title="Post" hasBackButton={true} />
+                <ContentHeader title="Post" hasBackButton={true} />
                 <hr className="border-green-800 border-4" />
                 <div ref={scrollRef} className="flex-1 overflow-y-auto">
                     <PostDetails post={post} />

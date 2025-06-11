@@ -44,7 +44,7 @@ export default function UserPage() {
     return (
         <main role="main" className="flex h-screen overflow-hidden">
             <section className="w-full border border-y-0 border-green-800 flex flex-col overflow-hidden">
-                {user && <ContentHeader route="" title={user.userName} hasBackButton={true} />}
+                {user && <ContentHeader title={user.userName} hasBackButton={true} />}
                 <hr className="border-green-800" />
 
                 <div ref={scrollRef} className="flex-1 overflow-y-auto">

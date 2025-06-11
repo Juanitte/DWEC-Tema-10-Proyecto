@@ -36,11 +36,15 @@ export default function Who() {
             <h2 className="text-xl font-semibold text-white mb-2">{t('WHO.WHO')}</h2>
             <hr className="border-green-800" />
 
-            {users.map((user) => (
-                <UserCard key={user.id} user={user} isFollowSuggestions={true} />
-            ))}
+            {
+                users.length === 0 ?
+                    <p className="pt-4 text-gray-400">{t('WHO.NO-USERS')}</p>
+                    :
+                    users.map((user) => (
+                        <UserCard key={user.id} user={user} isFollowSuggestions={true} />
+                    ))
+            }
 
-            <hr className="border-green-800" />
         </div>
     );
 }

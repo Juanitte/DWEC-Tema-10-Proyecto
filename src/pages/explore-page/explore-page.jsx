@@ -53,7 +53,6 @@ export default function ExplorePage() {
         <main role="main" className="flex h-screen overflow-hidden">
             <section className="w-full border border-y-0 border-green-800 flex flex-col overflow-hidden">
                 <ContentHeader
-                    route=""
                     title={t("EXPLORE.HEADER")}
                     hasBackButton={true}
                 />
