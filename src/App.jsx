@@ -13,6 +13,7 @@ import { useEffect } from 'react';
 import { handleStorageChange } from './utils/utils';
 import SavedPage from './pages/saved-page/saved-page';
 import ConfigPage from './pages/config-page/config-page';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
 
@@ -27,21 +28,29 @@ function App() {
 
   return (
     <>
-        <Router>
-          <Routes>
-            {/* Rutas protegidas */}
-            <Route path="/" element={<PrivateRoute><SiteLayout><HomePage /></SiteLayout></PrivateRoute>} />
-            <Route path="/explore" element={<PrivateRoute><SiteLayout isExplorePage={true}><ExplorePage /></SiteLayout></PrivateRoute>} />
-            <Route path="/saved/:userId" element={<PrivateRoute><SiteLayout><SavedPage /></SiteLayout></PrivateRoute>} />
-            <Route path="/user/:userId" element={<PrivateRoute><SiteLayout><UserPage /></SiteLayout></PrivateRoute>} />
-            <Route path="/post/:postId" element={<PrivateRoute><SiteLayout><PostPage /></SiteLayout></PrivateRoute>} />
-            <Route path='/settings' element={<PrivateRoute><SiteLayout><ConfigPage /></SiteLayout></PrivateRoute>} />
+      <ToastContainer
+        position="bottom-center"
+        newestOnTop={false}
+        closeButton={true}
+        autoClose={3000}
+        limit={3}
+        theme='light'
+      />
+      <Router>
+        <Routes>
+          {/* Rutas protegidas */}
+          <Route path="/" element={<PrivateRoute><SiteLayout><HomePage /></SiteLayout></PrivateRoute>} />
+          <Route path="/explore" element={<PrivateRoute><SiteLayout isExplorePage={true}><ExplorePage /></SiteLayout></PrivateRoute>} />
+          <Route path="/saved/:userId" element={<PrivateRoute><SiteLayout><SavedPage /></SiteLayout></PrivateRoute>} />
+          <Route path="/user/:userId" element={<PrivateRoute><SiteLayout><UserPage /></SiteLayout></PrivateRoute>} />
+          <Route path="/post/:postId" element={<PrivateRoute><SiteLayout><PostPage /></SiteLayout></PrivateRoute>} />
+          <Route path='/settings' element={<PrivateRoute><SiteLayout><ConfigPage /></SiteLayout></PrivateRoute>} />
 
-            {/* Rutas públicas */}
-            <Route path="/login" element={<BaseLayout><LoginPage /></BaseLayout>} />
-            <Route path="/signup" element={<BaseLayout><SignupPage /></BaseLayout>} />
-          </Routes>
-        </Router>
+          {/* Rutas públicas */}
+          <Route path="/login" element={<BaseLayout><LoginPage /></BaseLayout>} />
+          <Route path="/signup" element={<BaseLayout><SignupPage /></BaseLayout>} />
+        </Routes>
+      </Router>
     </>
   )
 }

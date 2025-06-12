@@ -5,6 +5,7 @@ import { createPost } from "../../services/posts-service";
 import { getAvatar, handleInvalidToken } from "../../services/users-service";
 import { useTranslation } from "react-i18next";
 import { createPortal } from "react-dom";
+import { toast } from "react-toastify";
 
 export default function PostForm({ commentedPostId }) {
     const emojiButtonRef = useRef(null);
@@ -141,28 +142,67 @@ export default function PostForm({ commentedPostId }) {
     };
 
     const handlePost = async (e) => {
-        e.preventDefault();
-        const dto = new CreatePostDto(
-            user.userName,
-            user.tag,
-            user.avatar,
-            postText,
-            files,
-            user.id,
-            commentedPostId || 0
-        );
-        const response = await createPost(dto);
-        if (response.status === 200) {
-            setPostText("");
-            setImages([]);
-            setVideos([]);
-            setFiles([]);
-            fileInputRef.current.value = "";
-            videoInputRef.current.value = "";
-        } else if (response.status === 401) {
-            handleInvalidToken();
-        }
-    };
+    e.preventDefault();
+
+    // Muestra un toast de loading y guarda su ID
+    const toastId = toast.loading("Publicando…");
+
+    const dto = new CreatePostDto(
+      user.userName,
+      user.tag,
+      user.avatar,
+      postText,
+      files,
+      user.id,
+      commentedPostId || 0
+    );
+
+    try {
+      const response = await createPost(dto);
+
+      if (response.status === 200) {
+        // Limpia formulario
+        setPostText("");
+        setImages([]);
+        setVideos([]);
+        setFiles([]);
+        fileInputRef.current.value = "";
+        videoInputRef.current.value = "";
+
+        // Actualiza el toast a éxito
+        toast.update(toastId, {
+          render: "Publicado correctamente",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      } else if (response.status === 401) {
+        handleInvalidToken();
+        toast.update(toastId, {
+          render: "Token inválido, por favor inicia sesión de nuevo",
+          type: "error",
+          isLoading: false,
+          autoClose: 4000,
+        });
+      } else {
+        const text = await response.text();
+        toast.update(toastId, {
+          render: `Error (${response.status}): ${text}`,
+          type: "error",
+          isLoading: false,
+          autoClose: 4000,
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      toast.update(toastId, {
+        render: "Se produjo un error de red. Intenta de nuevo.",
+        type: "error",
+        isLoading: false,
+        autoClose: 4000,
+      });
+    }
+  };
 
     return (
         <>
