@@ -33,7 +33,7 @@ function App() {
         position="bottom-center"
         newestOnTop={false}
         closeButton={true}
-        autoClose={3000}
+        autoClose={2000}
         limit={3}
         theme='light'
       />
@@ -44,7 +44,7 @@ function App() {
           <Route path="/explore" element={<PrivateRoute><SiteLayout isExplorePage={true}><ExplorePage /></SiteLayout></PrivateRoute>} />
           <Route path="/saved/:userId" element={<PrivateRoute><SiteLayout><SavedPage /></SiteLayout></PrivateRoute>} />
           <Route path="/user/:userId" element={<PrivateRoute><SiteLayout><UserPage /></SiteLayout></PrivateRoute>} />
-          <Route path="/user/:userId/follows/:tab" element={<PrivateRoute><SiteLayout><FollowsPage /></SiteLayout></PrivateRoute>} />
+          <Route path="/user/:userId/follows" element={<PrivateRoute><SiteLayout><FollowsPage /></SiteLayout></PrivateRoute>} />
           <Route path="/post/:postId" element={<PrivateRoute><SiteLayout><PostPage /></SiteLayout></PrivateRoute>} />
           <Route path='/settings' element={<PrivateRoute><SiteLayout><ConfigPage /></SiteLayout></PrivateRoute>} />
 

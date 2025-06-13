@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import FollowsTimeline from "./follows-timeline";
 
-export default function FollowsTabs({ user, index = 0 }) {
-    // Tab == 0 -> Following
-    // Tab == 1 -> Followers
-    const [tab, setTab] = useState(index);
+export default function FollowsTabs({ user }) {
+    // Tab == 0 -> Received
+    // Tab == 1 -> Sent
+    const [tab, setTab] = useState(0);
     const { t } = useTranslation();
 
     const handleTabClick = (index) => {
@@ -21,7 +21,7 @@ export default function FollowsTabs({ user, index = 0 }) {
                             type="button"
                             className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                         >
-                            {t('PROFILE.FOLLOWING')}
+                            {t('MESSAGES.RECEIVED')}
                         </button>
                     ) : (
                         <button
@@ -29,7 +29,7 @@ export default function FollowsTabs({ user, index = 0 }) {
                             type="button"
                             className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                         >
-                            {t('PROFILE.FOLLOWING')}
+                            {t('MESSAGES.RECEIVED')}
                         </button>
                     )
                 }
@@ -39,7 +39,7 @@ export default function FollowsTabs({ user, index = 0 }) {
                             type="button"
                             className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                         >
-                            {t('PROFILE.FOLLOWERS')}
+                            {t('MESSAGES.SENT')}
                         </button>
                     ) : (
                         <button
@@ -47,7 +47,7 @@ export default function FollowsTabs({ user, index = 0 }) {
                             onClick={() => handleTabClick(1)}
                             className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                         >
-                            {t('PROFILE.FOLLOWERS')}
+                            {t('MESSAGES.SENT')}
                         </button>
                     )
                 }

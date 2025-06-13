@@ -8,6 +8,18 @@
         "BACK": "Back"
     },
 
+    "TOAST": {
+        "LOADING": "Wait a moment...",
+        "SUCCESS": "Success",
+        "ERROR": "Error",
+        "LOGIN-SUCCESS": "Login successful",
+        "SIGNUP-SUCCESS": "Sign up successful",
+        "LOGIN-ERROR": "Something went wrong",
+        "SIGNUP-ERROR": "Something went wrong",
+        "TOKEN-ERROR": "Invalid token, log in again",
+        "MISSING-DATA": "Complete all the fields"
+    },
+
     "LOGIN": {
         "WELCOME": "Welcome to Inkas",
         "SUBTITLE": "Login",

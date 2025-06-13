@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Country } from "../../utils/enums";
 import { getCountryKeyByValue } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function ProfileCard({ user }) {
     if (!user) return <Loading />;
@@ -108,6 +109,9 @@ export default function ProfileCard({ user }) {
     const handleSave = async () => {
         // Construye el DTO según tu CreateUserDto
         setHasChanged(false);
+
+        const toastId = toast.loading(t('TOAST.LOADING'));
+
         const userDto = {
             UserName: formValues.userName,
             Tag: user.tag,
@@ -137,14 +141,16 @@ export default function ProfileCard({ user }) {
                     Bio: formValues.bio,
                     Link: formValues.link
                 });
+                toast.update(toastId, { render: t('TOAST.SUCCESS'), type: "success", isLoading: false, autoClose: 2000 });
                 setIsEditing(false);
             } else if (response.status === 401) {
+                toast.update(toastId, { render: t('TOAST.ERROR'), type: "error", isLoading: false, autoClose: 4000 });
                 handleInvalidToken();
             } else {
-                console.error("Error guardando usuario:", await response.text());
+                toast.update(toastId, { render: t('TOAST.ERROR'), type: "error", isLoading: false, autoClose: 4000 });
             }
         } catch (err) {
-            console.error("Excepción al guardar usuario:", err);
+            toast.update(toastId, { render: t('TOAST.ERROR'), type: "error", isLoading: false, autoClose: 4000 });
         }
     };
 
@@ -471,7 +477,7 @@ export default function ProfileCard({ user }) {
                         </div>
                     </div>
                     <div className="pt-3 flex justify-start items-start w-full divide-x divide-green-800 divide-solid">
-                        <div onClick={() => { navigate(`/user/${user.id}/follows/2`) }} className="text-center pr-3 hover:cursor-pointer">
+                        <div onClick={() => { navigate(`/user/${user.id}/follows?tab=0`) }} className="text-center pr-3 hover:cursor-pointer">
                             <span className="font-bold text-white">
                                 {
                                     following.length
@@ -481,7 +487,7 @@ export default function ProfileCard({ user }) {
                                 {t('PROFILE.FOLLOWING')}
                             </span>
                         </div>
-                        <div onClick={() => { navigate(`/user/${user.id}/follows/1`) }} className="text-center px-3 hover:cursor-pointer">
+                        <div onClick={() => { navigate(`/user/${user.id}/follows?tab=1`) }} className="text-center px-3 hover:cursor-pointer">
                             <span className="font-bold text-white">
                                 {
                                     followers.length

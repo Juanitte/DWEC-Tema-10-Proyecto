@@ -171,15 +171,15 @@ export default function PostForm({ commentedPostId }) {
 
         // Actualiza el toast a éxito
         toast.update(toastId, {
-          render: "Publicado correctamente",
+          render: t('TOAST.SUCCESS'),
           type: "success",
           isLoading: false,
-          autoClose: 3000,
+          autoClose: 2000,
         });
       } else if (response.status === 401) {
         handleInvalidToken();
         toast.update(toastId, {
-          render: "Token inválido, por favor inicia sesión de nuevo",
+          render: t('TOAST.TOKEN-ERROR'),
           type: "error",
           isLoading: false,
           autoClose: 4000,
@@ -187,7 +187,7 @@ export default function PostForm({ commentedPostId }) {
       } else {
         const text = await response.text();
         toast.update(toastId, {
-          render: `Error (${response.status}): ${text}`,
+          render: `${t("TOAST.ERROR")} (${response.status}): ${text}`,
           type: "error",
           isLoading: false,
           autoClose: 4000,
@@ -196,7 +196,7 @@ export default function PostForm({ commentedPostId }) {
     } catch (err) {
       console.error(err);
       toast.update(toastId, {
-        render: "Se produjo un error de red. Intenta de nuevo.",
+        render: t('TOAST.ERROR'),
         type: "error",
         isLoading: false,
         autoClose: 4000,

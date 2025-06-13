@@ -7,6 +7,7 @@ import { createUser } from "../../services/users-service";
 import CryptoJS from "crypto-js";
 import { useTranslation } from "react-i18next";
 import Language from "../settings/language";
+import { toast } from "react-toastify";
 
 export default function Signup() {
     const { t, i18n } = useTranslation();
@@ -49,14 +50,17 @@ export default function Signup() {
     const handleSignup = (event) => {
         event.preventDefault();
 
+        const toastId = toast.loading(t('TOAST.LOADING'))
+
         let user = new CreateUserDto(tag, "", "/default_user.webp", username, fullname, +country, email, CryptoJS.SHA256(password).toString().concat('@', 'A', 'a'), "", 1);
 
         user.link = "";
         createUser(user).then((response) => {
             if (response.status === 200) {
+                toast.update(toastId, { render: t('TOAST.SIGNUP-SUCCESS'), type: "success", isLoading: false, autoClose: 2000 });
                 navigate("/login");
             } else {
-                console.log(response);
+                toast.update(toastId, { render: t('TOAST.SIGNUP-ERROR'), type: "error", isLoading: false, autoClose: 4000 });
             }
         });
     };

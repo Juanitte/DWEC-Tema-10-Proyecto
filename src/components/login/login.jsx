@@ -4,6 +4,7 @@ import CryptoJS from "crypto-js";
 import { login } from "../../services/users-service";
 import { useTranslation } from "react-i18next";
 import Language from "../settings/language";
+import { toast } from "react-toastify";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -14,15 +15,19 @@ export default function Login() {
 
     const handleLogin = (event) => {
         event.preventDefault();
+        const toastId = toast.loading(t('TOAST.LOADING'));
 
         if (email && password) {
             login(email, CryptoJS.SHA256(password).toString().concat('@', 'A', 'a'), rememberMe).then((response) => {
                 if (response.userId) {
+                    toast.update(toastId, { render: t('TOAST.LOGIN-SUCCESS'), type: "success", isLoading: false, autoClose: 2000 });
                     navigate("/");
+                } else {
+                    toast.update(toastId, { render: t('TOAST.LOGIN-ERROR'), type: "error", isLoading: false, autoClose: 4000 });
                 }
             })
         } else {
-            alert("Por favor, completa todos los campos");
+            toast.update(toastId, { render: t('TOAST.MISSING-DATA'), type: "error", isLoading: false, autoClose: 4000 });
         }
     };
 

@@ -8,6 +8,18 @@
         "BACK": "Volver"
     },
 
+    "TOAST": {
+        "LOADING": "Espere un momento...",
+        "SUCCESS": "Éxito",
+        "ERROR": "Error",
+        "LOGIN-SUCCESS": "Inicio de sesión exitoso",
+        "SIGNUP-SUCCESS": "Registro exitoso",
+        "LOGIN-ERROR": "Ha habido un problema",
+        "SIGNUP-ERROR": "Ha habido un problema",
+        "TOKEN-ERROR": "Token inválido, inicie sesión de nuevo",
+        "MISSING-DATA": "Complete todos los campos"
+    },
+
     "LOGIN": {
         "WELCOME": "Bienvenido a Inkas",
         "SUBTITLE": "Iniciar sesión",

@@ -2,22 +2,12 @@ import { useTranslation } from "react-i18next";
 import ContentHeader from "../../components/shared/content-header";
 import { useEffect, useRef, useState } from "react";
 import FollowsTabs from "../../components/user/follows-tabs";
-import { useLocation } from "react-router-dom";
 
-export default function FollowsPage() {
+export default function MessagesPage() {
   const user = JSON.parse(localStorage.getItem("user"));
-  const { search } = useLocation();
-  const params = new URLSearchParams(search);
-  const initialTab = parseInt(params.get("tab") ?? "0", 10);
 
   const [index, setIndex] = useState(initialTab);
   const scrollRef = useRef(null);
-
-  // Si cambia la query string, actualiza el index
-  useEffect(() => {
-    const newIndex = parseInt(params.get("tab") ?? "0", 10);
-    setIndex(newIndex);
-  }, [search]);
 
   useEffect(() => {
     const onWheel = (e) => {

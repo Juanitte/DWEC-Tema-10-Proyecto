@@ -36,6 +36,8 @@ export default function FollowsTimeline({ user, tab, isFollowers = false }) {
             } catch (error) {
                 console.error("Error fetching followers:", error);
                 handleInvalidToken();
+            } finally {
+                setIsLoading(false);
             }
         };
         const fetchFollowing = async () => {
@@ -49,6 +51,8 @@ export default function FollowsTimeline({ user, tab, isFollowers = false }) {
             } catch (error) {
                 console.error("Error fetching following:", error);
                 handleInvalidToken();
+            } finally {
+                setIsLoading(false);
             }
         };
 
