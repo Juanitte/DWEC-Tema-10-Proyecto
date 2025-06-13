@@ -1,8 +1,18 @@
-import React from 'react';
+import { useState } from "react";
 
 export default function ChatMessages({ senderId, receiverId, currentUserId }) {
 
+    const [messages, setMessages] = useState([]);
 
+    const fetchMessages = async () => {
+      try {
+        const response = await getMessages(senderId, receiverId);
+        const data = await response.json();
+        setMessages(data);
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    };
 
   return (
     <ul className="space-y-2 p-4">
