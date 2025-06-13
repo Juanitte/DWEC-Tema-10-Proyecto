@@ -20,10 +20,11 @@ import { useNavigate } from "react-router-dom";
 import MediaAttachment from "../shared/media-attachment";
 import { getAvatar, getUserById, handleInvalidToken } from "../../services/users-service";
 import { useTranslation } from "react-i18next";
+import { Mention } from "../post/mention";
 
 export default function Post({ post, isComment, parentAuthor,
     isUserPage = false, isSharePage = false, isSavePage = false,
-    isCommentPage = false, isLikePage = false }) {
+    isCommentPage = false, isLikePage = false, isExplorePage = false }) {
     const navigate = useNavigate();
 
     const [commentCount, setCommentCount] = useState(0);
@@ -40,23 +41,24 @@ export default function Post({ post, isComment, parentAuthor,
 
     // Expresión regular para hashtags: # + caracteres alfanuméricos y guiones bajos
     const hashtagRegex = /#[\w]+/g;
+    const mentionRegex = /@[\w]+/g;
     const urlRegex = /https?:\/\/[^\s]+/g;
 
     function renderContentWithLinks(text, navigate) {
-        // Queremos detectar hashtags y URLs, así que combinamos en una regex global
-        // La idea es separar el texto en fragmentos normales y enlaces
-
-        // Crear array para las posiciones y tipos de matches
         const matches = [];
 
-        // Encontrar URLs
         let match;
+        // URLs
         while ((match = urlRegex.exec(text)) !== null) {
             matches.push({ index: match.index, text: match[0], type: "url" });
         }
-        // Encontrar Hashtags
+        // Hashtags
         while ((match = hashtagRegex.exec(text)) !== null) {
             matches.push({ index: match.index, text: match[0], type: "hashtag" });
+        }
+        // Menciones
+        while ((match = mentionRegex.exec(text)) !== null) {
+            matches.push({ index: match.index, text: match[0], type: "mention" });
         }
 
         // Ordenar matches por posición
@@ -65,26 +67,22 @@ export default function Post({ post, isComment, parentAuthor,
         const parts = [];
         let lastIndex = 0;
 
-        for (let i = 0; i < matches.length; i++) {
-            const { index, text: matchedText, type } = matches[i];
-            // Texto antes del match
-            if (index > lastIndex) {
-                parts.push(text.substring(lastIndex, index));
-            }
+        for (const { index, text: token, type } of matches) {
+            if (index > lastIndex) parts.push(text.substring(lastIndex, index));
 
             if (type === "url") {
                 parts.push(
                     <a
                         key={index}
-                        href={matchedText}
+                        href={token}
                         onClick={(e) => {
                             e.preventDefault();
-                            window.open(matchedText, "_blank", "noopener");
+                            window.open(token, "_blank", "noopener");
                         }}
                         className="text-blue-400 hover:underline"
                         rel="noopener noreferrer"
                     >
-                        {matchedText}
+                        {token}
                     </a>
                 );
             } else if (type === "hashtag") {
@@ -94,23 +92,26 @@ export default function Post({ post, isComment, parentAuthor,
                         href="#"
                         onClick={(e) => {
                             e.preventDefault();
-                            navigate(`/explore?search=${encodeURIComponent(matchedText)}`);
+                            navigate(`/explore?search=${encodeURIComponent(token)}`);
                         }}
                         className="text-blue-400 bold italic hover:underline"
                     >
-                        {matchedText}
+                        {token}
                     </a>
                 );
+            } else if (type === "mention") {
+                parts.push(
+                    <Mention
+                        key={index}
+                        tag={token}
+                        navigate={navigate}
+                    />
+                );
             }
-
-            lastIndex = index + matchedText.length;
+            lastIndex = index + token.length;
         }
 
-        // Texto después del último match
-        if (lastIndex < text.length) {
-            parts.push(text.substring(lastIndex));
-        }
-
+        if (lastIndex < text.length) parts.push(text.substring(lastIndex));
         return parts;
     }
 
@@ -232,7 +233,7 @@ export default function Post({ post, isComment, parentAuthor,
                 handleInvalidToken();
             }
         };
-        if (isCommentPage || isLikePage || isSharePage || isSavePage) {
+        if (isCommentPage || isLikePage || isSharePage || isSavePage || isExplorePage) {
             setParentAuthor();
         }
 
@@ -381,12 +382,12 @@ export default function Post({ post, isComment, parentAuthor,
     return (
         <>
             {
-                isComment && isUserPage && !isCommentPage && !isSharePage && !isSavePage && !isLikePage ? null :
+                isComment && isUserPage && !isExplorePage && !isCommentPage && !isSharePage && !isSavePage && !isLikePage ? null :
                     <li onClick={() => goToPostPage(post.id)} className="cursor-pointer">
                         <article className="hover:bg-green-800 transition duration-350 ease-in-out">
                             {
                                 post.postId !== 0 && isComment ? (
-                                    isCommentPage || isLikePage || isSharePage || isSavePage ? (
+                                    isCommentPage || isLikePage || isSharePage || isSavePage || isExplorePage ? (
                                         <p
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -442,7 +443,7 @@ export default function Post({ post, isComment, parentAuthor,
                                     onClick={(e) => {
                                         e.stopPropagation();
                                     }}
-                                    className="px-16 text-base font-medium text-white"
+                                    className="px-16 text-base font-medium text-white whitespace-pre-wrap"
                                 >
                                     {renderContentWithLinks(post.content, navigate)}
                                 </p>

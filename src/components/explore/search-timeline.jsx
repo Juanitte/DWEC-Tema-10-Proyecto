@@ -117,9 +117,9 @@ export default function SearchTimeline({ user, searchString, isPosts = false, is
                     isPosts &&
                     posts.map(post => (
                         post.postId !== 0 ?
-                            <Post key={post.id} post={post} isComment={true} parentAuthor={post.author} />
+                            <Post key={post.id} post={post} isComment={true} isExplorePage={true} />
                             :
-                            <Post key={post.id} post={post} isComment={false} parentAuthor={post.author} />
+                            <Post key={post.id} post={post} isComment={false} isExplorePage={true} />
                     ))
                 }
                 {

@@ -5,6 +5,7 @@ import UsersModal from "./users-modal";
 import { useTranslation } from "react-i18next";
 import { Country } from "../../utils/enums";
 import { getCountryKeyByValue } from "../../utils/utils";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfileCard({ user }) {
     if (!user) return <Loading />;
@@ -60,6 +61,8 @@ export default function ProfileCard({ user }) {
         bio: user.bio || '',
         link: user.link || ''
     });
+
+    const navigate = useNavigate();
 
     const handleClose = () => {
         setIsOpen(false);
@@ -468,7 +471,7 @@ export default function ProfileCard({ user }) {
                         </div>
                     </div>
                     <div className="pt-3 flex justify-start items-start w-full divide-x divide-green-800 divide-solid">
-                        <div onClick={() => { setIsForFollowers(false); setIsOpen(true) }} className="text-center pr-3 hover:cursor-pointer">
+                        <div onClick={() => { navigate(`/user/${user.id}/follows/2`) }} className="text-center pr-3 hover:cursor-pointer">
                             <span className="font-bold text-white">
                                 {
                                     following.length
@@ -478,7 +481,7 @@ export default function ProfileCard({ user }) {
                                 {t('PROFILE.FOLLOWING')}
                             </span>
                         </div>
-                        <div onClick={() => { setIsForFollowers(true); setIsOpen(true) }} className="text-center px-3 hover:cursor-pointer">
+                        <div onClick={() => { navigate(`/user/${user.id}/follows/1`) }} className="text-center px-3 hover:cursor-pointer">
                             <span className="font-bold text-white">
                                 {
                                     followers.length
@@ -491,12 +494,6 @@ export default function ProfileCard({ user }) {
                     </div>
                 </div>
             </div>
-            {
-                isForFollowers ?
-                    <UsersModal isOpen={isOpen} onClose={handleClose} isForFollowers={isForFollowers} users={followers} />
-                    :
-                    <UsersModal isOpen={isOpen} onClose={handleClose} isForFollowers={isForFollowers} users={following} />
-            }
         </>
     );
 }

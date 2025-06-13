@@ -32,8 +32,8 @@ export default function Who() {
     }, []);
 
     return (
-        <div className="w-full rounded-lg bg-dim-700 shadow-lg p-4">
-            <h2 className="text-xl font-semibold text-white mb-2">{t('WHO.WHO')}</h2>
+        <div className="w-full rounded-lg bg-dim-700 shadow-lg py-4">
+            <h2 className="text-xl font-semibold text-white mb-2 px-4">{t('WHO.WHO')}</h2>
             <hr className="border-green-800" />
 
             {

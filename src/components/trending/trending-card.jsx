@@ -23,15 +23,15 @@ export default function TrendingCard({ hashtag, index, count }) {
 
     return (
         <>
-            <div className="flex flex-col justify-center py-4 px-4 flex-wrap gap-2 hover:bg-green-800 hover:cursor-pointer"
+            <div className="flex flex-col justify-center py-4 flex-wrap gap-2 hover:bg-green-800 hover:cursor-pointer"
                 onClick={(e) => {
                     e.stopPropagation();
                     goToHashtagPage(e);
                 }}
             >
-                <p className="text-xs text-gray-400">{index + 1} . {t('TRENDS.TRENDING')}</p>
-                <h2 className="font-bold text-white">{hashtag}</h2>
-                <p className="text-xs text-gray-400">{count} {t('TRENDS.POSTS')}</p>
+                <p className="pl-4 text-xs text-gray-400">{index + 1} . {t('TRENDS.TRENDING')}</p>
+                <h2 className="pl-4 font-bold text-white">{hashtag}</h2>
+                <p className="pl-4 text-xs text-gray-400">{count} {t('TRENDS.POSTS')}</p>
             </div>
             <hr className="border-green-800" />
         </>

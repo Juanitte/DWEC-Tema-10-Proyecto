@@ -63,6 +63,16 @@ export async function getUserById(userId) {
     });
 }
 
+export async function getUserByTag(tag) {
+    return fetch(`${BASE_URL}${USERS_URL}getbytag/${tag}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
 export async function follow(userId, followerId) {
     return fetch(`${BASE_URL}${USERS_URL}followuser/${userId}/${followerId}`, {
         method: "POST",
