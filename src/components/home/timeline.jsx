@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { useEffect, useState, useCallback } from "react";
 import { getFollowing, handleInvalidToken } from "../../services/users-service";
 import Loading from "../shared/loading";
@@ -5,6 +6,7 @@ import Post from "./post";
 import { getPostsByUser, hasNewPosts } from "../../services/posts-service";
 import { useTranslation } from "react-i18next";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
+import { css , useTheme } from "@emotion/react";
 
 export default function Timeline({ user, isProfilePage }) {
     const [posts, setPosts] = useState([]);
@@ -13,6 +15,7 @@ export default function Timeline({ user, isProfilePage }) {
     const [isLoading, setIsLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [hasMorePosts, setHasMorePosts] = useState(true);
+    const theme = useTheme();
     const { t } = useTranslation();
 
     const lastPostDate = posts.length > 0 ? new Date(posts[0].created) : null;
@@ -151,7 +154,12 @@ export default function Timeline({ user, isProfilePage }) {
                 <div className="flex justify-center">
                     <button
                         onClick={showNewPosts}
-                        className="bg-green-600 hover:bg-green-400 text-white px-4 py-2 w-full"
+                        className="px-4 py-2 w-full"
+                        css={css`
+                            background-color: ${theme.colors.primary};
+                            hover: background-color: ${theme.colors.secondary};
+                            color: ${theme.colors.text};
+                        `}
                     >
                         {
                             queuedPosts.length === 1

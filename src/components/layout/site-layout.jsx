@@ -1,13 +1,22 @@
+/** @jsxImportSource @emotion/react */
 import RightMenu from "../shared/right-menu";
 import UserWidget from "../shared/user-widget";
 import Sidenav from "./sidenav";
 import { useMediaQuery } from 'react-responsive';
+import { css , useTheme } from '@emotion/react';
 
 export default function SiteLayout({ children , isExplorePage = false }) {
     const isMobile = useMediaQuery({ maxWidth: 1024 }); // Tailwind md:1024px
+    const theme = useTheme();
 
     return (
-        <div className="h-screen bg-[#162b15] text-white flex overflow-hidden">
+        <div
+            className="h-screen flex overflow-hidden"
+            css={css`
+                background-color: ${theme.colors.background};
+                color: ${theme.colors.text};
+            `}
+            >
             {!isMobile && (
                 <aside className="flex-1 px-2 flex flex-col overflow-y-auto">
                     <Sidenav />

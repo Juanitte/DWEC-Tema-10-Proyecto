@@ -4,6 +4,7 @@ import Timeline from "../../components/home/timeline";
 import ContentHeader from "../../components/shared/content-header";
 import { useEffect, useRef } from "react";
 import Language from "../../components/settings/language";
+import ThemeSelector from "../../components/settings/theme-selector";
 
 export default function ConfigPage() {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -30,6 +31,8 @@ export default function ConfigPage() {
                     <hr className="border-green-800" />
                     <div ref={scrollRef} className="flex-1 overflow-y-auto">
                         <Language user={user} />
+                        <hr className="border-green-800" />
+                        <ThemeSelector />
                         <hr className="border-green-800" />
                     </div>
                 </section>

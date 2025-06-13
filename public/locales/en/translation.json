@@ -110,7 +110,8 @@
     },
 
     "SETTINGS": {
-        "LANGUAGE": "Select language"
+        "LANGUAGE": "Select language",
+        "THEME": "Select theme"
     },
 
     "TRENDS": {

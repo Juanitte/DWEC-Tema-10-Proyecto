@@ -111,7 +111,8 @@
     },
 
     "SETTINGS": {
-        "LANGUAGE": "Seleccionar idioma"
+        "LANGUAGE": "Seleccionar idioma",
+        "THEME": "Seleccionar tema"
     },
 
     "TRENDS": {
