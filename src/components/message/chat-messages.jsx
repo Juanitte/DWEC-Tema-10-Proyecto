@@ -7,6 +7,7 @@ import { handleInvalidToken } from "../../services/users-service";
 import { css, useTheme } from "@emotion/react";
 import MediaAttachment from "../shared/media-attachment";
 import { useTranslation } from "react-i18next";
+import { formatMessageTime } from "../../utils/utils";
 
 export default function ChatMessages({ chatId, currentUserId, targetUser }) {
   const theme = useTheme();
@@ -173,8 +174,15 @@ export default function ChatMessages({ chatId, currentUserId, targetUser }) {
                         />
                       </div>
                     ))}
-                    <time className={`block text-xs text-[${theme.colors.textMid}] mt-1 text-right`}>
-                      {isOwn ? t('CHAT.YOU') : targetUser?.userName} - {new Date(msg.timestamp).toLocaleTimeString()}
+                    <time
+                      className="block text-xs mt-1 text-right"
+                      css={{ color: theme.colors.textMid }}
+                    >
+                      {isOwn ? t('CHAT.YOU') : targetUser?.userName} –{" "}
+                      {formatMessageTime(msg.timestamp)}{" "}
+                      <span className="font-mono">
+                        {new Date(msg.timestamp).toLocaleTimeString()}
+                      </span>
                     </time>
                   </div>
                 </div>
