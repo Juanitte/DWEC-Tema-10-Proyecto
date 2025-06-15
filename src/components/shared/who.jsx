@@ -1,63 +1,66 @@
+/** @jsxImportSource @emotion/react */
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import UserCard from "./user-card";
+import { getTopFollowed } from "../../services/users-service";
+import { css , useTheme} from '@emotion/react';
 
 export default function Who() {
-    const { t , i18n } = useTranslation();
+    const [users, setUsers] = useState([]);
+    const { t } = useTranslation();
+    const theme = useTheme();
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    useEffect(() => {
+        const fetchTopUsers = async () => {
+            console.log("Fetching top users...", user);
+            try {
+                const response = await getTopFollowed(user.id);
+                if (response.ok) {
+                    const data = await response.json();
+                    setUsers(data);
+                } else if (response.status === 401) {
+                    // si estás manejando expiración de token
+                    handleInvalidToken();
+                } else {
+                    console.error("Error al obtener usuarios top seguidos");
+                }
+            } catch (error) {
+                console.error("Error en fetchTopUsers:", error);
+            }
+        };
+
+        fetchTopUsers();
+    }, []);
 
     return (
-        <>
-            <div className="max-w-sm rounded-lg  bg-dim-700 overflow-hidden shadow-lg p-4">
-                <div className="flex">
-                    <div className="flex-1 p-2">
-                        <h2 className="px-4 py-2 text-xl w-48 font-semibold text-white">{t('WHO.WHO')}</h2>
-                    </div>
-                </div>
+        <div
+            className="w-full rounded-lg shadow-lg py-4"
+            css={css`background-color: ${theme.colors.primary};`}
+        >
+            <h2
+                className="text-xl font-semibold mb-2 px-4"
+                css={css`color: ${theme.colors.text};`}
+            >
+                {t('WHO.WHO')}
+            </h2>
+            <hr css={css`border-color: ${theme.colors.secondary};`} />
 
+            {
+                users.length === 0 ?
+                    <p
+                        className="pt-4"
+                        css={css`color: ${theme.colors.textMid};`}
+                    >
+                        {t('WHO.NO-USERS')}
+                    </p>
+                    :
+                    users.map((user) => (
+                        <UserCard key={user.id} user={user} isFollowSuggestions={true} />
+                    ))
+            }
 
-                <hr className="border-green-800" />
-
-                {/*first person who to follow*/}
-
-                <div className="flex flex-shrink-0 pb-2">
-                    <div className="flex-1 ">
-                        <div className="flex items-center w-48">
-                            <div className="pl-4 pt-2">
-                                <img className="inline-block h-10 w-auto rounded-full ml-4 mt-2 hover:cursor-pointer"
-                                    src="https://pbs.twimg.com/profile_images/1121328878142853120/e-rpjoJi_bigger.png"
-                                    alt="" />
-                            </div>
-                            <div className="pl-3 pt-3">
-                                <p className="text-base leading-6 font-medium text-white hover:cursor-pointer">
-                                    Sonali Hirave
-                                </p>
-                                <p
-                                    className="text-sm leading-5 font-medium text-gray-400 group-hover:text-gray-300 transition ease-in-out duration-150">
-                                    @ShonaDesign
-                                </p>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div className="flex-1 px-4 py-2 pt-4">
-                        <a href="" className=" float-right">
-                            <button
-                                className="hover: cursor-pointer bg-transparent hover:bg-white text-white font-semibold hover:text-green-800 py-2 px-4 border border-white hover:border-transparent rounded-full">
-                                {t('BUTTONS.FOLLOW')}
-                            </button>
-                        </a>
-
-                    </div>
-                </div>
-                <hr className="border-green-800" />
-
-                {/*show more*/}
-
-                <div className="flex">
-                    <div className="flex-1 p-4 hover: cursor-pointer">
-                        <h2 className="px-4 pl-2 w-48 font-bold text-gray-300">{t('WHO.SHOW-MORE')}</h2>
-                    </div>
-                </div>
-
-            </div>
-        </>
-    )
+        </div>
+    );
 }

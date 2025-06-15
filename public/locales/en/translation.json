@@ -3,7 +3,25 @@
         "POST": "Post",
         "REPLY": "Reply",
         "FOLLOW": "Follow",
-        "UNFOLLOW": "Unfollow"
+        "UNFOLLOW": "Unfollow",
+        "SAVE": "Save",
+        "BACK": "Back"
+    },
+
+    "TOAST": {
+        "LOADING": "Wait a moment...",
+        "SUCCESS": "Success",
+        "ERROR": "Error",
+        "LOGIN-SUCCESS": "Login successful",
+        "SIGNUP-SUCCESS": "Sign up successful",
+        "LOGIN-ERROR": "Something went wrong",
+        "SIGNUP-ERROR": "Something went wrong",
+        "TOKEN-ERROR": "Invalid token, log in again",
+        "MISSING-DATA": "Complete all the fields"
+    },
+
+    "LOADING": {
+        "LOADING": "Loading..."
     },
 
     "LOGIN": {
@@ -13,7 +31,26 @@
         "PASSWORD": "Password",
         "FORGOT_PASSWORD": "Forgot password?",
         "LOGIN": "Login",
-        "SIGNUP": "Sign up"
+        "SIGNUP": "Sign up",
+        "REMEMBER_ME": "Remember me"
+    },
+
+    "SIGNUP": {
+        "WELCOME": "Welcome to Inkas",
+        "SUBTITLE": "Sign up",
+        "EMAIL": "Email",
+        "PASSWORD": "Password",
+        "CONFIRM_PASSWORD": "Confirm password",
+        "USERNAME": "Username",
+        "FULLNAME": "Full name",
+        "TAG": "Tag",
+        "COUNTRY": "Country",
+        "SIGNUP": "Sign up",
+        "BACK": "Back",
+        "PASSWORD_TOOLTIP": "Must include at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character",
+        "USERNAME_TOOLTIP": "Must be between 3 and 30 characters long",
+        "FULLNAME_TOOLTIP": "Must be between 3 and 40 characters long",
+        "TAG_TOOLTIP": "Must be between 3 and 20 characters long"
     },
 
     "SIDENAV": {
@@ -27,32 +64,79 @@
         "LOGOUT": "Logout"
     },
 
+    "HEADER": {
+        "CONFIG": "Settings"
+    },
+
     "POST-FORM": {
         "HEADER": "Home",
         "POST": "Post",
         "FORM-PLACEHOLDER": "What's happening?",
-        "COMMENT-PLACEHOLDER": "Comment..."
+        "COMMENT-PLACEHOLDER": "Comment...",
+        "EMOJI-SEARCH-PLACEHOLDER": "Search emoji",
+        "CHAT-PLACEHOLDER": "Send message...",
+        "CHAT": "Send"
+    },
+
+    "POST": {
+        "REPLY": "Replying to",
+        "SHARED": "Shared by"
+    },
+
+    "CHAT": {
+        "NO-CHATS": "No chats available",
+        "YOU": "You",
+        "NO_MESSAGES": "No messages available"
     },
 
     "TIMELINE": {
         "NO-POSTS": "No posts available",
-        "LOAD-POSTS": "Load more posts"
+        "NEW-POSTS": "Load {{count}} new posts",
+        "NEW-POST": "Load 1 new post"
     },
 
     "SEARCHBAR": {
         "PLACEHOLDER": "Search Inkas"
     },
 
+    "EXPLORE": {
+        "HEADER": "Explore Inkas",
+        "POSTS": "Posts",
+        "USERS": "Users",
+        "TRENDING": "Trending"
+    },
+
+    "PROFILE": {
+        "FOLLOWERS": "Followers",
+        "FOLLOWING": "Following",
+        "EDIT-PROFILE": "Edit Profile",
+        "JOINED": "Joined",
+        "POSTS": "Posts",
+        "REPLIES": "Replies",
+        "SHARES": "Shares",
+        "LIKES": "Likes"
+    },
+
+    "SAVED": {
+        "HEADER": "Saved Posts",
+        "NO-POSTS": "No saved posts"
+    },
+
+    "SETTINGS": {
+        "LANGUAGE": "Select language",
+        "THEME": "Select theme"
+    },
+
     "TRENDS": {
         "TRENDING-IN": "Trending in ",
         "TRENDING": "Trending",
         "POSTS": "Posts",
-        "SHOW-MORE": "Show more"
+        "NO-TRENDS": "No trends"
     },
 
     "WHO": {
         "WHO": "Who to follow",
-        "SHOW-MORE": "Show more"
+        "NO-USERS": "No people to follow"
     },
 
     "FOOTER": {

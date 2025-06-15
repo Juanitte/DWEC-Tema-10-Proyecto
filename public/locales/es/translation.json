@@ -3,7 +3,25 @@
         "POST": "Publicar",
         "REPLY": "Responder",
         "FOLLOW": "Seguir",
-        "UNFOLLOW": "Dejar de seguir"
+        "UNFOLLOW": "Dejar de seguir",
+        "SAVE": "Guardar",
+        "BACK": "Volver"
+    },
+
+    "TOAST": {
+        "LOADING": "Espere un momento...",
+        "SUCCESS": "Éxito",
+        "ERROR": "Error",
+        "LOGIN-SUCCESS": "Inicio de sesión exitoso",
+        "SIGNUP-SUCCESS": "Registro exitoso",
+        "LOGIN-ERROR": "Ha habido un problema",
+        "SIGNUP-ERROR": "Ha habido un problema",
+        "TOKEN-ERROR": "Token inválido, inicie sesión de nuevo",
+        "MISSING-DATA": "Complete todos los campos"
+    },
+
+    "LOADING": {
+        "LOADING": "Cargando..."
     },
 
     "LOGIN": {
@@ -14,7 +32,26 @@
         "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?",
         "LOGIN": "Iniciar sesión",
         "SIGNUP": "Registrarme",
-        "POST": "Publicar"
+        "POST": "Publicar",
+        "REMEMBER_ME": "Recuérdame"
+    },
+
+    "SIGNUP": {
+        "WELCOME": "Bienvenido a Inkas",
+        "SUBTITLE": "Crear cuenta",
+        "EMAIL": "Email",
+        "PASSWORD": "Contraseña",
+        "CONFIRM_PASSWORD": "Confirmar contraseña",
+        "USERNAME": "Nombre de usuario",
+        "FULLNAME": "Nombre completo",
+        "TAG": "Etiqueta",
+        "COUNTRY": "País",
+        "SIGNUP": "Crear cuenta",
+        "BACK": "Volver",
+        "PASSWORD_TOOLTIP": "Debe incluir al menos 8 caracteres, 1 mayúscula, 1 minúscula, 1 número y 1 caracter especial",
+        "USERNAME_TOOLTIP": "Debe tener entre 3 y 30 caracteres",
+        "FULLNAME_TOOLTIP": "Debe tener entre 3 y 40 caracteres",
+        "TAG_TOOLTIP": "Debe tener entre 3 y 20 caracteres"
     },
 
     "SIDENAV": {
@@ -28,32 +65,79 @@
         "LOGOUT": "Cerrar sesión"
     },
 
+    "HEADER": {
+        "CONFIG": "Configuración"
+    },
+
     "POST-FORM": {
         "HEADER": "Inicio",
         "POST": "Publicar",
         "FORM-PLACEHOLDER": "¿Qué está pasando?",
-        "COMMENT-PLACEHOLDER": "Comentario..."
+        "COMMENT-PLACEHOLDER": "Comentario...",
+        "EMOJI-SEARCH-PLACEHOLDER": "Buscar emojis...",
+        "CHAT-PLACEHOLDER": "Enviar mensaje...",
+        "CHAT": "Enviar"
+    },
+
+    "POST": {
+        "REPLY": "Respondiendo a",
+        "SHARED": "Compartido por"
+    },
+
+    "CHAT": {
+        "NO-CHATS": "No hay chats disponibles",
+        "YOU": "Tú",
+        "NO_MESSAGES": "No hay mensajes disponibles"
     },
 
     "TIMELINE": {
         "NO-POSTS": "No hay publicaciones disponibles",
-        "LOAD-POSTS": "Cargar más publicaciones"
+        "NEW-POSTS": "Cargar {{count}} nuevos posts",
+        "NEW-POST": "Cargar 1 nuevo post"
     },
 
     "SEARCHBAR": {
         "PLACEHOLDER": "Buscar en Inkas"
     },
 
+    "EXPLORE": {
+        "HEADER": "Explorar Inkas",
+        "POSTS": "Posts",
+        "USERS": "Usuarios",
+        "TRENDING": "Tendencias"
+    },
+
+    "PROFILE": {
+        "FOLLOWERS": "Seguidores",
+        "FOLLOWING": "Siguiendo",
+        "EDIT-PROFILE": "Editar Perfil",
+        "JOINED": "Se unió en",
+        "POSTS": "Posts",
+        "REPLIES": "Respuestas",
+        "SHARES": "Compartidos",
+        "LIKES": "Me gusta"
+    },
+
+    "SAVED": {
+        "HEADER": "Posts Guardados",
+        "NO-POSTS": "No hay posts guardados"
+    },
+
+    "SETTINGS": {
+        "LANGUAGE": "Seleccionar idioma",
+        "THEME": "Seleccionar tema"
+    },
+
     "TRENDS": {
         "TRENDING-IN": "Tendencias en ",
         "TRENDING": "Tendencias",
         "POSTS": "Publicaciones",
-        "SHOW-MORE": "Mostrar más"
+        "NO-TRENDS": "No hay tendencias disponibles"
     },
 
     "WHO": {
         "WHO": "A quién seguir",
-        "SHOW-MORE": "Mostrar más"
+        "NO-USERS": "No hay usuarios disponibles"
     },
 
     "FOOTER": {

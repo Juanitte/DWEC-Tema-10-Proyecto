@@ -6,6 +6,7 @@ import {
 } from "../models/user";
 import {
     AUTH_URL,
+    BASE_URL,
     USERS_URL
 } from "../utils/literals";
 import {
@@ -14,15 +15,16 @@ import {
 
 
 
-export async function login(email, password) {
-    return fetch(AUTH_URL, {
+export async function login(email, password, rememberMe) {
+    return fetch(BASE_URL + AUTH_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 email,
-                password
+                password,
+                rememberMe
             }),
         })
         .then((response) => response.json())
@@ -42,7 +44,7 @@ export async function login(email, password) {
 }
 
 export async function createUser(userDto) {
-    return fetch(`${USERS_URL}create`, {
+    return fetch(`${BASE_URL}${USERS_URL}create`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -52,7 +54,17 @@ export async function createUser(userDto) {
 }
 
 export async function getUserById(userId) {
-    return fetch(`${USERS_URL}getbyid/${userId}`, {
+    return fetch(`${BASE_URL}${USERS_URL}getbyid/${userId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function getUserByTag(tag) {
+    return fetch(`${BASE_URL}${USERS_URL}getbytag/${tag}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -62,7 +74,7 @@ export async function getUserById(userId) {
 }
 
 export async function follow(userId, followerId) {
-    return fetch(`${USERS_URL}followuser/${userId}/${followerId}`, {
+    return fetch(`${BASE_URL}${USERS_URL}followuser/${userId}/${followerId}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -72,7 +84,7 @@ export async function follow(userId, followerId) {
 }
 
 export async function unfollow(userId, followerId) {
-    return fetch(`${USERS_URL}unfollow/${userId}/${followerId}`, {
+    return fetch(`${BASE_URL}${USERS_URL}unfollow/${userId}/${followerId}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -82,7 +94,17 @@ export async function unfollow(userId, followerId) {
 }
 
 export async function getFollowers(userId) {
-    return fetch(`${USERS_URL}getfollowers/${userId}`, {
+    return fetch(`${BASE_URL}${USERS_URL}getfollowers/${userId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function getFollowersPage(userId, page) {
+    return fetch(`${BASE_URL}${USERS_URL}getfollowers/${userId}/${page}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -92,7 +114,7 @@ export async function getFollowers(userId) {
 }
 
 export async function getFollowing(userId) {
-    return fetch(`${USERS_URL}getfollowing/${userId}`, {
+    return fetch(`${BASE_URL}${USERS_URL}getfollowing/${userId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -101,9 +123,92 @@ export async function getFollowing(userId) {
     });
 }
 
+export async function getFollowingIds(userId) {
+    return fetch(`${BASE_URL}${USERS_URL}followingids/${userId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function getFollowingPage(userId, page) {
+    return fetch(`${BASE_URL}${USERS_URL}getfollowing/${userId}/${page}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function getAvatar(userId){
+    return fetch(`${BASE_URL}${USERS_URL}getavatar/${userId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function UpdateAvatar(userId, avatarFile){
+    const formData = new FormData();
+  formData.append("file", avatarFile);
+
+  return fetch(`${BASE_URL}${USERS_URL}updateavatar/${userId}`, {
+    method: "PUT",
+    headers: {
+      "Authorization": `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: formData,
+  });
+}
+
+export async function UpdateUser(userId, userDto){
+    return fetch(`${BASE_URL}${USERS_URL}update/${userId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(userDto),
+    });
+}
+
+export async function GetUsersFilter(page, searchString) {
+    const query = searchString ? `?searchString=${encodeURIComponent(searchString)}` : '';
+    return fetch(`${BASE_URL}${USERS_URL}getusersfilter/${page}${query}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function checkIfFollowing(userId, followerId) {
+    return await fetch(`${BASE_URL}${USERS_URL}isfollowing/${userId}/${followerId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
+    });
+}
+
+export async function getTopFollowed(userId) {
+    return await fetch(`${BASE_URL}${USERS_URL}gettopfollowed/${userId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
+    });
+}
+
 export function handleInvalidToken() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
-    Navigate("/");
+    window.location.href = "/login";
 }

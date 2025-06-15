@@ -1,9 +1,10 @@
 //  API
-export const BASE_URL = "http://host.docker.internal:8000";
+export const BASE_URL = "https://api.inkas.es";
 
 export const AUTH_URL = "/gateway/users/authenticate";
 export const USERS_URL = "/gateway/Users/users/";
 export const POSTS_URL = "/gateway/posts/";
+export const MESSAGES_URL = "/gateway/";
 
 //  REGEX
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

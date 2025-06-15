@@ -1,4 +1,5 @@
-import { POSTS_URL } from "../utils/literals";
+import { BASE_URL, POSTS_URL } from "../utils/literals";
+import { handleInvalidToken } from "./users-service";
 
 export async function createPost(postDto) {
     const formData = new FormData();
@@ -14,7 +15,7 @@ export async function createPost(postDto) {
         formData.append("attachments", file, file.name);
     });
 
-    return fetch(`${POSTS_URL}create`, {
+    return fetch(`${BASE_URL}${POSTS_URL}create`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -24,7 +25,7 @@ export async function createPost(postDto) {
 }
 
 export async function getPosts() {
-    return fetch(`${POSTS_URL}getall`, {
+    return fetch(`${BASE_URL}${POSTS_URL}getall`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -34,7 +35,7 @@ export async function getPosts() {
 }
 
 export async function getPostById(postId) {
-    return fetch(`${POSTS_URL}getbyid/${postId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}getbyid/${postId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -43,8 +44,8 @@ export async function getPostById(postId) {
     });
 }
 
-export async function getPostsByUser(userId, page) {
-    return fetch(`${POSTS_URL}getbyuser/${userId}/${page}`, {
+export async function getPostsByUser(userId, page, areComments = false) {
+    return fetch(`${BASE_URL}${POSTS_URL}getbyuser/${userId}/${page}?areComments=${areComments}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -53,23 +54,49 @@ export async function getPostsByUser(userId, page) {
     });
 }
 
-export async function getPostsFilter(searchString) {
-    return fetch(`${POSTS_URL}getallfilter`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-            "SearchString": searchString,
-            "ByDate": true,
-            "PropertyName": "Content"
-        })
-    });
+/**
+ * @param {string} searchString  texto a buscar
+ * @param {number} page          número de página
+ * @param {boolean} byDate       ordenar por fecha
+ * @param {string} propertyName  nombre de la propiedad, p.ej. "Content"
+ * @param {string} filterType    tipo de filtrado (contains, equals, etc.)
+ */
+export async function getPostsFilter(
+  searchString,
+  page,
+  byDate       = true,
+  propertyName = 'Content',
+  filterType   = 'contains'
+) {
+  const params = new URLSearchParams({
+    SearchString: searchString,
+    ByDate:       byDate.toString(),
+    PropertyName: propertyName,
+    FilterType:   filterType
+  });
+
+  const url = `${BASE_URL}${POSTS_URL}getallfilter/${page}?${params}`;
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  });
+
+  if (!res.ok) {
+    if (res.status === 401) {
+      handleInvalidToken();
+      return;
+    }
+    throw new Error(`Error ${res.status}: ${await res.text()}`);
+  }
+
+  return res;
 }
 
-export async function getLikedPosts(userId, searchString) {
-    return fetch(`${POSTS_URL}getliked/${userId}`, {
+export async function getLikedPosts(userId, page) {
+    return fetch(`${BASE_URL}${POSTS_URL}getliked/${userId}/${page}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -79,7 +106,7 @@ export async function getLikedPosts(userId, searchString) {
 }
 
 export async function getCommentCount(postId) {
-    return fetch(`${POSTS_URL}getcommentcount/${postId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}getcommentcount/${postId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -88,8 +115,8 @@ export async function getCommentCount(postId) {
     });
 }
 
-export async function getComments(postId) {
-    return fetch(`${POSTS_URL}getcomments/${postId}`, {
+export async function getComments(postId, page) {
+    return fetch(`${BASE_URL}${POSTS_URL}getcomments/${postId}/${page}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -100,7 +127,7 @@ export async function getComments(postId) {
 
 export async function likePost(userId, postId) {
 
-    return fetch(`${POSTS_URL}like/${userId}/${postId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}like/${userId}/${postId}`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -109,7 +136,7 @@ export async function likePost(userId, postId) {
 }
 
 export async function postIsLiked(userId, postId) {
-    return fetch(`${POSTS_URL}postIsLiked/${userId}/${postId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}postIsLiked/${userId}/${postId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -119,7 +146,7 @@ export async function postIsLiked(userId, postId) {
 }
 
 export async function getLikeCount(postId) {
-    return fetch(`${POSTS_URL}getlikecount/${postId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}getlikecount/${postId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -130,7 +157,7 @@ export async function getLikeCount(postId) {
 
 export async function dislikePost(userId, postId) {
 
-    return fetch(`${POSTS_URL}dislike/${userId}/${postId}`, {
+    return fetch(`${BASE_URL}${POSTS_URL}dislike/${userId}/${postId}`, {
         method: "DELETE",
         headers: {
             "Authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -138,12 +165,174 @@ export async function dislikePost(userId, postId) {
     });
 }
 
-export async function getShareCount(postId) {
-    return fetch(`${POSTS_URL}getsharecount/${postId}`, {
+export async function sharePost(userId, postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}share/${userId}/${postId}`, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function stopSharingPost(userId, postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}stopsharing/${userId}/${postId}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function getSharedPosts(userId, page) {
+    return fetch(`${BASE_URL}${POSTS_URL}getshared/${userId}/${page}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${localStorage.getItem("token")}`,
         },
     });
+}
+
+export async function postIsShared(userId, postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}postisshared/${userId}/${postId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function getShareCount(postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}getsharecount/${postId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function getSavedPosts(userId, page) {
+    return fetch(`${BASE_URL}${POSTS_URL}getsaved/${userId}/${page}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function savePost(userId, postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}save/${userId}/${postId}`, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function stopSavingPost(userId, postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}stopsaving/${userId}/${postId}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function postIsSaved(userId, postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}postissaved/${userId}/${postId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function getSaveCount(postId) {
+    return fetch(`${BASE_URL}${POSTS_URL}getsavecount/${postId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function hasNewPosts(since, userId, isProfile) {
+    return fetch(`${BASE_URL}${POSTS_URL}hasnew?since=${encodeURIComponent(since)}&userId=${userId}&isProfile=${isProfile}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function hasNewComments(since, userId) {
+    return fetch(`${BASE_URL}${POSTS_URL}hasnewcomments?since=${encodeURIComponent(since)}&userId=${userId}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function hasNewShares(since, userId) {
+    return fetch(`${BASE_URL}${POSTS_URL}hasnewshares?since=${encodeURIComponent(since)}&userId=${userId}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function hasNewSaves(since, userId) {
+    return fetch(`${BASE_URL}${POSTS_URL}hasnewsaves?since=${encodeURIComponent(since)}&userId=${userId}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function hasNewLikes(since, userId) {
+    return fetch(`${BASE_URL}${POSTS_URL}hasnewlikes?since=${encodeURIComponent(since)}&userId=${userId}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function getTopHashtags(hours, count = 10) {
+    return fetch(`${BASE_URL}${POSTS_URL}gettophashtags?hours=${encodeURIComponent(hours)}&count=${count}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function getFeed(userId, page) {
+    return fetch(`${BASE_URL}${POSTS_URL}getfeed/${userId}/${page}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
+export async function streamAttachment(attachmentId) {
+  return fetch(
+    `${BASE_URL}${POSTS_URL}streamattachment/${attachmentId}`,
+    {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
+      }
+    }
+  );
 }

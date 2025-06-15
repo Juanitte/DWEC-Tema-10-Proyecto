@@ -1,4 +1,7 @@
+import { useMediaQuery } from "react-responsive";
+
 export default function BaseLayout({ children }) {
+  const isMobile = useMediaQuery({ maxWidth: 1024 });
   return (
     <>
       <div className="bg-gray-100 flex justify-center items-center min-h-screen">
@@ -9,7 +12,7 @@ export default function BaseLayout({ children }) {
             className="object-cover w-full h-full animate-zoom"
           />
         </div>
-        <div className="lg:w-1/2 md:w-full sm:w-full max-h-screen overflow-y-auto">
+        <div className={ isMobile ? `lg:w-1/2 md:w-full sm:w-full max-h-screen overflow-y-auto pb-10` : `lg:w-1/2 md:w-full sm:w-full max-h-screen overflow-y-auto`}>
           {children}
         </div>
       </div>
