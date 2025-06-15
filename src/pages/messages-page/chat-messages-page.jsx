@@ -1,58 +1,110 @@
 /** @jsxImportSource @emotion/react */
-import ContentHeader from "../../components/shared/content-header";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
+import { useNavigate, useParams } from "react-router-dom";
+import ContentHeader from "../../components/shared/content-header";
 import ChatMessages from "../../components/message/chat-messages";
-import { useParams } from "react-router-dom";
 import { getChat } from "../../services/messages-service";
 import { getUserById, handleInvalidToken } from "../../services/users-service";
 
 export default function ChatMessagesPage() {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const { chatId: chatIdParam } = useParams();    // <-- aquí
-    const chatId = Number(chatIdParam) || 0;
-    const [targetUser, setTargetUser] = useState(null);
+  const { chatId: chatIdParam } = useParams();
+  const chatId = Number(chatIdParam) || 0;
+  const user = JSON.parse(localStorage.getItem("user"));
+  const theme = useTheme();
+  const navigate = useNavigate();
 
-    const theme = useTheme();
+  // Hooks siempre aquí, en este orden:
+  const [loading, setLoading] = useState(true);
+  const [authorized, setAuthorized] = useState(false);
+  const [targetUser, setTargetUser] = useState(null);
 
-    // opcional: si quieres hacer algo cada vez que cambie el chatId
-    useEffect(() => {
-        try{
-            const fetchChat = async () => {
-                const response = await getChat(chatId);
-                if (response.status === 401) {
-                    handleInvalidToken();
-                    return;
-                }
-                const chatData = await response.json();
-                const targetUserId = chatData.userIds.find(id => id != user.id);
-                const targetUserResponse = await getUserById(targetUserId);
-                if (targetUserResponse.status === 401) {
-                    handleInvalidToken();
-                    return;
-                }
-                const targetUserData = await targetUserResponse.json();
-                setTargetUser(targetUserData);
-            };
-            fetchChat();
+  useEffect(() => {
+    let isActive = true;
+    (async () => {
+      try {
+        // 1) Fetch del chat
+        const resChat = await getChat(chatId);
+        if (!isActive) return;
+
+        if (resChat.status === 401) {
+          handleInvalidToken();
+          return;
         }
-        catch (error) {
-            console.error("Error fetching chat:", error);
-            handleInvalidToken();
+        if (!resChat.ok) {
+          // chat inexistente
+          navigate("/", { replace: true });
+          return;
         }
-    }, [chatId]);
 
-    return (
-        <main role="main" className="flex h-screen">
-            <section
-                className={`w-full h-full border border-y-0 border-[${theme.colors.secondary}] flex flex-col`}
-            >
-                <ContentHeader title={targetUser?.userName} hasBackButton={true} />
-                <hr className={`border-[${theme.colors.secondary}]`} />
-                <div className="flex-1 min-h-0">
-                    <ChatMessages chatId={chatId} currentUserId={user.id} targetUser={targetUser} />
-                </div>
-            </section>
-        </main>
-    );
+        const chatData = await resChat.json();
+        if (!isActive) return;
+
+        // 2) Comprobar autorización
+        if (!chatData.userIds.includes(Number(user.id))) {
+          navigate("/", { replace: true });
+          return;
+        }
+        setAuthorized(true);
+
+        // 3) Fetch del otro usuario
+        const otherId = chatData.userIds.find(id => id !== Number(user.id));
+        const resUser = await getUserById(otherId);
+        if (!isActive) return;
+
+        if (resUser.status === 401) {
+          handleInvalidToken();
+          return;
+        }
+        if (!resUser.ok) {
+          navigate("/", { replace: true });
+          return;
+        }
+
+        const uData = await resUser.json();
+        if (!isActive) return;
+        setTargetUser(uData);
+
+      } catch (err) {
+        console.error(err);
+        handleInvalidToken();
+      } finally {
+        if (isActive) setLoading(false);
+      }
+    })();
+
+    return () => { isActive = false; };
+  }, [chatId, user.id, navigate]);
+
+  // Render condicional limpio:
+  if (loading) {
+    return null;           // o <Spinner />
+  }
+  if (!authorized) {
+    // ya hicimos `navigate` en el efecto, pero por si acaso:
+    return null;
+  }
+  if (!targetUser) {
+    return null;
+  }
+
+  // Solo aquí llegamos cuando todo está OK:
+  return (
+    <main role="main" className="flex h-screen">
+      <section
+        className="w-full h-full border border-y-0 flex flex-col"
+        css={{ borderColor: theme.colors.secondary }}
+      >
+        <ContentHeader title={targetUser.userName} hasBackButton />
+        <hr css={{ borderColor: theme.colors.secondary }} />
+        <div className="flex-1 min-h-0">
+          <ChatMessages
+            chatId={chatId}
+            currentUserId={Number(user.id)}
+            targetUser={targetUser}
+          />
+        </div>
+      </section>
+    </main>
+  );
 }
