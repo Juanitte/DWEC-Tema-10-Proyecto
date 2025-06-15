@@ -2,11 +2,23 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { css, useTheme } from '@emotion/react';
+import { use, useEffect, useState } from "react";
+import { useThemeKey } from "../../main";
 
 export default function Sidenav({ isDrawer = false, onLinkClick }) {
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
     const theme = useTheme();
+    const themeKey = useThemeKey();
+
+    console.log("🧩 themeKey:", themeKey);
+  console.log("🧩 theme.colors:", theme.colors);
+
+  const lightLogos = ["lightGreen", "lightBlue", "lightPink"];
+  // Elige directamente:
+  const logoSrc = lightLogos.includes(themeKey)
+    ? "/logo_new_2_light.png"
+    : "/logo_new_2.png";
 
     const handleLogout = () => {
         localStorage.removeItem("user");
@@ -14,10 +26,6 @@ export default function Sidenav({ isDrawer = false, onLinkClick }) {
         navigate("/login");
         if (onLinkClick) onLinkClick();
     };
-
-    const containerAlignment = isDrawer
-        ? "items-start text-start"
-        : "items-end text-end";
 
     let user = JSON.parse(localStorage.getItem("user"));
 
@@ -31,7 +39,7 @@ export default function Sidenav({ isDrawer = false, onLinkClick }) {
             <div
                 className={isDrawer ? "flex justify-start mb-4" : "flex justify-end pr-4 mb-4"}
             >
-                <img src="/logo_new_2.png" alt="Logo" className="w-20 h-20" />
+                <img src={logoSrc} alt="Logo" className="w-20 h-20" />
             </div>
             <nav
                 className={`pt-5 px-2 flex flex-col gap-1 ${isDrawer ? "items-start text-start" : "items-end text-start"}`}

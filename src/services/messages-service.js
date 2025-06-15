@@ -18,7 +18,7 @@ export async function createChat(userIds) {
         "Authorization": `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(userIds),
     }
   );
 }

@@ -230,9 +230,8 @@ export default function PostForm({ commentedPostId, isMessage = false, targetUse
 
                 // ─── 3) Solo si no existe, lo creamos
                 if (!chat) {
-                    const createRes = await createChat({
-                        UserIds: [currentUserId, tId]
-                    });
+                    const createRes = await createChat(
+                        [(Number(currentUserId)), (Number(targetUserId))]);
                     if (createRes.status === 401) throw new Error("No autorizado");
                     if (!createRes.ok) throw new Error("Error creando chat");
                     chat = await createRes.json();  // recibes el ChatDto con .id
