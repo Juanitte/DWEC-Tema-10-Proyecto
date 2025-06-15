@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+/** @jsxImportSource @emotion/react */
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import FollowsTimeline from "./follows-timeline";
+import { useTheme } from "@emotion/react";
 
 export default function FollowsTabs({ user, index = 0 }) {
     // Tab == 0 -> Following
@@ -8,18 +10,20 @@ export default function FollowsTabs({ user, index = 0 }) {
     const [tab, setTab] = useState(index);
     const { t } = useTranslation();
 
+    const theme = useTheme();
+
     const handleTabClick = (index) => {
         setTab(index);
     };
 
     return (
         <>
-            <div className="flex justify-stretch border-b border-green-800">
+            <div className={`flex justify-stretch border-b border-${theme.colors.secondary}`}>
                 {
                     tab === 0 ? (
                         <button
                             type="button"
-                            className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className={`w-full border-[${theme.colors.textMid}] hover:bg-[${theme.colors.hoverPrimary}] text-[${theme.colors.text}] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                         >
                             {t('PROFILE.FOLLOWING')}
                         </button>
@@ -27,7 +31,7 @@ export default function FollowsTabs({ user, index = 0 }) {
                         <button
                             onClick={() => handleTabClick(0)}
                             type="button"
-                            className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className={`w-full border-transparent text-${theme.colors.textMid} hover:text-[${theme.colors.text}] hover:bg-[${theme.colors.hoverPrimary}] hover:border-[${theme.colors.textMid}] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                         >
                             {t('PROFILE.FOLLOWING')}
                         </button>
@@ -37,7 +41,7 @@ export default function FollowsTabs({ user, index = 0 }) {
                     tab === 1 ? (
                         <button
                             type="button"
-                            className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className={`w-full border-[${theme.colors.textMid}] hover:bg-[${theme.colors.hoverPrimary}] text-[${theme.colors.text}] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                         >
                             {t('PROFILE.FOLLOWERS')}
                         </button>
@@ -45,7 +49,7 @@ export default function FollowsTabs({ user, index = 0 }) {
                         <button
                             type="button"
                             onClick={() => handleTabClick(1)}
-                            className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className={`w-full border-transparent text-${theme.colors.textMid} hover:text-[${theme.colors.text}] hover:bg-[${theme.colors.hoverPrimary}] hover:border-[${theme.colors.textMid}] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                         >
                             {t('PROFILE.FOLLOWERS')}
                         </button>

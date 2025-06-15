@@ -1,6 +1,8 @@
+/** @jsxImportSource @emotion/react */
 import { useTranslation } from "react-i18next";
 import { Listbox, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
+import { css, useTheme } from '@emotion/react';
 
 const LANGUAGES = [
     { code: "en-GB", label: "English", flag: "/england.png" },
@@ -12,6 +14,8 @@ export default function Language({ isLogin = false }) {
     const [selected, setSelected] = useState(
         LANGUAGES.find(l => l.code === i18n.language) || LANGUAGES[0]
     );
+
+    const theme = useTheme();
 
     useEffect(() => {
         const stored = localStorage.getItem("i18nextLng");
@@ -34,7 +38,9 @@ export default function Language({ isLogin = false }) {
         <div className="w-full p-8">
             {
                 !isLogin &&
-                <p className="text-lg text-white pb-2 bold">
+                <p
+                    className="text-lg pb-2 bold"
+                    css={css`color: ${theme.colors.text};`}>
                     {t('SETTINGS.LANGUAGE')}:
                 </p>
             }
@@ -47,7 +53,14 @@ export default function Language({ isLogin = false }) {
                 {/* botón también inline-flex */}
                 {
                     !isLogin ?
-                        <Listbox.Button className="focus:outline-none border border-white inline-flex items-center justify-between w-auto bg-[#235f1e] text-white py-2 px-3 rounded-md">
+                        <Listbox.Button
+                            className="focus:outline-none border inline-flex items-center justify-between w-auto py-2 px-3 rounded-md"
+                            css={css`
+                                background-color: ${theme.colors.primary};
+                                border-color: ${theme.colors.secondary};
+                                color: ${theme.colors.text};
+                            `}
+                        >
                             <img src={selected.flag} className="w-5 h-5 mr-2 rounded-sm" alt="" />
                             <span>{selected.label}</span>
                             <svg
@@ -84,22 +97,33 @@ export default function Language({ isLogin = false }) {
                                 className="
                                     absolute left-0 z-10 mt-1
                                     min-w-full
-                                    bg-white text-black
                                     rounded-md shadow-lg
                                     overflow-y-auto max-h-60
                                     overflow-x-hidden
                                     focus:outline-none
-                                    border border-white
+                                    border
                                 "
+                                css={css`
+                                    background-color: ${theme.colors.primary};
+                                    color: ${theme.colors.text};
+                                    border-color: ${theme.colors.secondary};
+                                `}
                             >
                                 {LANGUAGES.map((lang) => (
                                     <Listbox.Option
                                         key={lang.code}
                                         value={lang}
-                                        className={({ active }) =>
-                                            `flex items-center cursor-pointer px-3 py-2 ${active ? "bg-[#235f1e] text-white" : ""
-                                            }`
-                                        }
+                                        className="flex items-center cursor-pointer px-3 py-2"
+                                        css={css`
+                                            &:active {
+                                                background-color: ${theme.colors.primary};
+                                                color: ${theme.colors.text};
+                                                border-color: ${theme.colors.secondary};
+                                            }
+                                            &:hover {
+                                                background-color: ${theme.colors.hoverPrimary};
+                                            }
+                                        `}
                                     >
                                         {({ selected }) => (
                                             <>

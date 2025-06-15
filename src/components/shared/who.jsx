@@ -1,11 +1,14 @@
+/** @jsxImportSource @emotion/react */
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import UserCard from "./user-card";
 import { getTopFollowed } from "../../services/users-service";
+import { css , useTheme} from '@emotion/react';
 
 export default function Who() {
     const [users, setUsers] = useState([]);
     const { t } = useTranslation();
+    const theme = useTheme();
 
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -32,13 +35,26 @@ export default function Who() {
     }, []);
 
     return (
-        <div className="w-full rounded-lg bg-dim-700 shadow-lg py-4">
-            <h2 className="text-xl font-semibold text-white mb-2 px-4">{t('WHO.WHO')}</h2>
-            <hr className="border-green-800" />
+        <div
+            className="w-full rounded-lg shadow-lg py-4"
+            css={css`background-color: ${theme.colors.primary};`}
+        >
+            <h2
+                className="text-xl font-semibold mb-2 px-4"
+                css={css`color: ${theme.colors.text};`}
+            >
+                {t('WHO.WHO')}
+            </h2>
+            <hr css={css`border-color: ${theme.colors.secondary};`} />
 
             {
                 users.length === 0 ?
-                    <p className="pt-4 text-gray-400">{t('WHO.NO-USERS')}</p>
+                    <p
+                        className="pt-4"
+                        css={css`color: ${theme.colors.textMid};`}
+                    >
+                        {t('WHO.NO-USERS')}
+                    </p>
                     :
                     users.map((user) => (
                         <UserCard key={user.id} user={user} isFollowSuggestions={true} />

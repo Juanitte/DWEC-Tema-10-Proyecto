@@ -1,6 +1,8 @@
+/** @jsxImportSource @emotion/react */
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import {css , useTheme} from '@emotion/react';
 
 export default function Search({
   onSearch,
@@ -11,6 +13,7 @@ export default function Search({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const textAreaRef = useRef(null);
+  const theme = useTheme();
 
   // 1) Estado local para el input cuando estamos en ExplorePage
   const [inputValue, setInputValue] = useState(searchString);
@@ -56,7 +59,10 @@ export default function Search({
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           {/* ícono de búsqueda */}
           <svg
-            className="h-4 w-4 fill-current text-gray-400"
+            className="h-4 w-4 fill-current"
+            css={css`
+              color: ${theme.colors.textMid};
+            `}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 56.966 56.966"
             width="512px"
@@ -83,7 +89,11 @@ export default function Search({
               handleSearch(e.target.value);
             }
           }}
-          className="w-full py-3 pl-10 pr-4 rounded-full text-sm focus:outline-none bg-dim-700 border-0 shadow text-white"
+          className="w-full py-3 pl-10 pr-4 rounded-full text-sm focus:outline-none border-0 shadow"
+          css={css`
+            background-color: ${theme.colors.primary};
+            color: ${theme.colors.text};
+          `}
         />
       </div>
     </div>

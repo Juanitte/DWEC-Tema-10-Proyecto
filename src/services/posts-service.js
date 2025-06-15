@@ -315,6 +315,16 @@ export async function getTopHashtags(hours, count = 10) {
     });
 }
 
+export async function getFeed(userId, page) {
+    return fetch(`${BASE_URL}${POSTS_URL}getfeed/${userId}/${page}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
 export async function streamAttachment(attachmentId) {
   return fetch(
     `${BASE_URL}${POSTS_URL}streamattachment/${attachmentId}`,

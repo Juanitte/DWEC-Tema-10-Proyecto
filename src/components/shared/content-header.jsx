@@ -1,4 +1,6 @@
+/** @jsxImportSource @emotion/react */
 import { useNavigate } from "react-router-dom";
+import { css, useTheme } from '@emotion/react';
 
 export default function ContentHeader({
   title,
@@ -6,6 +8,7 @@ export default function ContentHeader({
   fallbackRoute = "/",
 }) {
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const goBack = (e) => {
     e.preventDefault();
@@ -25,7 +28,13 @@ export default function ContentHeader({
         {hasBackButton && (
           <a
             href="#"
-            className="text-2xl font-medium rounded-full text-white hover:bg-green-800"
+            className="text-2xl font-medium rounded-full"
+            css={css`
+              &:hover {
+                background-color: ${theme.colors.hoverPrimary};
+              }
+              color: ${theme.colors.text};
+            `}
             onClick={goBack}
           >
             <svg className="m-2 h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -33,7 +42,14 @@ export default function ContentHeader({
             </svg>
           </a>
         )}
-        <h2 className="px-4 py-2 text-xl font-semibold text-white">{title}</h2>
+        <h2
+          className="px-4 py-2 text-xl font-semibold text-white"
+          css={css`
+            color: ${theme.colors.text};
+          `}
+        >
+          {title}
+        </h2>
       </div>
     </div>
   );

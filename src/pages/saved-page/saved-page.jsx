@@ -1,12 +1,11 @@
+/** @jsxImportSource @emotion/react */
 import { useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { getUserById, handleInvalidToken } from '../../services/users-service';
 import ContentHeader from '../../components/shared/content-header';
-import PostForm from '../../components/home/post-form';
-import ProfileCard from '../../components/user/profile-card';
-import UserTimelineTabs from '../../components/user/user-timeline-tabs';
 import { useTranslation } from 'react-i18next';
 import SavedTimeline from '../../components/save/saved-timeline';
+import { css , useTheme} from '@emotion/react';
 
 export default function SavedPage() {
     const { userId } = useParams();
@@ -14,6 +13,7 @@ export default function SavedPage() {
     const loggedUser = JSON.parse(localStorage.getItem('user'));
     const scrollRef = useRef(null);
     const { t } = useTranslation();
+    const theme = useTheme();
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -46,9 +46,12 @@ export default function SavedPage() {
 
     return (
         <main role="main" className="flex h-screen overflow-hidden">
-            <section className="w-full border border-y-0 border-green-800 flex flex-col overflow-hidden">
+            <section
+                className="w-full border border-y-0 flex flex-col overflow-hidden"
+                css={css`border-color: ${theme.colors.secondary};`}
+            >
                 {user && <ContentHeader title={t('SAVED.HEADER')} hasBackButton={true} />}
-                <hr className="border-green-800" />
+                <hr css={css`border-color: ${theme.colors.secondary};`} />
 
                 <div ref={scrollRef} className="flex-1 overflow-y-auto">
 

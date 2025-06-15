@@ -1,9 +1,11 @@
+/** @jsxImportSource @emotion/react */
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import Search from "../../components/shared/search";
 import ExploreTimelineTabs from "../../components/explore/explore-timeline-tabs";
 import ContentHeader from "../../components/shared/content-header";
+import { css , useTheme } from '@emotion/react';
 
 export default function ExplorePage() {
     const { search } = useLocation();
@@ -11,6 +13,7 @@ export default function ExplorePage() {
     const scrollRef = useRef(null);
     const { t } = useTranslation();
     const user = JSON.parse(localStorage.getItem("user"));
+    const theme = useTheme();
 
     useEffect(() => {
         const params = new URLSearchParams(search);
@@ -51,12 +54,15 @@ export default function ExplorePage() {
 
     return (
         <main role="main" className="flex h-screen overflow-hidden">
-            <section className="w-full border border-y-0 border-green-800 flex flex-col overflow-hidden">
+            <section
+                className="w-full border border-y-0 flex flex-col overflow-hidden"
+                css={css`border-color: ${theme.colors.secondary};`}
+            >
                 <ContentHeader
                     title={t("EXPLORE.HEADER")}
                     hasBackButton={true}
                 />
-                <hr className="border-green-800" />
+                <hr css={css`border-color: ${theme.colors.secondary};`} />
 
                 <Search
                     searchString={searchString}

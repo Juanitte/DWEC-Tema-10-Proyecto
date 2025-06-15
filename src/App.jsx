@@ -15,6 +15,8 @@ import SavedPage from './pages/saved-page/saved-page';
 import ConfigPage from './pages/config-page/config-page';
 import { ToastContainer } from 'react-toastify';
 import FollowsPage from './pages/follows-page/follows-page';
+import MessagesPage from './pages/messages-page/messages-page';
+import ChatMessagesPage from './pages/messages-page/chat-messages-page';
 
 function App() {
 
@@ -46,6 +48,8 @@ function App() {
           <Route path="/user/:userId" element={<PrivateRoute><SiteLayout><UserPage /></SiteLayout></PrivateRoute>} />
           <Route path="/user/:userId/follows" element={<PrivateRoute><SiteLayout><FollowsPage /></SiteLayout></PrivateRoute>} />
           <Route path="/post/:postId" element={<PrivateRoute><SiteLayout><PostPage /></SiteLayout></PrivateRoute>} />
+          <Route path="/chats/:userId" element={<PrivateRoute><SiteLayout><MessagesPage /></SiteLayout></PrivateRoute>} />
+          <Route path="/messages/:chatId" element={<PrivateRoute><SiteLayout><ChatMessagesPage /></SiteLayout></PrivateRoute>} />
           <Route path='/settings' element={<PrivateRoute><SiteLayout><ConfigPage /></SiteLayout></PrivateRoute>} />
 
           {/* Rutas públicas */}

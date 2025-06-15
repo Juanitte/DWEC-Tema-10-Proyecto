@@ -5,6 +5,7 @@ import { login } from "../../services/users-service";
 import { useTranslation } from "react-i18next";
 import Language from "../settings/language";
 import { toast } from "react-toastify";
+import { useMediaQuery } from "react-responsive";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -12,6 +13,7 @@ export default function Login() {
     const navigate = useNavigate();
     const [rememberMe, setRememberMe] = useState(false);
     const { t, i18n } = useTranslation();
+    const isMobile = useMediaQuery({ maxWidth: 1024 });
 
     const handleLogin = (event) => {
         event.preventDefault();
@@ -33,7 +35,7 @@ export default function Login() {
 
     return (
         <div className="lg:p-36 md:p-52 sm:20 p-8 w-full">
-            <div className="absolute top-4 right-4">
+            <div className={ isMobile ? `` : `absolute top-4 right-4`}>
                 <Language isLogin={true} />
             </div>
             <h1 className="text-4xl font-bold">

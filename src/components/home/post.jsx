@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { useEffect, useRef, useState } from "react";
 import {
     dislikePost,
@@ -18,11 +19,12 @@ import {
 import { formatPostTime } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import MediaAttachment from "../shared/media-attachment";
-import { getAvatar, getUserById, handleInvalidToken } from "../../services/users-service";
+import { getAvatar, handleInvalidToken } from "../../services/users-service";
 import { useTranslation } from "react-i18next";
 import { Mention } from "../post/mention";
+import { css, useTheme } from "@emotion/react";
 
-export default function Post({ post, isComment, parentAuthor,
+export default function Post({ post, isComment, isSharedPost = false, parentAuthor,
     isUserPage = false, isSharePage = false, isSavePage = false,
     isCommentPage = false, isLikePage = false, isExplorePage = false }) {
     const navigate = useNavigate();
@@ -31,13 +33,14 @@ export default function Post({ post, isComment, parentAuthor,
     const [likeCount, setLikeCount] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
     const [shareCount, setShareCount] = useState(0);
-    const [isShared, setIsShared] = useState(false);
+    const [isShared, setIsShared] = useState(isSharedPost);
     const [saveCount, setSaveCount] = useState(0);
     const [isSaved, setIsSaved] = useState(false);
     const [parentAuthorNotPostPage, setParentAuthorNotPostPage] = useState("");
     const [userAvatar, setUserAvatar] = useState(post.authorAvatar);
     const avatarUrlRef = useRef(null);
     const { t } = useTranslation();
+    const theme = useTheme();
 
     // Expresión regular para hashtags: # + caracteres alfanuméricos y guiones bajos
     const hashtagRegex = /#[\w]+/g;
@@ -384,7 +387,14 @@ export default function Post({ post, isComment, parentAuthor,
             {
                 isComment && isUserPage && !isExplorePage && !isCommentPage && !isSharePage && !isSavePage && !isLikePage ? null :
                     <li onClick={() => goToPostPage(post.id)} className="cursor-pointer">
-                        <article className="hover:bg-green-800 transition duration-350 ease-in-out">
+                        <article
+                            className="transition duration-350 ease-in-out"
+                            css={css`
+                                &:hover {
+                                background-color: ${theme.colors.hoverPrimary};
+                            }
+                            `}
+                        >
                             {
                                 post.postId !== 0 && isComment ? (
                                     isCommentPage || isLikePage || isSharePage || isSavePage || isExplorePage ? (
@@ -393,7 +403,13 @@ export default function Post({ post, isComment, parentAuthor,
                                                 e.stopPropagation();
                                                 goToPostPage(post.postId);
                                             }}
-                                            className="hover:cursor-pointer pl-4 pt-2 text-sm leading-5 font-medium text-gray-400 hover:text-white"
+                                            className="hover:cursor-pointer pl-4 pt-2 text-sm leading-5 font-medium"
+                                            css={css`
+                                                color: ${theme.colors.textMid};
+                                                &:hover {
+                                                    color: ${theme.colors.text};
+                                                }
+                                            `}
                                         >
                                             {`${t('POST.REPLY')} ${parentAuthorNotPostPage}`}
                                         </p>
@@ -403,13 +419,35 @@ export default function Post({ post, isComment, parentAuthor,
                                                 e.stopPropagation();
                                                 goToPostPage(post.postId);
                                             }}
-                                            className="hover:cursor-pointer pl-4 pt-2 text-sm leading-5 font-medium text-gray-400 hover:text-white"
+                                            className="hover:cursor-pointer pl-4 pt-2 text-sm leading-5 font-medium"
+                                            css={css`
+                                                color: ${theme.colors.textMid};
+                                                &:hover {
+                                                    color: ${theme.colors.text};
+                                                }
+                                            `}
                                         >
                                             {`${t('POST.REPLY')} ${parentAuthor}`}
                                         </p>
                                     )
 
-                                ) : null
+                                ) : isSharedPost ?
+                                    <p
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            goToUserPage(post.sharedUserId, e);
+                                        }}
+                                        className="hover:cursor-pointer pl-4 pt-2 text-sm leading-5 font-medium"
+                                        css={css`
+                                                color: ${theme.colors.textMid};
+                                                &:hover {
+                                                    color: ${theme.colors.text};
+                                                }
+                                            `}
+                                    >
+                                        {`${t('POST.SHARED')} ${post.sharedBy}`}
+                                    </p>
+                                : null
                             }
 
                             <div className="flex flex-shrink-0 p-4 pb-0">
@@ -426,10 +464,21 @@ export default function Post({ post, isComment, parentAuthor,
                                         <div className="pl-3">
                                             <p
                                                 onClick={(e) => goToUserPage(post.userId, e)}
-                                                className="text-base leading-6 font-medium text-white"
+                                                className="text-base leading-6 font-medium"
+                                                css={css`
+                                                    color: ${theme.colors.text};
+                                                `}
                                             >
                                                 {post.author}
-                                                <span className="pl-2 text-sm leading-5 font-medium text-gray-400 group-hover:text-gray-300 transition ease-in-out duration-150">
+                                                <span
+                                                    className="pl-2 text-sm leading-5 font-medium transition ease-in-out duration-150"
+                                                    css={css`
+                                                        color: ${theme.colors.textMid};
+                                                        &:hover {
+                                                            color: ${theme.colors.text};
+                                                        }
+                                                    `}
+                                                >
                                                     {post.authorTag} ~ {formatPostTime(post.created)}
                                                 </span>
                                             </p>
@@ -443,7 +492,10 @@ export default function Post({ post, isComment, parentAuthor,
                                     onClick={(e) => {
                                         e.stopPropagation();
                                     }}
-                                    className="px-16 text-base font-medium text-white whitespace-pre-wrap"
+                                    className="px-16 text-base font-medium whitespace-pre-wrap"
+                                    css={css`
+                                        color: ${theme.colors.text};
+                                    `}
                                 >
                                     {renderContentWithLinks(post.content, navigate)}
                                 </p>
@@ -463,7 +515,8 @@ export default function Post({ post, isComment, parentAuthor,
 
                                 <div className="flex items-center justify-around py-4">
                                     {/* ➤ Comentarios */}
-                                    <div className="flex-1 flex items-center justify-center text-white text-xs text-gray-400 hover:text-white transition duration-350 ease-in-out">
+                                    <div
+                                        className="flex-1 flex items-center justify-center text-white text-xs text-gray-400 hover:text-white transition duration-350 ease-in-out">
                                         <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 mr-2">
                                             <g>
                                                 <path
@@ -559,7 +612,7 @@ export default function Post({ post, isComment, parentAuthor,
                                 </div>
                             </div>
 
-                            <hr className="border-green-800" />
+                            <hr css={css`border-color: ${theme.colors.secondary};`} />
                         </article>
                     </li>
             }

@@ -1,7 +1,9 @@
+/** @jsxImportSource @emotion/react */
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import SearchTimeline from "./search-timeline";
 import TrendingTimeline from "../trending/trending-timeline";
+import { css , useTheme} from '@emotion/react';
 
 export default function ExploreTimelineTabs({ user , searchString, index = 0 }) {
     // Tab == 0 -> Posts
@@ -9,6 +11,8 @@ export default function ExploreTimelineTabs({ user , searchString, index = 0 }) 
     // Tab == 2 -> Trending
     const [tab, setTab] = useState(index);
     const { t } = useTranslation();
+
+    const theme = useTheme();
 
     useEffect(() => {
         if (searchString) {
@@ -22,12 +26,21 @@ export default function ExploreTimelineTabs({ user , searchString, index = 0 }) 
 
     return (
         <>
-            <div className="flex justify-stretch border-b border-green-800">
+            <div
+                className="flex justify-stretch border-b border-green-800"
+                css={css`border-color: ${theme.colors.secondary};`}>
                 {
                     tab === 0 ? (
                         <button
                             type="button"
-                            className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className="w-full whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            css={css`
+                                &:hover {
+                                    background-color: ${theme.colors.hoverPrimary};
+                                }
+                                border-color: ${theme.colors.textMid};
+                                color: ${theme.colors.text};
+                            `}
                         >
                             {t('EXPLORE.POSTS')}
                         </button>
@@ -35,7 +48,15 @@ export default function ExploreTimelineTabs({ user , searchString, index = 0 }) 
                         <button
                             onClick={() => handleTabClick(0)}
                             type="button"
-                            className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className="w-full border-transparent whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            css={css`
+                                &:hover {
+                                    background-color: ${theme.colors.hoverPrimary};
+                                    border-color: ${theme.colors.textMid};
+                                    color: ${theme.colors.text};
+                                }
+                                color: ${theme.colors.textMid};
+                            `}
                         >
                             {t('EXPLORE.POSTS')}
                         </button>
@@ -45,7 +66,14 @@ export default function ExploreTimelineTabs({ user , searchString, index = 0 }) 
                     tab === 1 ? (
                         <button
                             type="button"
-                            className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className="w-full whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            css={css`
+                                &:hover {
+                                    background-color: ${theme.colors.hoverPrimary};
+                                }
+                                border-color: ${theme.colors.textMid};
+                                color: ${theme.colors.text};
+                            `}
                         >
                             {t('EXPLORE.USERS')}
                         </button>
@@ -53,7 +81,15 @@ export default function ExploreTimelineTabs({ user , searchString, index = 0 }) 
                         <button
                             type="button"
                             onClick={() => handleTabClick(1)}
-                            className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className="w-full border-transparent whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            css={css`
+                                &:hover {
+                                    background-color: ${theme.colors.hoverPrimary};
+                                    border-color: ${theme.colors.textMid};
+                                    color: ${theme.colors.text};
+                                }
+                                color: ${theme.colors.textMid};
+                            `}
                         >
                             {t('EXPLORE.USERS')}
                         </button>
@@ -63,7 +99,14 @@ export default function ExploreTimelineTabs({ user , searchString, index = 0 }) 
                     tab === 2 ? (
                         <button
                             type="button"
-                            className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className="w-full whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            css={css`
+                                &:hover {
+                                    background-color: ${theme.colors.hoverPrimary};
+                                }
+                                border-color: ${theme.colors.textMid};
+                                color: ${theme.colors.text};
+                            `}
                         >
                             {t('EXPLORE.TRENDING')}
                         </button>
@@ -71,7 +114,15 @@ export default function ExploreTimelineTabs({ user , searchString, index = 0 }) 
                         <button
                             type="button"
                             onClick={() => handleTabClick(2)}
-                            className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className="w-full border-transparent whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            css={css`
+                                &:hover {
+                                    background-color: ${theme.colors.hoverPrimary};
+                                    border-color: ${theme.colors.textMid};
+                                    color: ${theme.colors.text};
+                                }
+                                color: ${theme.colors.textMid};
+                            `}
                         >
                             {t('EXPLORE.TRENDING')}
                         </button>

@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { useState, useRef, useEffect } from "react";
 import EmojiPicker from "emoji-picker-react";
 import { CreatePostDto } from "../../models/createPostDto";
@@ -6,10 +7,13 @@ import { getAvatar, handleInvalidToken } from "../../services/users-service";
 import { useTranslation } from "react-i18next";
 import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
+import { css, useTheme } from '@emotion/react';
+import { createChat, getChat, getChatsByUser, sendMessage } from "../../services/messages-service";
 
-export default function PostForm({ commentedPostId }) {
+export default function PostForm({ commentedPostId, isMessage = false, targetUserId = null, onClose , onMessageSent }) {
     const emojiButtonRef = useRef(null);
     const user = JSON.parse(localStorage.getItem("user"));
+    const currentUserId = JSON.parse(localStorage.getItem("user")).id;
     const fileInputRef = useRef(null);
     const videoInputRef = useRef(null);
     const textAreaRef = useRef(null);
@@ -18,18 +22,83 @@ export default function PostForm({ commentedPostId }) {
     const [images, setImages] = useState([]);
     const [videos, setVideos] = useState([]);
     const [files, setFiles] = useState([]);
+    const [isSending, setIsSending] = useState(false);
     const [postText, setPostText] = useState("");
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [pickerPos, setPickerPos] = useState({ top: 0, left: 0 });
     const [userAvatar, setUserAvatar] = useState(user.avatar);
     const avatarUrlRef = useRef(null);
 
+    const MAX_ATTACHMENTS = 4;
+
+    const theme = useTheme();
     const { t } = useTranslation();
     const placeholder = t("POST-FORM.FORM-PLACEHOLDER");
     const commentPlaceholder = t("POST-FORM.COMMENT-PLACEHOLDER");
     const buttonText = t("BUTTONS.POST");
     const commentButtonText = t("BUTTONS.REPLY");
     const emojiSearchPlaceholder = t("POST-FORM.EMOJI-SEARCH-PLACEHOLDER");
+    const messageButtonText = t("POST-FORM.CHAT");
+    const messagePlaceholder = t("POST-FORM.CHAT-PLACEHOLDER")
+
+    const handleImageChange = (event) => {
+        const selected = Array.from(event.target.files);
+        // calculamos cuántos más podemos añadir
+        const slots = MAX_ATTACHMENTS - files.length;
+        const allowed = selected.slice(0, slots);
+
+        const previews = allowed.map(file => ({
+            url: URL.createObjectURL(file),
+            name: file.name,
+            preview: ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(file.name.split('.').pop().toLowerCase()),
+            size: file.size > 1024
+                ? (file.size > 1048576
+                    ? Math.round(file.size / 1048576) + 'mb'
+                    : Math.round(file.size / 1024) + 'kb')
+                : file.size + 'b'
+        }));
+
+        setImages(prev => [...prev, ...previews]);
+        setFiles(prev => [...prev, ...allowed]);
+
+        // si se seleccionó más de lo permitido, avisamos
+        if (selected.length > slots) {
+            toast.warn(`Solo puedes adjuntar hasta ${MAX_ATTACHMENTS} archivos en total.`);
+        }
+
+        // reset para poder volver a seleccionar los mismos nombres
+        event.target.value = "";
+    };
+
+    const handleVideoChange = (event) => {
+        const selected = Array.from(event.target.files);
+        const slots = MAX_ATTACHMENTS - files.length;
+        const allowed = selected.slice(0, slots);
+
+        const newVideos = allowed.map(file => {
+            const ext = file.name.split('.').pop()?.toLowerCase();
+            const mimeMap = { mp4: 'video/mp4', webm: 'video/webm', ogg: 'video/ogg' };
+            return {
+                url: URL.createObjectURL(file),
+                name: file.name,
+                size: file.size > 1024
+                    ? (file.size > 1048576
+                        ? Math.round(file.size / 1048576) + 'mb'
+                        : Math.round(file.size / 1024) + 'kb')
+                    : file.size + 'b',
+                file,
+                type: mimeMap[ext] || 'video/mp4'
+            };
+        });
+
+        setVideos(prev => [...prev, ...newVideos]);
+        setFiles(prev => [...prev, ...allowed]);
+
+        if (selected.length > slots) {
+            toast.warn(`Solo puedes adjuntar hasta ${MAX_ATTACHMENTS} archivos en total.`);
+        }
+        event.target.value = "";
+    };
 
     useEffect(() => {
         let isMounted = true;
@@ -142,67 +211,129 @@ export default function PostForm({ commentedPostId }) {
     };
 
     const handlePost = async (e) => {
-    e.preventDefault();
+        e.preventDefault();
+        const toastId = toast.loading("Enviando…");
+        setIsSending(true);
 
-    // Muestra un toast de loading y guarda su ID
-    const toastId = toast.loading("Publicando…");
+        if (isMessage) {
+            try {
 
-    const dto = new CreatePostDto(
-      user.userName,
-      user.tag,
-      user.avatar,
-      postText,
-      files,
-      user.id,
-      commentedPostId || 0
-    );
+                // ─── 2) Buscamos entre los chats del usuario si ya existe uno con ese tId
+                const existingRes = await getChatsByUser(currentUserId);
+                if (existingRes.status === 401) throw new Error("No autorizado");
+                const existingChats = await existingRes.json();
 
-    try {
-      const response = await createPost(dto);
+                let chat = existingChats.find(c =>
+                    Array.isArray(c.userIds) &&
+                    c.userIds.map(x => Number(x)).includes(Number(targetUserId))
+                );
 
-      if (response.status === 200) {
-        // Limpia formulario
-        setPostText("");
-        setImages([]);
-        setVideos([]);
-        setFiles([]);
-        fileInputRef.current.value = "";
-        videoInputRef.current.value = "";
+                // ─── 3) Solo si no existe, lo creamos
+                if (!chat) {
+                    const createRes = await createChat({
+                        UserIds: [currentUserId, tId]
+                    });
+                    if (createRes.status === 401) throw new Error("No autorizado");
+                    if (!createRes.ok) throw new Error("Error creando chat");
+                    chat = await createRes.json();  // recibes el ChatDto con .id
+                }
 
-        // Actualiza el toast a éxito
-        toast.update(toastId, {
-          render: t('TOAST.SUCCESS'),
-          type: "success",
-          isLoading: false,
-          autoClose: 2000,
-        });
-      } else if (response.status === 401) {
-        handleInvalidToken();
-        toast.update(toastId, {
-          render: t('TOAST.TOKEN-ERROR'),
-          type: "error",
-          isLoading: false,
-          autoClose: 4000,
-        });
-      } else {
-        const text = await response.text();
-        toast.update(toastId, {
-          render: `${t("TOAST.ERROR")} (${response.status}): ${text}`,
-          type: "error",
-          isLoading: false,
-          autoClose: 4000,
-        });
-      }
-    } catch (err) {
-      console.error(err);
-      toast.update(toastId, {
-        render: t('TOAST.ERROR'),
-        type: "error",
-        isLoading: false,
-        autoClose: 4000,
-      });
-    }
-  };
+                // ─── 4) Enviamos el mensaje al chat (existente o recién creado)
+                const msgRes = await sendMessage({
+                    content: postText,
+                    chatId: chat.id,
+                    senderId: currentUserId,
+                    attachments: files
+                });
+                if (msgRes.status === 401) throw new Error("No autorizado");
+                if (!msgRes.ok) throw new Error("Error enviando mensaje");
+
+                // ─── 5) Notificar éxito
+                toast.update(toastId, {
+                    render: "Mensaje enviado",
+                    type: "success",
+                    isLoading: false,
+                    autoClose: 2000,
+                });
+                onClose?.();
+                onMessageSent?.();
+
+            } catch (err) {
+                console.error(err);
+                toast.update(toastId, {
+                    render: err.message || "Error enviando mensaje",
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 4000,
+                });
+            } finally {
+                setIsSending(false);
+                setPostText("");
+                setImages([]);
+                setVideos([]);
+                setFiles([]);
+                fileInputRef.current.value = "";
+                videoInputRef.current.value = "";
+            }
+            return;
+        }
+
+        // ─── Lógica normal de creación de post
+        const dto = new CreatePostDto(
+            user.userName,
+            user.tag,
+            user.avatar,
+            postText,
+            files,
+            user.id,
+            commentedPostId || 0
+        );
+
+        try {
+            const response = await createPost(dto);
+            if (response.status === 200) {
+                setPostText("");
+                setImages([]);
+                setVideos([]);
+                setFiles([]);
+                fileInputRef.current.value = "";
+                videoInputRef.current.value = "";
+
+                toast.update(toastId, {
+                    render: t("TOAST.SUCCESS"),
+                    type: "success",
+                    isLoading: false,
+                    autoClose: 2000,
+                });
+            } else if (response.status === 401) {
+                handleInvalidToken();
+                toast.update(toastId, {
+                    render: t("TOAST.TOKEN-ERROR"),
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 4000,
+                });
+            } else {
+                const text = await response.text();
+                toast.update(toastId, {
+                    render: `${t("TOAST.ERROR")} (${response.status}): ${text}`,
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 4000,
+                });
+            }
+        } catch (err) {
+            console.error(err);
+            toast.update(toastId, {
+                render: t("TOAST.ERROR"),
+                type: "error",
+                isLoading: false,
+                autoClose: 4000,
+            });
+        } finally {
+            setIsSending(false);
+        }
+    };
 
     return (
         <>
@@ -214,10 +345,13 @@ export default function PostForm({ commentedPostId }) {
                 </div>
                 <div className="flex-1 px-2 pt-2 mt-2 relative">
                     <textarea
-                        className="bg-transparent text-white font-medium text-lg w-full focus:outline-none focus:border-none"
+                        className="bg-transparent font-medium text-lg w-full focus:outline-none focus:border-none"
+                        css={css`
+                            color: ${theme.colors.text};
+                        `}
                         rows="2"
                         cols="50"
-                        placeholder={commentedPostId === 0 ? placeholder : commentPlaceholder}
+                        placeholder={isMessage ? messagePlaceholder : commentedPostId === 0 ? placeholder : commentPlaceholder}
                         ref={textAreaRef}
                         value={postText}
                         onChange={(e) => {
@@ -227,10 +361,11 @@ export default function PostForm({ commentedPostId }) {
                         }}
                         onKeyDown={(e) => {
                             if (e.key === "Enter" && !e.shiftKey) {
-                                handlePost();
+                                e.preventDefault();
+                                handlePost(e);
                             }
                         }}
-                        ></textarea>
+                    ></textarea>
                     {showEmojiPicker &&
                         createPortal(
                             <div
@@ -263,7 +398,14 @@ export default function PostForm({ commentedPostId }) {
 
                         <div className="flex-1 text-center pb-2 mb-2 mx-2">
                             <a
-                                className="hover:cursor-pointer mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300"
+                                className="hover:cursor-pointer mt-1 group flex justify-center items-center px-2 py-2 text-base leading-6 font-medium rounded-full"
+                                css={css`
+                                    color: ${theme.colors.textMid};
+                                    &:hover {
+                                        color: ${theme.colors.text};
+                                        background-color: ${theme.colors.hoverPrimary};
+                                    }
+                                `}
                                 onClick={() => fileInputRef.current.click()}
                             >
                                 <svg className="text-center h-7 w-6" fill="none" strokeLinecap="round"
@@ -280,23 +422,20 @@ export default function PostForm({ commentedPostId }) {
                                 type="file"
                                 multiple
                                 accept="image/jpeg, image/png, image/gif, image/webp"
-                                onChange={(event) => {
-                                    const selectedFiles = Array.from(event.target.files);
-                                    const imagePreviews = selectedFiles.map(file => ({
-                                        url: URL.createObjectURL(file),
-                                        name: file.name,
-                                        preview: ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(file.name.split('.').pop().toLowerCase()),
-                                        size: file.size > 1024 ? (file.size > 1048576 ? Math.round(file.size / 1048576) + 'mb' : Math.round(file.size / 1024) + 'kb') : file.size + 'b'
-                                    }));
-                                    setImages(imagePreviews);
-                                    setFiles(selectedFiles);
-                                }}
+                                onChange={handleImageChange}
                             />
                         </div>
 
                         <div className="flex-1 text-center pb-2 mb-2 mx-2">
                             <a
-                                className="hover:cursor-pointer mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300"
+                                className="hover:cursor-pointer mt-1 group flex justify-center items-center px-2 py-2 text-base leading-6 font-medium rounded-full"
+                                css={css`
+                                    color: ${theme.colors.textMid};
+                                    &:hover {
+                                        color: ${theme.colors.text};
+                                        background-color: ${theme.colors.hoverPrimary};
+                                    }
+                                `}
                                 onClick={() => videoInputRef.current.click()}
                             >
                                 <svg className="text-center h-7 w-6" fill="none" strokeLinecap="round"
@@ -313,33 +452,7 @@ export default function PostForm({ commentedPostId }) {
                                 type="file"
                                 accept="video/mp4, video/webm, video/ogg"
                                 multiple
-                                onChange={(event) => {
-                                    const selectedVideos = Array.from(event.target.files);
-                                    const newVideoObjects = selectedVideos.map(file => {
-                                        const extension = file.name.split('.').pop()?.toLowerCase();
-                                        const mimeMap = {
-                                            mp4: 'video/mp4',
-                                            webm: 'video/webm',
-                                            ogg: 'video/ogg'
-                                        };
-                                        const type = mimeMap[extension] || 'video/mp4';
-
-                                        return {
-                                            url: URL.createObjectURL(file),
-                                            name: file.name,
-                                            size: file.size > 1024
-                                                ? (file.size > 1048576
-                                                    ? Math.round(file.size / 1048576) + 'mb'
-                                                    : Math.round(file.size / 1024) + 'kb')
-                                                : file.size + 'b',
-                                            file,
-                                            type
-                                        };
-                                    });
-
-                                    setVideos(newVideoObjects);
-                                    setFiles(prev => [...prev, ...selectedVideos]);
-                                }}
+                                onChange={handleVideoChange}
                             />
                         </div>
                         <div className="flex-1 text-center pb-2 mb-2 mx-2">
@@ -347,7 +460,15 @@ export default function PostForm({ commentedPostId }) {
                                 ref={emojiButtonRef}
                                 onClick={() => toggleEmojiPicker()}
                                 id="emoji-button"
-                                className="hover:cursor-pointer mt-1 group flex justify-center items-center text-gray-300 px-2 py-2 text-base leading-6 font-medium rounded-full hover:bg-green-800 hover:text-green-300">
+                                className="hover:cursor-pointer mt-1 group flex justify-center items-center px-2 py-2 text-base leading-6 font-medium rounded-full"
+                                css={css`
+                                    color: ${theme.colors.textMid};
+                                    &:hover {
+                                        color: ${theme.colors.text};
+                                        background-color: ${theme.colors.hoverPrimary};
+                                    }
+                                `}
+                            >
                                 <svg className="text-center h-7 w-6" fill="none" strokeLinecap="round"
                                     strokeLinejoin="round" strokeWidth="2" stroke="silver"
                                     viewBox="0 0 24 24">
@@ -364,8 +485,22 @@ export default function PostForm({ commentedPostId }) {
                 <div className="flex-1">
                     <button
                         onClick={handlePost}
-                        className="hover:cursor-pointer bg-green-700 hover:bg-green-600 mb-2 text-white font-bold py-2 px-8 rounded-full mr-8 float-right">
+                        className="hover:cursor-pointer bg-green-700 hover:bg-green-600 mb-2 text-white font-bold py-2 px-8 rounded-full mr-8 float-right"
+                        css={css`
+                            background-color: ${theme.colors.btnPrimary};
+                            &:hover {
+                                background-color: ${theme.colors.btnHoverPrimary};
+                            }
+                            color: ${theme.colors.btnTextPrimary};
+                            &:hover {
+                                color: ${theme.colors.btnTextHoverPrimary};
+                                border: 1px solid;
+                                border-color: ${theme.colors.btnTextHoverPrimary};
+                            }
+                        `}
+                    >
                         {
+                            isMessage ? messageButtonText :
                             commentedPostId == 0 ? buttonText : commentButtonText
                         }
                     </button>
@@ -388,7 +523,14 @@ export default function PostForm({ commentedPostId }) {
                             X
                         </button>
 
-                        <div className="text-xs text-center p-2 text-gray-300">{image.size}</div>
+                        <div
+                            className="text-xs text-center p-2"
+                            css={css`
+                                color: ${theme.colors.textMid};
+                            `}
+                        >
+                            {image.size}
+                        </div>
                     </div>
                 ))}
                 {videos.map((video, index) => (
@@ -400,7 +542,14 @@ export default function PostForm({ commentedPostId }) {
                         >
                             X
                         </button>
-                        <div className="text-xs text-center p-2 text-gray-300">{video.size}</div>
+                        <div
+                            className="text-xs text-center p-2 text-gray-300"
+                            css={css`
+                                color: ${theme.colors.textMid};
+                            `}
+                        >
+                            {video.size}
+                        </div>
                     </div>
                 ))}
             </div>

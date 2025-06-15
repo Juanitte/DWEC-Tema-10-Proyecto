@@ -4,6 +4,7 @@ import { ThemeProvider } from '@emotion/react';
 import './index.css';
 import App from './App.jsx';
 import './utils/i18n.js';
+import { themes } from './utils/themes.js';
 
 // 1) Crea el contexto para exponer la clave y la función de cambio
 const ThemeContext = createContext({
@@ -14,15 +15,6 @@ const ThemeContext = createContext({
 export const useThemeKey = () => useContext(ThemeContext).themeKey;
 export const useSetThemeKey = () => useContext(ThemeContext).setThemeKey;
 
-// 2) Define tus paletas
-const themes = {
-  lightGreen: { colors: { background: '#fff', text: '#000', textInverse: '#fff', primary: '#25d328', secondary: '#47ff3d' } },
-  darkGreen:  { colors: { background: '#192b15', text: '#fff', textInverse: '#000', primary: '#19941b', secondary: '#1eba20' } },
-  lightBlue:  { colors: { background: '#fff', text: '#000', textInverse: '#fff', primary: '#4489cf', secondary: '#6aa1d9' } },
-  darkBlue:   { colors: { background: '#15202b', text: '#fff', textInverse: '#000', primary: '#eff3f4', secondary: '#1d9bf0' } },
-  lightPink:  { colors: { background: '#fff', text: '#000', textInverse: '#fff', primary: '#fc42c9', secondary: '#ff6ed7' } },
-  darkPink:   { colors: { background: '#2b1525', text: '#fff', textInverse: '#000', primary: '#eff3f4', secondary: '#e02daf' } },
-};
 
 function Root() {
   // 3) Lee la clave inicial de localStorage (o usa 'darkGreen' por defecto)

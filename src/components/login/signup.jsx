@@ -8,6 +8,7 @@ import CryptoJS from "crypto-js";
 import { useTranslation } from "react-i18next";
 import Language from "../settings/language";
 import { toast } from "react-toastify";
+import { useMediaQuery } from "react-responsive";
 
 export default function Signup() {
     const { t, i18n } = useTranslation();
@@ -25,6 +26,7 @@ export default function Signup() {
     const [country, setCountry] = useState(0);
     const [countries, setCountries] = useState(Object.values(Country));
     const navigate = useNavigate();
+    const isMobile = useMediaQuery({ maxWidth: 1024 });
 
     const validateForm = () => {
         return EMAIL_REGEX.test(email) && PASSWORD_REGEX.test(password) && password === confirmPassword && USERNAME_REGEX.test(username) && USERNAME_REGEX.test(fullname) && TAG_REGEX.test(tag) && country != 0;
@@ -67,7 +69,7 @@ export default function Signup() {
 
     return (
         <div className="p-8 w-full">
-            <div className="absolute top-4 right-4">
+            <div className={ isMobile ? `` : `absolute top-4 right-4`}>
                 <Language isLogin={true} />
             </div>
             <h1 className="text-4xl font-bold mb-4">

@@ -20,6 +20,10 @@
         "MISSING-DATA": "Complete all the fields"
     },
 
+    "LOADING": {
+        "LOADING": "Loading..."
+    },
+
     "LOGIN": {
         "WELCOME": "Welcome to Inkas",
         "SUBTITLE": "Login",
@@ -69,11 +73,20 @@
         "POST": "Post",
         "FORM-PLACEHOLDER": "What's happening?",
         "COMMENT-PLACEHOLDER": "Comment...",
-        "EMOJI-SEARCH-PLACEHOLDER": "Search emoji"
+        "EMOJI-SEARCH-PLACEHOLDER": "Search emoji",
+        "CHAT-PLACEHOLDER": "Send message...",
+        "CHAT": "Send"
     },
 
     "POST": {
-        "REPLY": "Replying to"
+        "REPLY": "Replying to",
+        "SHARED": "Shared by"
+    },
+
+    "CHAT": {
+        "NO-CHATS": "No chats available",
+        "YOU": "You",
+        "NO_MESSAGES": "No messages available"
     },
 
     "TIMELINE": {

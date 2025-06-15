@@ -1,13 +1,16 @@
+/** @jsxImportSource @emotion/react */
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loading from "../shared/loading";
 import TrendingCard from "./trending-card";
 import { getTopHashtags } from "../../services/posts-service";
+import {css , useTheme} from '@emotion/react';
 
 export default function TrendingTimeline({ user, isWidget = false }) {
     const [hashtags, setHashtags] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const { t } = useTranslation();
+    const theme = useTheme();
 
     useEffect(() => {
         const fetchHashtags = async () => {
@@ -36,7 +39,13 @@ export default function TrendingTimeline({ user, isWidget = false }) {
             <ul className="list-none">
                 {
                     hashtags.length == 0 ?
-                        <p className="pt-4 pl-4 text-sm text-gray-400">{t('TRENDS.NO-TRENDS')}</p>
+                        <p
+                            className="pt-4 pl-4 text-sm"
+                            css={css`color: ${theme.colors.textMid};
+                            `}
+                        >
+                            {t('TRENDS.NO-TRENDS')}
+                        </p>
                         :
                         hashtags.map(hashtag => (
                             <TrendingCard key={hashtag.text} hashtag={hashtag.text} index={hashtags.indexOf(hashtag)} count={hashtag.count} />

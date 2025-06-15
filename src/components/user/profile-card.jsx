@@ -1,22 +1,26 @@
+/** @jsxImportSource @emotion/react */
 import { useEffect, useRef, useState } from "react";
 import Loading from "../shared/loading";
 import { follow, getAvatar, getFollowers, getFollowing, handleInvalidToken, unfollow, UpdateAvatar, UpdateUser } from "../../services/users-service";
-import UsersModal from "./users-modal";
 import { useTranslation } from "react-i18next";
-import { Country } from "../../utils/enums";
 import { getCountryKeyByValue } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { css, useTheme } from '@emotion/react';
+import PostForm from "../home/post-form";
+import Modal from "../shared/modal";
 
 export default function ProfileCard({ user }) {
     if (!user) return <Loading />;
     const { t } = useTranslation();
-    
+    const [showMessageModal, setShowMessageModal] = useState(false);
+
     const key = getCountryKeyByValue(user.country);
     const countryString = key ? t(`COUNTRIES.${key}`) : t("COUNTRIES.UNDEFINED");
 
     const userCreatedDate = new Date(user.created);
     const locale = localStorage.getItem("i18nextLng");
+    const theme = useTheme();
     var formattedDate;
 
     if (locale == "es-ES")
@@ -335,7 +339,14 @@ export default function ProfileCard({ user }) {
                                     {isEditing && (
                                         <label
                                             htmlFor="avatarUpload"
-                                            className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow cursor-pointer hover:bg-gray-100 text-gray-800"
+                                            className="absolute bottom-2 right-2 p-2 rounded-full shadow cursor-pointer"
+                                            css={css`
+                                                background-color: ${theme.colors.primary};
+                                                color: ${theme.colors.text};
+                                                &:hover {
+                                                    background-color: ${theme.colors.hoverPrimary};
+                                                }
+                                            ` }
                                         >
                                             <i className="fa fa-pencil-alt fa-lg" aria-hidden="true" />
                                             <input
@@ -351,21 +362,39 @@ export default function ProfileCard({ user }) {
                             </div>
                         </div>
                         {/* Follow Button */}
-                        <div className="flex flex-col text-right">
+                        <div className="flex flex-row gap-2 text-right">
                             {
                                 user.id == JSON.parse(localStorage.getItem('user')).id ? (
                                     isEditing ? (
                                         hasChanged ? (
                                             <button
                                                 onClick={handleSave}
-                                                className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none max-w-max border bg-blue-600 border-blue-600 text-white hover:border-blue-500 hover:bg-blue-500 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
+                                                className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none max-w-max border flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
+                                                css={css`
+                                                    background-color: ${theme.colors.btnPrimary};
+                                                    color: ${theme.colors.btnTextPrimary};
+                                                    &:hover {
+                                                        background-color: ${theme.colors.btnHoverPrimary};
+                                                        color: ${theme.colors.btnTextHoverPrimary};
+                                                        border-color: ${theme.colors.btnTextHoverPrimary};
+                                                    }
+                                                `}
                                             >
                                                 {t('BUTTONS.SAVE')}
                                             </button>
                                         ) : (
                                             <button
                                                 onClick={handleEditing}
-                                                className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none max-w-max border bg-blue-600 border-blue-600 text-white hover:border-blue-500 hover:bg-blue-500 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
+                                                className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none max-w-max border flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
+                                                css={css`
+                                                    background-color: ${theme.colors.btnPrimary};
+                                                    color: ${theme.colors.btnTextPrimary};
+                                                    &:hover {
+                                                        background-color: ${theme.colors.btnHoverPrimary};
+                                                        color: ${theme.colors.btnTextHoverPrimary};
+                                                        border-color: ${theme.colors.btnTextHoverPrimary};
+                                                    }
+                                                `}
                                             >
                                                 {t('BUTTONS.BACK')}
                                             </button>
@@ -373,23 +402,73 @@ export default function ProfileCard({ user }) {
                                     ) : (
                                         <button
                                             onClick={handleEditing}
-                                            className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
+                                            className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none max-w-max border flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
+                                            css={css`
+                                                    background-color: ${theme.colors.btnPrimary};
+                                                    color: ${theme.colors.btnTextPrimary};
+                                                    &:hover {
+                                                        background-color: ${theme.colors.btnHoverPrimary};
+                                                        color: ${theme.colors.btnTextHoverPrimary};
+                                                        border-color: ${theme.colors.btnTextHoverPrimary};
+                                                    }
+                                                `}
                                         >
                                             {t('PROFILE.EDIT-PROFILE')}
                                         </button>
                                     )
-                                )
-                                    :
-                                    isFollowing ?
-                                        <button onClick={(event) => { handleFollow(event) }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
-                                            {t('BUTTONS.UNFOLLOW')}
+                                ) : (
+                                    <>
+                                        <button
+                                            onClick={() => setShowMessageModal(true)}
+                                            className="hover:cursor-pointer max-h-[40px] max-w-[40px] flex justify-center whitespace-nowrap focus:outline-none border flex items-center hover:shadow-lg font-bold p-2 rounded-full mr-0 ml-auto"
+                                            css={css`
+                                                    background-color: ${theme.colors.btnPrimary};
+                                                    color: ${theme.colors.btnTextPrimary};
+                                                    &:hover {
+                                                        background-color: ${theme.colors.btnHoverPrimary};
+                                                        color: ${theme.colors.btnTextHoverPrimary};
+                                                        border-color: ${theme.colors.btnTextHoverPrimary};
+                                                    }
+                                                `}
+                                        >
+                                            <i class="fa-regular fa-envelope fa-lg"></i>
                                         </button>
 
-                                        :
-                                        <button onClick={(event) => { handleFollow(event) }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none max-w-max border bg-green-700 border-green-700 text-white hover:border-green-600 hover:bg-green-600 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
-                                            {t('BUTTONS.FOLLOW')}
-                                        </button>
-                            }
+                                        {isFollowing ? (
+                                            <button
+                                                onClick={handleFollow}
+                                                className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none max-w-max border flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
+                                                css={css`
+                                                    background-color: ${theme.colors.btnPrimary};
+                                                    color: ${theme.colors.btnTextPrimary};
+                                                    &:hover {
+                                                        background-color: ${theme.colors.btnHoverPrimary};
+                                                        color: ${theme.colors.btnTextHoverPrimary};
+                                                        border-color: ${theme.colors.btnTextHoverPrimary};
+                                                    }
+                                                `}
+                                            >
+                                                {t("BUTTONS.UNFOLLOW")}
+                                            </button>
+                                        ) : (
+                                            <button
+                                                onClick={handleFollow}
+                                                className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none max-w-max border flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
+                                                css={css`
+                                                    background-color: ${theme.colors.btnPrimary};
+                                                    color: ${theme.colors.btnTextPrimary};
+                                                    &:hover {
+                                                        background-color: ${theme.colors.btnHoverPrimary};
+                                                        color: ${theme.colors.btnTextHoverPrimary};
+                                                        border-color: ${theme.colors.btnTextHoverPrimary};
+                                                    }
+                                                `}
+                                            >
+                                                {t("BUTTONS.FOLLOW")}
+                                            </button>
+                                        )}
+                                    </>
+                                )}
                         </div>
                     </div>
 
@@ -402,16 +481,30 @@ export default function ProfileCard({ user }) {
                                     name="userName"
                                     value={formValues.userName}
                                     onChange={handleInputChange}
-                                    className="w-full text-xl font-bold p-2 rounded bg-gray-300 text-black"
+                                    className="w-full text-xl font-bold p-2 rounded"
+                                    css={css`
+                                        background-color: ${theme.colors.primary};
+                                        color: ${theme.colors.text};
+                                    `}
                                 />
                             </div>
                         ) : (
                             <div>
-                                <h2 className="text-xl leading-6 font-bold text-white">{userName}</h2>
+                                <h2
+                                    className="text-xl leading-6 font-bold"
+                                    css={css`color: ${theme.colors.text};`}
+                                >
+                                    {userName}
+                                </h2>
                             </div>
                         )}
 
-                        <p className="text-sm leading-5 font-medium text-gray-400">{user.tag}</p>
+                        <p
+                            className="text-sm leading-5 font-medium"
+                            css={css`color: ${theme.colors.textMid};`}
+                        >
+                            {user.tag}
+                        </p>
 
                         {/* Description and others */}
                         <div className="pt-3">
@@ -422,22 +515,38 @@ export default function ProfileCard({ user }) {
                                         value={formValues.bio}
                                         onChange={handleInputChange}
                                         rows={3}
-                                        className="w-full p-2 rounded bg-gray-300 text-black"
+                                        className="w-full p-2 rounded"
+                                        css={css`
+                                            background-color: ${theme.colors.primary};
+                                            color: ${theme.colors.text};
+                                        `}
                                     />
-                                    <div className="text-white flex items-center mt-2">
+                                    <div className="flex items-center mt-2">
                                         <input
                                             name="link"
                                             value={formValues.link}
                                             onChange={handleInputChange}
                                             placeholder="https://tusitio.com"
-                                            className="ml-2 p-1 rounded bg-gray-300 text-black flex-1"
+                                            className="ml-2 p-1 rounded flex-1"
+                                            css={css`
+                                                background-color: ${theme.colors.primary};
+                                                color: ${theme.colors.text};
+                                            `}
                                         />
                                     </div>
                                 </>
                             ) : (
                                 <>
-                                    <p className="text-white leading-tight pb-2">{userBio}</p>
-                                    <div className="text-gray-400 flex items-center">
+                                    <p
+                                        className="leading-tight pb-2"
+                                        css={css`color: ${theme.colors.text};`}
+                                    >
+                                        {userBio}
+                                    </p>
+                                    <div
+                                        className="flex items-center"
+                                        css={css`color: ${theme.colors.textMid};`}
+                                    >
                                         <svg viewBox="0 0 24 24" className="h-5 w-5 paint-icon">
                                             <g>
                                                 <path d="M11.96 14.945c-.067 0-.136-.01-.203-.027-1.13-.318-2.097-.986-2.795-1.932-.832-1.125-1.176-2.508-.968-3.893s.942-2.605 2.068-3.438l3.53-2.608c2.322-1.716 5.61-1.224 7.33 1.1.83 1.127 1.175 2.51.967 3.895s-.943 2.605-2.07 3.438l-1.48 1.094c-.333.246-.804.175-1.05-.158-.246-.334-.176-.804.158-1.05l1.48-1.095c.803-.592 1.327-1.463 1.476-2.45.148-.988-.098-1.975-.69-2.778-1.225-1.656-3.572-2.01-5.23-.784l-3.53 2.608c-.802.593-1.326 1.464-1.475 2.45-.15.99.097 1.975.69 2.778.498.675 1.187 1.15 1.992 1.377.4.114.633.528.52.928-.092.33-.394.547-.722.547z"></path>
@@ -456,7 +565,10 @@ export default function ProfileCard({ user }) {
                             )}
 
                             {/* Joined date (siempre igual) */}
-                            <div className="text-gray-400 flex mt-2">
+                            <div
+                                className="flex mt-2"
+                                css={css`color: ${theme.colors.textMid};`}
+                            >
                                 <svg viewBox="0 0 24 24" className="h-5 w-5 paint-icon">
                                     <g>
                                         <path d="M19.708 2H4.292C3.028 2 2 3.028 2 4.292v15.416C2 20.972 3.028 22 4.292 22h15.416C20.972 22 22 20.972 22 19.708V4.292C22 3.028 20.972 2 19.708 2zm.792 17.708c0 .437-.355.792-.792.792H4.292c-.437 0-.792-.355-.792-.792V6.418c0-.437.354-.79.79-.792h15.42c.436 0 .79.355.79.79V19.71z"></path>
@@ -476,30 +588,49 @@ export default function ProfileCard({ user }) {
                             </div>
                         </div>
                     </div>
-                    <div className="pt-3 flex justify-start items-start w-full divide-x divide-green-800 divide-solid">
+                    <div className={`pt-3 flex justify-start items-start w-full divide-x divide-[${theme.colors.secondary}] divide-solid`}>
                         <div onClick={() => { navigate(`/user/${user.id}/follows?tab=0`) }} className="text-center pr-3 hover:cursor-pointer">
-                            <span className="font-bold text-white">
+                            <span
+                                className="font-bold"
+                                css={css`color: ${theme.colors.text};`}
+                            >
                                 {
                                     following.length
                                 }
                             </span>
-                            <span className="text-gray-400 pl-2">
+                            <span className="pl-2"
+                                css={css`color: ${theme.colors.textMid};`}
+                            >
                                 {t('PROFILE.FOLLOWING')}
                             </span>
                         </div>
                         <div onClick={() => { navigate(`/user/${user.id}/follows?tab=1`) }} className="text-center px-3 hover:cursor-pointer">
-                            <span className="font-bold text-white">
+                            <span
+                                className="font-bold"
+                                css={css`color: ${theme.colors.text};`}
+                            >
                                 {
                                     followers.length
                                 }
                             </span>
-                            <span className="text-gray-400 pl-2">
+                            <span className="pl-2"
+                                css={css`color: ${theme.colors.textMid};`}
+                            >
                                 {t('PROFILE.FOLLOWERS')}
                             </span>
                         </div>
                     </div>
                 </div>
             </div>
+            {showMessageModal && (
+                <Modal onClose={() => setShowMessageModal(false)}>
+                    <PostForm
+                    isMessage={true}
+                    targetUserId={user.id}
+                    onClose={() => setShowMessageModal(false)}
+                    />
+                </Modal>
+            )}
         </>
     );
 }

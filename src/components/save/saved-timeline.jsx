@@ -1,10 +1,12 @@
+/** @jsxImportSource @emotion/react */
 import { useEffect, useState, useCallback } from "react";
-import { getFollowing, handleInvalidToken } from "../../services/users-service";
-import { getPostsByUser, getSavedPosts, getSharedPosts, hasNewPosts, hasNewSaves, hasNewShares } from "../../services/posts-service";
+import { handleInvalidToken } from "../../services/users-service";
+import { getSavedPosts, hasNewSaves } from "../../services/posts-service";
 import { useTranslation } from "react-i18next";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import Post from "../home/post";
 import Loading from "../shared/loading";
+import { css , useTheme} from '@emotion/react';
 
 export default function SavedTimeline({ user }) {
     const [posts, setPosts] = useState([]);
@@ -14,6 +16,7 @@ export default function SavedTimeline({ user }) {
     const [page, setPage] = useState(1);
     const [hasMorePosts, setHasMorePosts] = useState(true);
     const { t } = useTranslation();
+    const theme = useTheme();
 
     const lastPostDate = posts.length > 0 ? new Date(posts[0].created) : null;
 
@@ -119,7 +122,14 @@ export default function SavedTimeline({ user }) {
                 <div className="flex justify-center">
                     <button
                         onClick={showNewPosts}
-                        className="bg-green-600 hover:bg-green-400 text-white px-4 py-2 w-full"
+                        className="px-4 py-2 w-full"
+                        css={css`
+                            background-color: ${theme.colors.primary};
+                            color: ${theme.colors.text};
+                            &:hover {
+                                background-color: ${theme.colors.hoverPrimary};
+                            }
+                        `}
                     >
                         {
                             queuedPosts.length === 1

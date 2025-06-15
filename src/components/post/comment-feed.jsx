@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { useState, useEffect, useCallback, useRef } from "react";
 import { getComments } from "../../services/posts-service";
 import { handleInvalidToken } from "../../services/users-service";
@@ -5,6 +6,7 @@ import Post from "../home/post";
 import { useTranslation } from "react-i18next";
 import Loading from "../shared/loading";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
+import { useTheme } from "@emotion/react";
 
 export default function CommentFeed({ parentAuthor, postId }) {
     const [comments, setComments] = useState([]);
@@ -15,6 +17,7 @@ export default function CommentFeed({ parentAuthor, postId }) {
     const [page, setPage] = useState(1);
     const [hasMoreComments, setHasMoreComments] = useState(true);
     const { t } = useTranslation();
+    const theme = useTheme();
 
     const lastCommentDate = commentsRef.current.length > 0
         ? new Date(commentsRef.current[0].created)
@@ -102,7 +105,7 @@ export default function CommentFeed({ parentAuthor, postId }) {
                 <div className="flex justify-center">
                     <button
                         onClick={showNewComments}
-                        className="bg-green-600 hover:bg-green-400 text-white px-4 py-2 w-full"
+                        className={`bg-[${theme.colors.primary}] hover:bg-[${theme.colors.hoverPrimary}] text-${theme.colors.text} px-4 py-2 w-full`}
                     >
                         {queuedComments.length === 1
                             ? t("TIMELINE.NEW-POST", { count: 1 })

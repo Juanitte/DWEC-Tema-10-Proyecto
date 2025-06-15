@@ -1,9 +1,10 @@
+/** @jsxImportSource @emotion/react */
 import { useTranslation } from "react-i18next";
 import PostForm from "../../components/home/post-form";
 import Timeline from "../../components/home/timeline";
 import ContentHeader from "../../components/shared/content-header";
 import { useEffect, useRef } from "react";
-import { css , useTheme } from '@emotion/react';
+import { css, useTheme } from '@emotion/react';
 
 export default function HomePage() {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -29,16 +30,23 @@ export default function HomePage() {
                 <section
                     className="w-full border border-y-0 flex flex-col overflow-hidden"
                     css={css`
-                        border-color: ${theme.colors.primary};
+                        border-color: ${theme.colors.secondary};
                     `}
                 >
                     <ContentHeader title={t('POST-FORM.HEADER')} hasBackButton={false} />
-                    <hr css={css`border-color: ${theme.colors.primary};`} />
+                    <hr
+                        className="border-0 border-t w-full"
+                        css={css`
+                            border-top-color: ${theme.colors.secondary} !important;
+                        `}
+                    />
                     <div ref={scrollRef} className="flex-1 overflow-y-auto">
                         <PostForm commentedPostId={0} />
                         <hr
-                            className="border-4"
-                            css={css`border-color: ${theme.colors.primary};`}
+                            className="border-0 border-t w-full"
+                            css={css`
+                            border-top-color: ${theme.colors.secondary} !important;
+                        `}
                         />
                         <Timeline user={user} searchString="" isProfilePage={false} isForLikedPosts={false} />
                     </div>

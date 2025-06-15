@@ -1,5 +1,7 @@
+/** @jsxImportSource @emotion/react */
 import { useTranslation } from 'react-i18next';
 import { useSetThemeKey, useThemeKey } from '../../main';
+import { useTheme } from '@emotion/react';
 
 const themePreviews = {
     lightGreen: { light: '#ffffff', dark: '#25d328' },
@@ -16,10 +18,11 @@ export default function ThemeSelector() {
     const setThemeKey = useSetThemeKey();
     const current = useThemeKey();
     const { t } = useTranslation();
+    const theme = useTheme();
 
     return (
         <>
-            <p className="text-lg text-white pb-2 pl-8 pt-8 bold">
+            <p className={`text-lg text-${theme.colors.text} pb-2 pl-8 pt-8 bold`}>
                 {t('SETTINGS.THEME')}:
             </p>
             <div className="flex gap-3 p-4 pb-8">

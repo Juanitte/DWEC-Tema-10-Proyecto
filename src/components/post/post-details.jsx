@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { getComments } from "../../services/posts-service";
+/** @jsxImportSource @emotion/react */
 import Post from "../home/post";
 import PostForm from "../home/post-form";
 import CommentFeed from "./comment-feed";
-import { handleInvalidToken } from "../../services/users-service";
+import { useTheme } from '@emotion/react';
 
 export default function PostDetails({ post }) {
+    const theme = useTheme();
 
     return (
         <>
@@ -13,7 +13,7 @@ export default function PostDetails({ post }) {
                 <Post post={post} isComment={false} isUserPage={false} />
             </ul>
             <PostForm commentedPostId={post.id} />
-            <hr className="border-green-800" />
+            <hr className={`border-[${theme.colors.secondary}]`} />
             <CommentFeed parentAuthor={post.author} postId={post.id} />
         </>
     )

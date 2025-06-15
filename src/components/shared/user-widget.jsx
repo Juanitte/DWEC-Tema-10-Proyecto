@@ -1,11 +1,15 @@
+/** @jsxImportSource @emotion/react */
 import { useEffect, useRef, useState } from "react";
 import { getAvatar, handleInvalidToken } from "../../services/users-service";
+import { css , useTheme} from '@emotion/react';
 
 export default function UserWidget() {
     const user = JSON.parse(localStorage.getItem("user"));
 
     const [userAvatar, setUserAvatar] = useState(user.avatar);
     const avatarUrlRef = useRef(null);
+
+    const theme = useTheme();
 
     useEffect(() => {
                 let isMounted = true;
@@ -40,15 +44,37 @@ export default function UserWidget() {
 
     return (
         <div className="mt-auto pb-2 pr-4 flex justify-end">
-            <a href={`/user/${user.id}`} className="flex items-center hover:bg-green-800 rounded-full px-4 py-3">
+            <a
+              href={`/user/${user.id}`}
+              className="flex items-center rounded-full px-4 py-3"
+              css={css`
+                &:hover {
+                  background-color: ${theme.colors.hoverPrimary};
+                }
+              `}>
                 <img
                     className="h-10 w-10 rounded-full bg-gray-300"
                     src={userAvatar || user.avatar}
                     alt={`${user.userName} avatar`}
                 />
                 <div className="pl-3 text-right">
-                    <p className="text-base leading-6 font-medium text-white">{user.userName}</p>
-                    <p className="text-sm leading-5 font-medium text-gray-400 group-hover:text-gray-300 transition ease-in-out duration-150">
+                    <p
+                      className="text-base leading-6 font-medium"
+                      css={css`
+                        color: ${theme.colors.text};
+                      `}
+                    >
+                      {user.userName}
+                    </p>
+                    <p
+                      className="text-sm leading-5 font-medium transition ease-in-out duration-150"
+                      css={css`
+                        color: ${theme.colors.textMid};
+                        &:hover {
+                          color: ${theme.colors.text};
+                        }
+                      `}
+                    >
                         {user.tag}
                     </p>
                 </div>

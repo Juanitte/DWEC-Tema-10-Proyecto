@@ -1,9 +1,11 @@
+/** @jsxImportSource @emotion/react */
 import { useState } from "react";
 import RepostTimeline from "./repost-timeline";
 import Timeline from "../home/timeline";
 import CommentTimeline from "./comment-timeline";
 import LikeTimeline from "./like-timeline";
 import { useTranslation } from "react-i18next";
+import { useTheme} from '@emotion/react';
 
 export default function UserTimelineTabs({ user }) {
     // Tab == 0 -> Posts
@@ -13,6 +15,8 @@ export default function UserTimelineTabs({ user }) {
     const [tab, setTab] = useState(0);
     const { t } = useTranslation();
 
+    const theme = useTheme();
+
     const handleTabClick = (index) => {
         setTab(index);
     };
@@ -21,12 +25,12 @@ export default function UserTimelineTabs({ user }) {
 
     return (
         <>
-            <div className="flex justify-stretch border-b border-green-800">
+            <div className={`flex justify-stretch border-b border-[${theme.colors.secondary}]`}>
                 {
                     tab === 0 ? (
                         <button
                             type="button"
-                            className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className={`w-full border-[${theme.colors.textMid}] hover:bg-[${theme.colors.hoverPrimary}] text-[${theme.colors.text}] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                         >
                             {t('PROFILE.POSTS')}
                         </button>
@@ -34,7 +38,7 @@ export default function UserTimelineTabs({ user }) {
                         <button
                             onClick={() => handleTabClick(0)}
                             type="button"
-                            className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className={`w-full border-transparent text-[${theme.colors.textMid}] hover:text-[${theme.colors.text}] hover:bg-[${theme.colors.hoverPrimary}] hover:border-[${theme.colors.textMid}] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                         >
                             {t('PROFILE.POSTS')}
                         </button>
@@ -44,7 +48,7 @@ export default function UserTimelineTabs({ user }) {
                     tab === 1 ? (
                         <button
                             type="button"
-                            className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className={`w-full border-[${theme.colors.textMid}] hover:bg-[${theme.colors.hoverPrimary}] text-[${theme.colors.text}] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                         >
                             {t('PROFILE.REPLIES')}
                         </button>
@@ -52,7 +56,7 @@ export default function UserTimelineTabs({ user }) {
                         <button
                             type="button"
                             onClick={() => handleTabClick(1)}
-                            className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className={`w-full border-transparent text-[${theme.colors.textMid}] hover:text-[${theme.colors.text}] hover:bg-[${theme.colors.hoverPrimary}] hover:border-[${theme.colors.textMid}] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                         >
                             {t('PROFILE.REPLIES')}
                         </button>
@@ -62,7 +66,7 @@ export default function UserTimelineTabs({ user }) {
                     tab === 2 ? (
                         <button
                             type="button"
-                            className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className={`w-full border-[${theme.colors.textMid}] hover:bg-[${theme.colors.hoverPrimary}] text-[${theme.colors.text}] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                         >
                             {t('PROFILE.SHARES')}
                         </button>
@@ -70,7 +74,7 @@ export default function UserTimelineTabs({ user }) {
                         <button
                             onClick={() => handleTabClick(2)}
                             type="button"
-                            className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className={`w-full border-transparent text-[${theme.colors.textMid}] hover:text-[${theme.colors.text}] hover:bg-[${theme.colors.hoverPrimary}] hover:border-[${theme.colors.textMid}] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                         >
                             {t('PROFILE.SHARES')}
                         </button>
@@ -80,7 +84,7 @@ export default function UserTimelineTabs({ user }) {
                     tab === 3 ? (
                         <button
                             type="button"
-                            className="w-full border-gray-300 hover:bg-green-800 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className={`w-full border-[${theme.colors.textMid}] hover:bg-[${theme.colors.hoverPrimary}] text-[${theme.colors.text}] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                         >
                             {t('PROFILE.LIKES')}
                         </button>
@@ -88,7 +92,7 @@ export default function UserTimelineTabs({ user }) {
                         <button
                             onClick={() => handleTabClick(3)}
                             type="button"
-                            className="w-full border-transparent text-gray-400 hover:text-gray-200 hover:bg-green-800 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                            className={`w-full border-transparent text-[${theme.colors.textMid}] hover:text-[${theme.colors.text}] hover:bg-[${theme.colors.hoverPrimary}] hover:border-[${theme.colors.textMid}] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                         >
                             {t('PROFILE.LIKES')}
                         </button>

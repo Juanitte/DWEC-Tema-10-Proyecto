@@ -1,7 +1,9 @@
+/** @jsxImportSource @emotion/react */
 import { useTranslation } from "react-i18next";
 import { checkIfFollowing, follow, getAvatar, handleInvalidToken, unfollow } from "../../services/users-service";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { css , useTheme} from '@emotion/react';
 
 export default function UserCard({ user, isFollowSuggestions = false }) {
     const [isFollowing, setIsFollowing] = useState(false);
@@ -9,6 +11,8 @@ export default function UserCard({ user, isFollowSuggestions = false }) {
     const avatarUrlRef = useRef(null);
     const navigate = useNavigate();
     const { t } = useTranslation();
+
+    const theme = useTheme();
 
     useEffect(() => {
         let isMounted = true;
@@ -97,7 +101,13 @@ export default function UserCard({ user, isFollowSuggestions = false }) {
 
     return (
         <>
-            <div className="flex flex-row items-center justify-between py-4 px-4 flex-wrap gap-2 hover:bg-green-800 hover:cursor-pointer"
+            <div
+                className="flex flex-row items-center justify-between py-4 px-4 flex-wrap gap-2 hover:cursor-pointer"
+                css={css`
+                    &:hover {
+                        background-color: ${theme.colors.hoverPrimary};
+                    }
+                `}
                 onClick={(e) => {
                     e.stopPropagation();
                     goToUserPage(user.id, e);
@@ -109,8 +119,14 @@ export default function UserCard({ user, isFollowSuggestions = false }) {
                         src={userAvatar || user.avatar}
                         alt=""
                     />
-                    <div className="text-white pl-5 min-w-0 flex flex-col">
-                        <div className="text-white min-w-0">
+                    <div
+                        className="pl-5 min-w-0 flex flex-col"
+                        css={css`color: ${theme.colors.text};`}
+                    >
+                        <div
+                            className="min-w-0"
+                            css={css`color: ${theme.colors.text};`}
+                        >
                             {
                                 isFollowSuggestions ? (
                                     <p className="text-sm truncate">
@@ -127,7 +143,10 @@ export default function UserCard({ user, isFollowSuggestions = false }) {
                             }
                             {
                                 isFollowSuggestions ? (
-                                    <p className="text-sm text-gray-400 truncate">
+                                    <p
+                                        className="text-sm truncate"
+                                        css={css`color: ${theme.colors.textMid};`}
+                                    >
                                         {
                                             user.tag?.length > 15
                                                 ?
@@ -137,7 +156,12 @@ export default function UserCard({ user, isFollowSuggestions = false }) {
                                         }
                                     </p>
                                 ) :
-                                    <p className="text-sm text-gray-400 truncate">{user.tag}</p>
+                                    <p
+                                        className="text-sm text-gray-400 truncate"
+                                        css={css`color: ${theme.colors.textMid};`}
+                                    >
+                                        {user.tag}
+                                    </p>
                             }
                         </div>
                         <div>
@@ -153,19 +177,41 @@ export default function UserCard({ user, isFollowSuggestions = false }) {
                 <div className="ml-auto">
                     {
                         isFollowing ?
-                            <button onClick={(e) => { e.stopPropagation(); handleFollow(e); }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-white hover:bg-white hover:text-green-800 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
+                            <button
+                                onClick={(e) => { e.stopPropagation(); handleFollow(e); }}
+                                className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none focus:ring max-w-max border flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
+                                css={css`
+                                    background-color: ${theme.colors.btnPrimary};
+                                    color: ${theme.colors.btnTextPrimary};
+                                    &:hover {
+                                        background-color: ${theme.colors.hoverPrimary};
+                                        color: ${theme.colors.btnTextHoverPrimary};
+                                    }
+                                `}
+                            >
                                 {t('BUTTONS.UNFOLLOW')}
                             </button>
 
                             :
-                            <button onClick={(e) => { e.stopPropagation(); handleFollow(e); }} className="hover:cursor-pointer flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring  rounded max-w-max border bg-green-700 border-green-700 text-white hover:border-white hover:bg-white hover:text-green-800 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
+                            <button
+                                onClick={(e) => { e.stopPropagation(); handleFollow(e); }}
+                                className="hover:cursor-pointer flex justify-center max-h-max whitespace-nowrap focus:outline-none focus:ring max-w-max border flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto"
+                                css={css`
+                                    background-color: ${theme.colors.btnPrimary};
+                                    color: ${theme.colors.btnTextPrimary};
+                                    &:hover {
+                                        background-color: ${theme.colors.hoverPrimary};
+                                        color: ${theme.colors.btnTextHoverPrimary};
+                                    }
+                                `}
+                            >
                                 {t('BUTTONS.FOLLOW')}
                             </button>
                     }
                 </div>
             </div>
 
-            <hr className="border-green-800" />
+            <hr css={css`border-color: ${theme.colors.secondary};`} />
         </>
     );
 }

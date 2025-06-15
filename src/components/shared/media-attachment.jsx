@@ -1,13 +1,18 @@
 import { useEffect, useState, useRef } from "react";
 import useAttachmentLazyLoad from "../hooks/useAttachmentLazyLoad";
 import { streamAttachment } from "../../services/posts-service";
+import { useTheme } from "@emotion/react";
+import { useTranslation } from "react-i18next";
 
-export default function MediaAttachment({ attachment }) {
+export default function MediaAttachment({ attachment , onLoad }) {
   const { ref, isVisible } = useAttachmentLazyLoad();
   const [videoUrl, setVideoUrl] = useState(null);
   const [loadingVideo, setLoadingVideo] = useState(false);
   const [imgUrl, setImgUrl] = useState(null);
   const videoRef = useRef();
+  const { t } = useTranslation();
+
+  const theme = useTheme();
 
   // Detectar MIME según extensión:
   const getMimeTypeFromPath = (path) => {
@@ -98,9 +103,9 @@ export default function MediaAttachment({ attachment }) {
     return (
       <div
         ref={ref}
-        className="bg-green-900 border border-dashed border-gray-600 rounded-xl max-w-[90%] h-48 flex justify-center items-center text-gray-400"
+        className={`bg-[${theme.colors.primary}] border border-dashed border-[${theme.colors.textMid}] rounded-xl max-w-[90%] h-48 flex justify-center items-center text-[${theme.colors.textMid}]`}
       >
-        <span className="text-sm">Cargando adjunto...</span>
+        <span className="text-sm">{t("LOADING.LOADING")}</span>
       </div>
     );
   }
@@ -108,8 +113,8 @@ export default function MediaAttachment({ attachment }) {
   // Si no es vídeo, renderizamos la imagen normal:
   if (!isVideo) {
     return (
-      <a href={imgUrl} target="_blank" rel="noopener noreferrer" ref={ref} className="bg-green-800 border border-gray-300 rounded-xl flex flex-col justify-center items-center max-w-[90%]" onClick={e => e.stopPropagation()}>
-        <img src={imgUrl} alt="Post attachment" loading="lazy" className="rounded-xl object-cover w-full h-auto" />
+      <a href={imgUrl} target="_blank" rel="noopener noreferrer" ref={ref} className={`bg-[${theme.colors.primary}] border border-[${theme.colors.textMid}] rounded-xl flex flex-col justify-center items-center max-w-[90%]`} onClick={e => e.stopPropagation()}>
+        <img src={imgUrl} onLoad={onLoad} alt="Post attachment" loading="lazy" className="rounded-xl object-cover w-full h-auto" />
       </a>
     );
   }
@@ -118,18 +123,19 @@ export default function MediaAttachment({ attachment }) {
   return (
     <div
       ref={ref}
-      className="bg-green-800 border border-gray-300 rounded-xl max-w-[90%] overflow-hidden"
+      className={`bg-[${theme.colors.primary}] border border-[${theme.colors.textMid}] rounded-xl max-w-[90%] overflow-hidden`}
       onClick={(event) => event.stopPropagation()}
     >
       {loadingVideo && (
         <div className="flex justify-center items-center h-48">
-          <span className="text-gray-300">Cargando vídeo…</span>
+          <span className="text-sm">{t("LOADING.LOADING")}</span>
         </div>
       )}
       {!loadingVideo && (
         <video
           ref={videoRef}
           controls
+          onLoad={onLoad}
           className="w-full h-auto rounded-xl object-contain"
           src={videoUrl || undefined}
           poster={posterSrc || undefined}

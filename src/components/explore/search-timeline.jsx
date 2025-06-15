@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { useEffect, useState, useCallback, useRef } from "react";
 import { GetUsersFilter, handleInvalidToken } from "../../services/users-service";
 import { getPostsFilter } from "../../services/posts-service";
@@ -6,6 +7,7 @@ import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import Post from "../home/post";
 import Loading from "../shared/loading";
 import UserCard from "../shared/user-card";
+import { css , useTheme} from '@emotion/react';
 
 export default function SearchTimeline({ user, searchString, isPosts = false, isUsers = false }) {
     const [posts, setPosts] = useState([]);
@@ -14,6 +16,8 @@ export default function SearchTimeline({ user, searchString, isPosts = false, is
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const { t } = useTranslation();
+
+    const theme = useTheme();
 
     useEffect(() => {
         setPosts([]);
@@ -125,11 +129,11 @@ export default function SearchTimeline({ user, searchString, isPosts = false, is
                 {
                     isUsers &&
                     users
-                        .filter(u => +u.id !== +user.id)  // Filtrar usuario logeado
+                        .filter(u => +u.id !== +user.id)
                         .map(user => (
                             <div key={user.id}>
                                 <UserCard user={user} />
-                                <hr className="border-green-800" />
+                                <hr css={css`border-color: ${theme.colors.secondary};`} />
                             </div>
                         ))
                 }

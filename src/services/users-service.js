@@ -123,6 +123,16 @@ export async function getFollowing(userId) {
     });
 }
 
+export async function getFollowingIds(userId) {
+    return fetch(`${BASE_URL}${USERS_URL}followingids/${userId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
+
 export async function getFollowingPage(userId, page) {
     return fetch(`${BASE_URL}${USERS_URL}getfollowing/${userId}/${page}`, {
         method: "GET",
